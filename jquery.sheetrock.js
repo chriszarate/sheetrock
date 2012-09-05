@@ -126,7 +126,7 @@
     if(!options.headers) options.target.append(options.rowHandler(_obj(labels), 0));
 
     // Each table cell ('c') can contain two properties: 'p' contains 
-    // formatting and 'v' contains the actual field value.
+    // formatting and 'v' contains the actual cell value.
 
     $.each(data.table.rows, function(i, obj) {
 
@@ -137,9 +137,9 @@
           cells: {}
         }
 
-        $.each(obj.c, function(x, field) {
-          var style = (options.formatting) ? _style(field) : false;
-          var value = (field && _has(field, 'v')) ? options.fieldHandler(field.v) : '';
+        $.each(obj.c, function(x, cell) {
+          var style = (options.formatting) ? _style(cell) : false;
+          var value = (cell && _has(cell, 'v')) ? options.cellHandler(cell.v) : '';
           objData.cells[labels[x]] = (style) ? _wrap(value, 'span', style) : value;
         });
 
@@ -273,8 +273,8 @@
   }
 
   // Extract formatting from a Google spreadsheet cell.
-  var _style = function(field) {
-    return (field && _has(field, 'p') && _has(field.p, 'style')) ? field.p.style : false;
+  var _style = function(cell) {
+    return (cell && _has(cell, 'p') && _has(cell.p, 'style')) ? cell.p.style : false;
   }
 
   // Output object to HTML (default row handler).
@@ -330,13 +330,13 @@
     // This function is used to process every cell value. It should return 
     // a string. The provided default is a simple trim function.
 
-    fieldHandler: _trim,  // Function
+    cellHandler: _trim,  // Function
 
     // Providing your own data handler means you don't want any processing 
     // to take place except for basic validation. The returned data, if 
     // valid, is passed to your data handler (along with an options hash) 
     // and it will be completely up to you to do something with it. The 
-    // field handler and row handler functions will not be called.
+    // cell handler and row handler functions will not be called.
 
     dataHandler: _parse,  // Function
 
