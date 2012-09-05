@@ -132,15 +132,19 @@
 
       if(_has(obj, 'c') && i < last) {
 
-        var objData = {}, row = options.offset + i + 1;
+        var objData = {
+          row: options.offset + i + 1,
+          cells: {}
+        }
+
         $.each(obj.c, function(x, field) {
           var style = (options.formatting) ? _style(field) : false;
           var value = (field && _has(field, 'v')) ? options.fieldHandler(field.v) : '';
-          objData[labels[x]] = (style) ? _wrap(value, 'span', style) : value;
+          objData.cells[labels[x]] = (style) ? _wrap(value, 'span', style) : value;
         });
 
         // Pass to row handler and append to target.
-        options.target.append(options.rowHandler(objData, row));
+        options.target.append(options.rowHandler(objData));
 
       }
 
@@ -274,9 +278,9 @@
   }
 
   // Output object to HTML (default row handler).
-  var _output = function(obj, i) {
-    var str = '', tag = (i) ? 'td' : 'th';
-    for(prop in obj) str += _wrap(obj[prop], tag, '');
+  var _output = function(row) {
+    var str = '', tag = (row.num) ? 'td' : 'th';
+    for(prop in row.cells) str += _wrap(row.cells[prop], tag, '');
     return _wrap(str, 'tr', '');
   }
 

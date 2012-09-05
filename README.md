@@ -66,7 +66,7 @@ we’ll rank the top five players by home runs.
 	<h3>NL Home Run Leaders</h3>
 	<ol id="leaders">
 		<script type="text/underscore-template" id="my-template">
-			<li><strong><%= First %> <%= Last %></strong>, <%= Team %>, <%= HR %></li>
+			<li><strong><%= cells.First %> <%= cells.Last %></strong>, <%= cells.Team %>, <%= cells.HR %></li>
 		</script>
 	</ol>
 	
@@ -100,7 +100,7 @@ You can also group data easily:
 	<h3>Team RBI</h3>
 	<ol id="leaders">
 		<script type="text/underscore-template" id="my-template">
-			<li><strong><%= Team %></strong>, <%= RBI %></li>
+			<li><strong><%= cells.Team %></strong>, <%= cells.RBI %></li>
 		</script>
 	</ol>
 	
