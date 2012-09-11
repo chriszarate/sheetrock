@@ -182,7 +182,7 @@
     if(options.loading && !(options.loading instanceof jQuery)) options.loading = $(options.loading);
 
     // Require `this` or a handler to receive the data.
-    if(!(target.length || options.dataHandler === _parse)) {
+    if(!target.length && options.dataHandler === _parse) {
       _log('Error: No element targeted or data handler provided.');
       return false;
     // Abort for finished or error-generating requests.
