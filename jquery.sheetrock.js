@@ -9,7 +9,7 @@
   $.fn.sheetrock = function(options) {
 
     // Load options.
-    options = _options($.extend({}, $.fn.sheetrock.options, options), this);
+    var options = _options($.extend({}, $.fn.sheetrock.options, options), this);
 
     // Abort if options were not validated.
     if(!options) return this;
