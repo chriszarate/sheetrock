@@ -14,13 +14,27 @@
     // Abort if options were not validated.
     if(!options) return this;
 
+    // Fetch data.
+    _fetch(options);
+
+  }
+
+  // Send request with prevalidated options.
+  var _fetch = function(options) {
+
+    // Load queued options.
+    if(_has(options, 'queued')) options = options.queued;
+
+    // Queue cached options.
+    if(_has(options, 'cached')) options.queued = options.cached;
+
     // Show loading indicator.
     if(options.loading) options.loading.show();
 
     // Enable chunking, if requested, and store offset as jQuery.data.
-    if(options.chunkSize) {
+    if(options.chunkSize && options.target) {
       options.sql += ' limit ' + (options.chunkSize + 1) + ' offset ' + options.offset;
-      $.data(this[0], _offset, options.offset + options.chunkSize);
+      $.data(options.target[0], _offset, options.offset + options.chunkSize);
     }
 
     // Create callback environment and turn on `working` flag.
@@ -105,7 +119,7 @@
   var _parse = function(data, options) {
 
     // Debug returned data
-    // _log(data);
+    if(options.debug) _log(data);
 
     // The Google API generates an unrecoverable error when the 'offset' 
     // is larger than the number of available rows. As a workaround, we 
@@ -120,7 +134,7 @@
 
     // If no column labels are provided (or if there are too many or too 
     // few), use the returned column labels.
-    var labels = (options.labels && options.labels.length == data.table.cols.length) ? options.labels : _labels(data.table.cols);
+    var labels = (options.labels && options.labels.length == data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
 
     // Output a header row unless told otherwise.
     if(!options.headers) options.target.append(options.rowHandler(_obj(labels), 0));
@@ -150,7 +164,14 @@
 
     });
 
+  }
 
+  // Get and store all column labels.
+  var _cols = function(data) {
+    $.each(data.table.cols, function(i, col) {
+      $.fn.sheetrock.labels[col.id] = (_has(col, 'label')) ? col.label.replace(/ /g, '') : col.id;
+    });
+    return true;
   }
 
 
@@ -158,9 +179,6 @@
 
   // Validate user-passed options.
   var _options = function(options, target) {
-
-    // Debug options
-    // _log(options);
 
     // Get spreadsheet key and gid.
     options.key = _key(options.url) || false;
@@ -204,7 +222,14 @@
     } else if(!options.gid) {
       _log('Error: Could not find a gid in the provided URL.');
       return false;
+    // Fetch column labels if they are needed.
+    } else if(options.sql && $.isEmptyObject($.fn.sheetrock.labels)) {
+      _log('Fetching column labels.');
+      options = $.extend({}, options, {sql: '', chunkSize: 1, offset: 0, loading: false, target: false, dataHandler: _cols, userCallback: _fetch, cached: options});
     }
+
+    // Debug options.
+    if(options.debug) _log(options);
 
     return options;
 
@@ -220,7 +245,7 @@
     };
 
     // Optional SQL request.
-    if(options.sql) params.tq = options.sql;
+    if(options.sql) params.tq = _swap(options.sql);
 
     return params;
  
@@ -257,12 +282,16 @@
   }
 
   // Get column labels from returned data.
-  var _labels = function(cols) {
-    var labels = [];
-    $.each(cols, function(i, obj) {
-      labels[i] = (_has(obj, 'label')) ? obj.label.replace(/ /, '') : obj.id;
+  var _labels = function(col) {
+    return (_has(obj, 'label')) ? col.label.replace(/ /g, '') : col.id;
+  }
+
+  // Swap column %labels% with column letters.
+  var _swap = function(sql) {
+    $.each($.fn.sheetrock.labels, function(key, val) {
+      sql = sql.replace(new RegExp('%' + val + '%', 'g'), key);
     });
-    return labels;
+    return sql;
   }
 
   // Convert array to object.
@@ -286,7 +315,7 @@
 
   // Wrap string in tag.
   var _wrap = function(str, tag, style) {
-    attr = (style) ? ' style="' + style + '"' : ''
+    var attr = (style) ? ' style="' + style + '"' : ''
     return '<' + tag + attr + '>' + str + '</' + tag + '>';
   }
 
@@ -313,8 +342,15 @@
     labels:     [],     // Array   -- Override returned column labels
     formatting: false,  // Boolean -- Include Google HTML formatting
     chunkSize:  0,      // Integer -- Number of rows to fetch (0 = all)
+    debug:      false,  // Boolean -- Output raw data to the console
 
-    sql:        '',     // String  -- Google Visualization query (SQL-like)
+    // By default, Google only allows column letters (e.g., A, B) in 
+    // visualization SQL queries. If you prefer, you can use column labels 
+    // in your SQL query and they will be swapped out with the 
+    // corresponding column letters. Wrap column labels in percent signs,
+    // e.g., "select %name%,%age% where %age% > 21".
+
+    sql: '',  // String  -- Google Visualization API query (SQL-like)
 
     // Providing a row handler is the recommended way to override the 
     // default data formatting. This function should accept a row object 
@@ -352,6 +388,10 @@
     loading: false  // jQuery object or selector
 
   };
+
+  // This is a placeholder for all the column labels, if they are needed.
+
+  $.fn.sheetrock.labels = {};
 
   // This property is set to the number of active requests. This can be useful 
   // for monitoring or for infinite scroll bindings.
