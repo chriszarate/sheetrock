@@ -225,6 +225,7 @@
     // Fetch column labels if they are needed.
     } else if(options.sql && $.isEmptyObject($.fn.sheetrock.labels)) {
       _log('Fetching column labels.');
+      if(options.loading) options.loading.show();
       options = $.extend({}, options, {sql: '', chunkSize: 1, offset: 0, loading: false, target: false, dataHandler: _cols, userCallback: _fetch, cached: options});
     }
 
