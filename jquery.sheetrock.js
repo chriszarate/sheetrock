@@ -284,7 +284,7 @@
 
   // Get column labels from returned data.
   var _labels = function(col) {
-    return (_has(obj, 'label')) ? col.label.replace(/ /g, '') : col.id;
+    return (_has(col, 'label')) ? col.label.replace(/ /g, '') : col.id;
   }
 
   // Swap column %labels% with column letters.
