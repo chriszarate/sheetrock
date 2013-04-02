@@ -147,7 +147,7 @@
       if(_has(obj, 'c') && i < last) {
 
         var objData = {
-          num: options.offset + i + 1,
+          num: options.offset + i,
           cells: {}
         }
 
