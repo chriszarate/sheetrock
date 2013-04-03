@@ -277,7 +277,7 @@
 
   // Shorthand log to console.
   var _log = function(item) {
-    console.log(item);
+    window.console && console.log && console.log(item);
   }
 
   // Extract the key from a spreadsheet URL.
