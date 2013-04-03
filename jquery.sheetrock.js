@@ -136,8 +136,14 @@
     // few), use the returned column labels.
     var labels = (options.labels && options.labels.length == data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
 
-    // Output a header row unless told otherwise.
-    if(!options.headers) options.target.append(options.rowHandler(_obj(labels), 0));
+    // Output a header row if needed.
+    if(options.header && !options.offset) {
+      options.target.append(options.rowHandler({
+        num: 0,
+        cells: _obj(labels)
+      }));
+    }
+        console.log(options.header);
 
     // Each table cell ('c') can contain two properties: 'p' contains 
     // formatting and 'v' contains the actual cell value.
@@ -147,7 +153,7 @@
       if(_has(obj, 'c') && i < last) {
 
         var objData = {
-          num: options.offset + i,
+          num: options.offset + options.header + i,
           cells: {}
         }
 
@@ -184,10 +190,10 @@
     options.key = _key(options.url) || false;
     options.gid = _gid(options.url) || false;
 
-    // Validate chunk size and header rows.
+    // Validate chunk size and header row.
     options.chunkSize = (target.length) ? parseInt(options.chunkSize) || 0 : 0;
     options.offset = (options.chunkSize) ? parseInt($.data(target[0], _offset)) || 0 : 0;
-    options.headers = parseInt(options.headers) || 0;
+    options.header = (options.header) ? 1 : 0;
 
     // Add `this` to callback context.
     options.target = (target.length) ? target : false;
@@ -339,7 +345,7 @@
 
     url:        '',     // String  -- Google spreadsheet URL
 
-    headers:    0,      // Integer -- Number of header rows to skip
+    header:     false,  // Boolean -- Header row is omitted from results
     labels:     [],     // Array   -- Override returned column labels
     formatting: false,  // Boolean -- Include Google HTML formatting
     chunkSize:  0,      // Integer -- Number of rows to fetch (0 = all)
