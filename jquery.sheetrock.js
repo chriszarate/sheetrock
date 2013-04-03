@@ -140,11 +140,13 @@
     var labels = (options.labels && options.labels.length == data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
 
     // Output a header row if needed.
-    if(!options.offset && header) {
-      options.target.append(options.rowHandler({
-        num: 0,
-        cells: _obj(labels)
-      }));
+    if(!options.offset) {
+      if(header || !options.headers) {
+        options.target.append(options.rowHandler({
+          num: 0,
+          cells: _obj(labels)
+        }));
+      }
     }
 
     // Each table cell ('c') can contain two properties: 'p' contains 
@@ -357,7 +359,7 @@
 
     url:        '',     // String  -- Google spreadsheet URL
 
-    headers:    1,      // Integer -- Number of header rows
+    headers:    0,      // Integer -- Number of header rows
     labels:     [],     // Array   -- Override returned column labels
     formatting: false,  // Boolean -- Include Google HTML formatting
     chunkSize:  0,      // Integer -- Number of rows to fetch (0 = all)
