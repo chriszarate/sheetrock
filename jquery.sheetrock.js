@@ -132,18 +132,20 @@
     // Store loaded status on target element.
     if(options.target) $.data(options.target[0], _loaded, loaded);
 
+    // Determine if Google has extracted column labels from a header row.
+    var header = ($.map(data.table.cols, _header).length) ? 1 : 0;
+
     // If no column labels are provided (or if there are too many or too 
     // few), use the returned column labels.
     var labels = (options.labels && options.labels.length == data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
 
     // Output a header row if needed.
-    if(options.header && !options.offset) {
+    if(!options.offset && header) {
       options.target.append(options.rowHandler({
         num: 0,
         cells: _obj(labels)
       }));
     }
-        console.log(options.header);
 
     // Each table cell ('c') can contain two properties: 'p' contains 
     // formatting and 'v' contains the actual cell value.
@@ -152,10 +154,8 @@
 
       if(_has(obj, 'c') && i < last) {
 
-        var objData = {
-          num: options.offset + options.header + i,
-          cells: {}
-        }
+        var counter = Math.max(0, options.offset + i + 1 + header - options.headers),
+            objData = {num: counter, cells: {}};
 
         $.each(obj.c, function(x, cell) {
           var style = (options.formatting) ? _style(cell) : false;
@@ -190,10 +190,12 @@
     options.key = _key(options.url) || false;
     options.gid = _gid(options.url) || false;
 
-    // Validate chunk size and header row.
+    // Validate chunk size and header rows.
     options.chunkSize = (target.length) ? parseInt(options.chunkSize) || 0 : 0;
+    options.headers = parseInt(options.headers) || 0;
+
+    // Calculate offset.
     options.offset = (options.chunkSize) ? parseInt($.data(target[0], _offset)) || 0 : 0;
-    options.header = (options.header) ? 1 : 0;
 
     // Add `this` to callback context.
     options.target = (target.length) ? target : false;
@@ -288,9 +290,19 @@
     return (gidRegExp.test(url)) ? url.match(gidRegExp)[1] : false;
   }
 
-  // Get column labels from returned data.
+  // Determine if the a header row has been populated into column labels.
+  var _header = function(col) {
+    return _label(col) || null;
+  }
+
+  // Get column labels or letters from returned data.
   var _labels = function(col) {
-    return (_has(col, 'label') && col.label) ? col.label.replace(/ /g, '') : col.id;
+    return _label(col) || col.id;
+  }
+
+  // Extract valid label from column, if it exists.
+  var _label = function(col) {
+    return (_has(col, 'label')) ? col.label.replace(/\s/g, '') : false;
   }
 
   // Swap column %labels% with column letters.
@@ -345,7 +357,7 @@
 
     url:        '',     // String  -- Google spreadsheet URL
 
-    header:     false,  // Boolean -- Header row is omitted from results
+    headers:    1,      // Integer -- Number of header rows
     labels:     [],     // Array   -- Override returned column labels
     formatting: false,  // Boolean -- Include Google HTML formatting
     chunkSize:  0,      // Integer -- Number of rows to fetch (0 = all)
