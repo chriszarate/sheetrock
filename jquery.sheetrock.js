@@ -6,18 +6,18 @@
 
 ;(function($) {
 
+  "use strict";
+
   $.fn.sheetrock = function(options) {
 
-    // Load options.
-    options = _options($.extend({}, $.fn.sheetrock.options, options), this);
-
-    // Abort if options were not validated.
-    if(!options) {
-      return this;
-    }
+    // Load and validate options.
+    options = _options($.extend({}, $.fn.sheetrock.options, options, _isth(this)));
 
     // Fetch data.
     _fetch(options);
+
+    // Allow chaining.
+    return this;
 
   };
 
@@ -38,6 +38,11 @@
   // Send request with prevalidated options.
   _fetch = function(options) {
 
+    // Abort if options are not valid.
+    if(!options) {
+      return false;
+    }
+
     // Load queued options.
     if(_has(options, 'queued')) {
       options = options.queued;
@@ -56,7 +61,7 @@
     // Enable chunking, if requested, and store offset as jQuery.data.
     if(options.chunkSize && options.target) {
       options.sql += ' limit ' + (options.chunkSize + 1) + ' offset ' + options.offset;
-      $.data(options.target[0], _offset, options.offset + options.chunkSize);
+      _put(options.target, _offset, options.offset + options.chunkSize);
     }
 
     // Create callback environment and turn on `working` flag.
@@ -83,8 +88,9 @@
         // IF valid THEN process ELSE error.
         if(_validate(data)) {
           this.dataHandler(data, this);
-        } else if(this.target) {
-          $.data(this.target[0], _error, 1);
+        } else {
+          _put(this.target, _error, 1);
+          return _log('Returned data failed validation.');
         }
 
         // Clean up.
@@ -99,8 +105,6 @@
       }
 
     });
-
-    return this;
 
   },
 
@@ -160,9 +164,7 @@
         labels = (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
 
     // Store loaded status on target element.
-    if(options.target) {
-      $.data(options.target[0], _loaded, loaded);
-    }
+    _put(options.target, _loaded, loaded);
 
     // Output a header row if needed.
     if(!options.offset && !options.headersOff) {
@@ -181,7 +183,7 @@
 
       if(_has(obj, 'c') && i < last) {
 
-        var counter = Math.max(0, options.offset + i + 1 + header - options.headers),
+        var counter = _nat(options.offset + i + 1 + header - options.headers),
             objData = {num: counter, cells: {}};
 
         // Suppress header row if requested.
@@ -216,58 +218,44 @@
   /* Validation and assembly */
 
   // Validate user-passed options.
-  _options = function(options, target) {
+  _options = function(options) {
 
     // Get spreadsheet key and gid.
-    options.key = _key(options.url) || false;
-    options.gid = _gid(options.url) || false;
+    options.key = _key(options.url);
+    options.gid = _gid(options.url);
 
     // Validate chunk size and header rows.
-    options.chunkSize = (target.length) ? parseInt(options.chunkSize, 10) || 0 : 0;
-    options.headers = parseInt(options.headers, 10) || 0;
+    options.chunkSize = (options.target) ? _nat(options.chunkSize) : 0;
+    options.headers = _nat(options.headers);
 
     // Calculate offset.
-    options.offset = (options.chunkSize) ? parseInt($.data(target[0], _offset), 10) || 0 : 0;
-
-    // Add `this` to callback context.
-    options.target = (target.length) ? target : false;
-
-    // Determine if the data is already loaded or previously generated an error.
-    var loaded = (target.length) ? parseInt($.data(target[0], _loaded), 10) || 0 : 0,
-        error  = (target.length) ? parseInt($.data(target[0], _error), 10)  || 0 : 0;
+    options.offset = (options.chunkSize) ? _get(options.target, _offset) : 0;
 
     // Make sure `loading` is a jQuery object.
-    if(options.loading && !(options.loading instanceof jQuery)) {
-      options.loading = $(options.loading);
-    }
+    options.loading = _jqval(options.loading);
 
     // Require `this` or a handler to receive the data.
-    if(!target.length && options.dataHandler === _parse) {
-      _log('Error: No element targeted or data handler provided.');
-      return false;
-    // Abort for finished or error-generating requests.
-    } else if(loaded) {
-      _log('Halt: No more rows to load!');
-      return false;
-    } else if(error) {
-      _log('Halt: A previous request for this resource failed.');
-      return false;
+    if(!options.target && options.dataHandler === _parse) {
+      return _log('No element targeted or data handler provided.');
+    // Abandon already-completed requests.
+    } else if(_get(options.target, _loaded)) {
+      return _log('No more rows to load!');
+    // Abandon error-generating requests.
+    } else if(_get(options.target, _error)) {
+      return _log('A previous request for this resource failed.');
     // Require a spreadsheet URL.
     } else if(!options.url) {
-      _log('Error: No spreadsheet URL provided.');
-      return false;
+      return _log('No spreadsheet URL provided.');
     // Require a spreadsheet key.
     } else if(!options.key) {
-      _log('Error: Could not find a key in the provided URL.');
-      return false;
+      return _log('Could not find a key in the provided URL.');
     // Require a spreadsheet gid.
     } else if(!options.gid) {
-      _log('Error: Could not find a gid in the provided URL.');
-      return false;
+      return _log('Could not find a gid in the provided URL.');
     // Fetch column labels if they are needed.
     } else if(options.sql && $.isEmptyObject($.fn.sheetrock.labels)) {
       _log('Fetching column labels.');
-      options = $.extend({}, options, {sql: '', chunkSize: 1, offset: 0, loading: options.loading || false, target: false, dataHandler: _cols, userCallback: _fetch, cached: options});
+      options = $.extend({}, options, {sql: '', chunkSize: 1, offset: 0, loading: options.loading, target: false, dataHandler: _cols, userCallback: _fetch, cached: options});
     }
 
     // Debug options.
@@ -305,16 +293,43 @@
     return str.toString().replace(/^ +/, '').replace(/ +$/, '');
   },
 
+  // Parse as natural number (>=0).
+  _nat = function(str) {
+    return Math.max(0, parseInt(str, 10) || 0);
+  },
+
   // Shorthand object property lookup.
   _has = function(obj, prop) {
     return (typeof obj[prop] === 'undefined') ? false : true;
   },
 
   // Shorthand log to console.
-  _log = function(stat) {
+  _log = function(msg) {
     if(window.console && console.log) {
-      console.log(stat);
+      console.log(msg);
     }
+    return false;
+  },
+
+  // Validate `this` for options hash.
+  _isth = function(el) {
+    var target = (el.length) ? el : false;
+    return {target: target};
+  },
+
+  // Validate jQuery object or selector.
+  _jqval = function(ref) {
+    return (ref && !(ref instanceof jQuery)) ? $(ref) : ref;
+  },
+
+  // Shorthand data retrieval.
+  _get = function(el, key) {
+    return (el) ? _nat($.data(el[0], key)) : 0;
+  },
+
+  // Shorthand data storage.
+  _put = function(el, key, val) {
+    return (el) ? $.data(el[0], key, val) : 0;
   },
 
   // Extract the key from a spreadsheet URL.
@@ -368,7 +383,9 @@
   _output = function(row) {
     var prop, str = '', tag = (row.num) ? 'td' : 'th';
     for(prop in row.cells) {
-      str += _wrap(row.cells[prop], tag, '');
+      if(_has(row.cells, prop)) {
+        str += _wrap(row.cells[prop], tag, '');
+      }
     }
     return _wrap(str, 'tr', '');
   },
