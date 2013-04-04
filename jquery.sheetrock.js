@@ -144,9 +144,7 @@
   _parse = function(data, options) {
 
     // Debug returned data
-    if(options.debug) {
-      _log(data);
-    }
+    _log(data, options.debug);
 
     // The Google API generates an unrecoverable error when the 'offset' 
     // is larger than the number of available rows. As a workaround, we 
@@ -259,9 +257,7 @@
     }
 
     // Debug options.
-    if(options.debug) {
-      _log(options);
-    }
+    _log(options, options.debug);
 
     return options;
 
@@ -300,12 +296,18 @@
 
   // Shorthand object property lookup.
   _has = function(obj, prop) {
-    return (typeof obj[prop] === 'undefined') ? false : true;
+    return _def(obj[prop]);
+  },
+
+  // Shorthand test for variable definition.
+  _def = function(variable) {
+    return (typeof variable === 'undefined') ? false : true;
   },
 
   // Shorthand log to console.
-  _log = function(msg) {
-    if(window.console && console.log) {
+  _log = function(msg, show) {
+    show = !_def(show) || (_def(show) && show);
+    if(show && window.console && console.log) {
       console.log(msg);
     }
     return false;
