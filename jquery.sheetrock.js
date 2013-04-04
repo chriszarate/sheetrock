@@ -13,8 +13,71 @@
     // Load and validate options.
     options = _options($.extend({}, $.fn.sheetrock.options, options, _isth(this)));
 
-    // Fetch data.
-    _fetch(options);
+    // Proceed if options are valid.
+    if(options) {
+
+      // Create a deferred object to allow for prefetching.
+      var deferred = new $.Deferred();
+
+      // Prefetch column labels if they are needed.
+      if(options.sql && $.isEmptyObject(options.columns)) {
+
+        _log('Prefetching column labels.');
+
+        // Define options to prefetch column labels.
+        var prefetch = {
+          sql: 'select * limit 1',
+          target: false
+        };
+
+        // Prefetch column labels.
+        _fetch($.extend({}, options, prefetch))
+          .done(function(data) {
+            options.columns = _columns[options.key + options.gid] = _columns_hash(data.table.cols);
+            deferred.resolve();
+          });
+
+      } else {
+        deferred.resolve();
+      }
+
+      // Fetch data.
+      deferred.done(function() {
+
+        _fetch(options)
+
+          .done(function(data) {
+
+            // If the data is valid, pass it on to the parser. Otherwise, 
+            // record the error so that we don't keep trying.
+
+            if(_validate(data)) {
+              options.dataHandler(data, options);
+            } else {
+              _put(options.target, _error, 1);
+              return _log('Returned data failed validation.');
+            }
+
+          })
+
+          .always(function() {
+
+            // Cleanup.
+            if(options.loading) {
+              options.loading.hide();
+            }
+
+            // Let the user know we're done.
+            if(options.userCallback) {
+              options.userCallback(options);
+            }
+            $.fn.sheetrock.working--;
+
+          });
+
+      });
+
+    }
 
     // Allow chaining.
     return this;
@@ -24,34 +87,22 @@
 
   /* Setup */
 
+  // Column labels storage
+  var _columns = {},
+
   // Callback index
-  var _callbackIndex = 0,
+  _callbackIndex = 0,
 
   // Data labels
-  _error  = 'sheetrock-error',
-  _loaded = 'sheetrock-loaded',
-  _offset = 'sheetrock-row-offset',
+  _error  = 'sheetrockError',
+  _loaded = 'sheetrockLoaded',
+  _offset = 'sheetrockRowOffset',
 
 
   /* Fetch */
 
   // Send request with prevalidated options.
   _fetch = function(options) {
-
-    // Abort if options are not valid.
-    if(!options) {
-      return false;
-    }
-
-    // Load queued options.
-    if(_has(options, 'queued')) {
-      options = options.queued;
-    }
-
-    // Queue cached options.
-    if(_has(options, 'cached')) {
-      options.queued = options.cached;
-    }
 
     // Show loading indicator.
     if(options.loading) {
@@ -72,37 +123,15 @@
     var params = _params(options);
 
     // Send request.
-    $.ajax({
+    return $.ajax({
 
       data: params,
-      context: options,
       url: 'https://spreadsheets.google.com/tq',
 
       dataType: 'jsonp',
       cache: true,
       jsonp: false,
-      jsonpCallback: options.callback,
-
-      success: function(data) {
-
-        // IF valid THEN process ELSE error.
-        if(_validate(data)) {
-          this.dataHandler(data, this);
-        } else {
-          _put(this.target, _error, 1);
-          return _log('Returned data failed validation.');
-        }
-
-        // Clean up.
-        if(this.loading) {
-          this.loading.hide();
-        }
-        if(this.userCallback) {
-          this.userCallback(this);
-        }
-        $.fn.sheetrock.working--;
-
-      }
+      jsonpCallback: options.callback
 
     });
 
@@ -155,11 +184,11 @@
         loaded = (!options.chunkSize || last < options.chunkSize) ? 1 : 0,
 
         // Determine if Google has extracted column labels from a header row.
-        header = ($.map(data.table.cols, _header).length) ? 1 : 0,
+        header = ($.map(data.table.cols, _map_label).length) ? 1 : 0,
 
         // If no column labels are provided (or if there are too many or too 
         // few), use the returned column labels.
-        labels = (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
+        labels = (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, _map_label_letter);
 
     // Store loaded status on target element.
     _put(options.target, _loaded, loaded);
@@ -169,7 +198,7 @@
       if(header || !options.headers) {
         options.target.append(options.rowHandler({
           num: 0,
-          cells: _obj(labels)
+          cells: _arr_to_obj(labels)
         }));
       }
     }
@@ -204,14 +233,6 @@
 
   },
 
-  // Get and store all column labels.
-  _cols = function(data) {
-    $.each(data.table.cols, function(i, col) {
-      $.fn.sheetrock.labels[col.id] = (_has(col, 'label')) ? col.label.replace(/ /g, '') : col.id;
-    });
-    return true;
-  },
-
 
   /* Validation and assembly */
 
@@ -222,15 +243,18 @@
     options.key = _key(options.url);
     options.gid = _gid(options.url);
 
+    // Retrieve column labels.
+    options.columns = _columns[options.key + options.gid] || options.columns;
+
     // Validate chunk size and header rows.
     options.chunkSize = (options.target) ? _nat(options.chunkSize) : 0;
     options.headers = _nat(options.headers);
 
-    // Calculate offset.
+    // Retrieve offset.
     options.offset = (options.chunkSize) ? _get(options.target, _offset) : 0;
 
     // Make sure `loading` is a jQuery object.
-    options.loading = _jqval(options.loading);
+    options.loading = _val_jquery(options.loading);
 
     // Require `this` or a handler to receive the data.
     if(!options.target && options.dataHandler === _parse) {
@@ -250,10 +274,6 @@
     // Require a spreadsheet gid.
     } else if(!options.gid) {
       return _log('Could not find a gid in the provided URL.');
-    // Fetch column labels if they are needed.
-    } else if(options.sql && $.isEmptyObject($.fn.sheetrock.labels)) {
-      _log('Fetching column labels.');
-      options = $.extend({}, options, {sql: '', chunkSize: 1, offset: 0, loading: options.loading, target: false, dataHandler: _cols, userCallback: _fetch, cached: options});
     }
 
     // Debug options.
@@ -274,7 +294,7 @@
 
     // Optional SQL request.
     if(options.sql) {
-      params.tq = _swap(options.sql);
+      params.tq = _swap(options.sql, options.columns);
     }
 
     return params;
@@ -319,19 +339,14 @@
     return {target: target};
   },
 
-  // Validate jQuery object or selector.
-  _jqval = function(ref) {
-    return (ref && !(ref instanceof jQuery)) ? $(ref) : ref;
-  },
-
   // Shorthand data retrieval.
   _get = function(el, key) {
-    return (el) ? _nat($.data(el[0], key)) : 0;
+    return (el.length) ? $.data(el[0], key) || 0 : 0;
   },
 
   // Shorthand data storage.
   _put = function(el, key, val) {
-    return (el) ? $.data(el[0], key, val) : 0;
+    return (el.length) ? $.data(el[0], key, val) || 0 : 0;
   },
 
   // Extract the key from a spreadsheet URL.
@@ -346,31 +361,45 @@
     return (gidRegExp.test(url)) ? url.match(gidRegExp)[1] : false;
   },
 
-  // Determine if the a header row has been populated into column labels.
-  _header = function(col) {
-    return _label(col) || null;
-  },
-
-  // Get column labels or letters from returned data.
-  _labels = function(col) {
-    return _label(col) || col.id;
-  },
-
-  // Extract valid label from column, if it exists.
+  // Extract a label without whitespace.
   _label = function(col) {
     return (_has(col, 'label')) ? col.label.replace(/\s/g, '') : false;
   },
 
+  // Map function: Return column label.
+  _map_label = function(col) {
+    return _label(col) || null;
+  },
+
+  // Map function: Return column label or letter.
+  _map_label_letter = function(col) {
+    return _label(col) || col.id;
+  },
+
+  // Create a columns hash from columns data.
+  _columns_hash = function(cols) {
+    var hash = {};
+    $.each(cols, function(i, col) {
+      hash[col.id] = _map_label_letter(col);
+    });
+    return hash;
+  },
+
   // Swap column %labels% with column letters.
-  _swap = function(sql) {
-    $.each($.fn.sheetrock.labels, function(key, val) {
+  _swap = function(sql, columns) {
+    $.each(columns, function(key, val) {
       sql = sql.replace(new RegExp('%' + val + '%', 'g'), key);
     });
     return sql;
   },
 
+  // Validate jQuery object or selector.
+  _val_jquery = function(ref) {
+    return (ref && !(ref instanceof jQuery)) ? $(ref) : ref;
+  },
+
   // Convert array to object.
-  _obj = function(arr) {
+  _arr_to_obj = function(arr) {
     var obj = {};
     $.each(arr, function(i, str) { obj[str] = str; });
     return obj;
@@ -413,7 +442,7 @@
     headers:    0,      // Integer -- Number of header rows
     headersOff: false,  // Boolean -- Suppress header row output
 
-    labels:     [],     // Array   -- Override returned column labels
+    labels:     [],     // Array   -- Override *returned* column labels
     formatting: false,  // Boolean -- Include Google HTML formatting
     chunkSize:  0,      // Integer -- Number of rows to fetch (0 = all)
     debug:      false,  // Boolean -- Output raw data to the console
@@ -425,6 +454,12 @@
     // e.g., "select %name%,%age% where %age% > 21".
 
     sql: '',  // String  -- Google Visualization API query (SQL-like)
+
+    // If you want don't want to bother with making sure the column labels 
+    // that you use match the ones used in the spreadsheet, you can 
+    // override them using a hash, e.g., {A: 'ID', B: 'Name', C: 'Phone'}.
+
+    columns: {},  // Object -- Hash of column letters and labels
 
     // Providing a row handler is the recommended way to override the 
     // default data formatting. This function should accept a row object 
@@ -462,10 +497,6 @@
     loading: false  // jQuery object or selector
 
   };
-
-  // This is a placeholder for all the column labels, if they are needed.
-
-  $.fn.sheetrock.labels = {};
 
   // This property is set to the number of active requests. This can be useful 
   // for monitoring or for infinite scroll bindings.
