@@ -21,8 +21,22 @@
 
   };
 
+
+  /* Setup */
+
+  // Callback index
+  var _callbackIndex = 0,
+
+  // Data labels
+  _error  = 'sheetrock-error',
+  _loaded = 'sheetrock-loaded',
+  _offset = 'sheetrock-row-offset',
+
+
+  /* Fetch */
+
   // Send request with prevalidated options.
-  var _fetch = function(options) {
+  _fetch = function(options) {
 
     // Load queued options.
     if(_has(options, 'queued')) {
@@ -88,18 +102,13 @@
 
     return this;
 
-  };
-
-
-  /* Callback index */
-
-  var _callbackIndex = 0;
+  },
 
 
   /* Data parsing */
 
   // Validate returned data.
-  var _validate = function(data) {
+  _validate = function(data) {
 
     // Check for successful response types.
     if(_has(data, 'status') && (data.status === 'ok' || data.status === 'warning') && _has(data, 'table')) {
@@ -125,10 +134,10 @@
 
     }
 
-  };
+  },
 
   // Parse data, row by row.
-  var _parse = function(data, options) {
+  _parse = function(data, options) {
 
     // Debug returned data
     if(options.debug) {
@@ -140,20 +149,20 @@
     // request one more row than we need and stop when we see less rows 
     // than we requested.
 
-    var last   = (options.chunkSize) ? Math.min(data.table.rows.length, options.chunkSize) : data.table.rows.length;
-    var loaded = (!options.chunkSize || last < options.chunkSize) ? 1 : 0;
+    var last   = (options.chunkSize) ? Math.min(data.table.rows.length, options.chunkSize) : data.table.rows.length,
+        loaded = (!options.chunkSize || last < options.chunkSize) ? 1 : 0,
+
+        // Determine if Google has extracted column labels from a header row.
+        header = ($.map(data.table.cols, _header).length) ? 1 : 0,
+
+        // If no column labels are provided (or if there are too many or too 
+        // few), use the returned column labels.
+        labels = (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
 
     // Store loaded status on target element.
     if(options.target) {
       $.data(options.target[0], _loaded, loaded);
     }
-
-    // Determine if Google has extracted column labels from a header row.
-    var header = ($.map(data.table.cols, _header).length) ? 1 : 0;
-
-    // If no column labels are provided (or if there are too many or too 
-    // few), use the returned column labels.
-    var labels = (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
 
     // Output a header row if needed.
     if(!options.offset) {
@@ -176,8 +185,8 @@
             objData = {num: counter, cells: {}};
 
         $.each(obj.c, function(x, cell) {
-          var style = (options.formatting) ? _style(cell) : false;
-          var value = (cell && _has(cell, 'v')) ? options.cellHandler(cell.v) : '';
+          var style = (options.formatting) ? _style(cell) : false,
+              value = (cell && _has(cell, 'v')) ? options.cellHandler(cell.v) : '';
           objData.cells[labels[x]] = (style) ? _wrap(value, 'span', style) : value;
         });
 
@@ -188,21 +197,21 @@
 
     });
 
-  };
+  },
 
   // Get and store all column labels.
-  var _cols = function(data) {
+  _cols = function(data) {
     $.each(data.table.cols, function(i, col) {
       $.fn.sheetrock.labels[col.id] = (_has(col, 'label')) ? col.label.replace(/ /g, '') : col.id;
     });
     return true;
-  };
+  },
 
 
   /* Validation and assembly */
 
   // Validate user-passed options.
-  var _options = function(options, target) {
+  _options = function(options, target) {
 
     // Get spreadsheet key and gid.
     options.key = _key(options.url) || false;
@@ -219,8 +228,8 @@
     options.target = (target.length) ? target : false;
 
     // Determine if the data is already loaded or previously generated an error.
-    var loaded = (target.length) ? parseInt($.data(target[0], _loaded), 10) || 0 : 0;
-    var error  = (target.length) ? parseInt($.data(target[0], _error), 10)  || 0 : 0;
+    var loaded = (target.length) ? parseInt($.data(target[0], _loaded), 10) || 0 : 0,
+        error  = (target.length) ? parseInt($.data(target[0], _error), 10)  || 0 : 0;
 
     // Make sure `loading` is a jQuery object.
     if(options.loading && !(options.loading instanceof jQuery)) {
@@ -266,10 +275,10 @@
 
     return options;
 
-  };
+  },
 
   // Create AJAX request paramater object.
-  var _params = function(options) {
+  _params = function(options) {
 
     var params = {
       key: options.key,
@@ -284,92 +293,85 @@
 
     return params;
  
-  };
+  },
 
 
   /* Miscellaneous functions */
 
   // Trim string.
-  var _trim = function(str) {
+  _trim = function(str) {
     return str.toString().replace(/^ +/, '').replace(/ +$/, '');
-  };
+  },
 
   // Shorthand object property lookup.
-  var _has = function(obj, prop) {
+  _has = function(obj, prop) {
     return (typeof obj[prop] === 'undefined') ? false : true;
-  };
+  },
 
   // Shorthand log to console.
-  var _log = (window.console && console.log) ? console.log : $.noop;
+  _log = (window.console && console.log) ? console.log : $.noop,
 
   // Extract the key from a spreadsheet URL.
-  var _key = function(url) {
+  _key = function(url) {
     var keyRegExp = new RegExp('key=([a-z0-9]{30,})&?','i');
     return (keyRegExp.test(url)) ? url.match(keyRegExp)[1] : false;
-  };
+  },
 
   // Extract the gid from a spreadsheet URL.
-  var _gid = function(url) {
+  _gid = function(url) {
     var gidRegExp = new RegExp('gid=([0-9]+)','i');
     return (gidRegExp.test(url)) ? url.match(gidRegExp)[1] : false;
-  };
+  },
 
   // Determine if the a header row has been populated into column labels.
-  var _header = function(col) {
+  _header = function(col) {
     return _label(col) || null;
-  };
+  },
 
   // Get column labels or letters from returned data.
-  var _labels = function(col) {
+  _labels = function(col) {
     return _label(col) || col.id;
-  };
+  },
 
   // Extract valid label from column, if it exists.
-  var _label = function(col) {
+  _label = function(col) {
     return (_has(col, 'label')) ? col.label.replace(/\s/g, '') : false;
-  };
+  },
 
   // Swap column %labels% with column letters.
-  var _swap = function(sql) {
+  _swap = function(sql) {
     $.each($.fn.sheetrock.labels, function(key, val) {
       sql = sql.replace(new RegExp('%' + val + '%', 'g'), key);
     });
     return sql;
-  };
+  },
 
   // Convert array to object.
-  var _obj = function(arr) {
+  _obj = function(arr) {
     var obj = {};
     $.each(arr, function(i, str) { obj[str] = str; });
     return obj;
-  };
+  },
 
   // Extract formatting from a Google spreadsheet cell.
-  var _style = function(cell) {
+  _style = function(cell) {
     return (cell && _has(cell, 'p') && _has(cell.p, 'style')) ? cell.p.style : false;
-  };
+  },
 
   // Output object to HTML (default row handler).
-  var _output = function(row) {
+  _output = function(row) {
     var prop, str = '', tag = (row.num) ? 'td' : 'th';
     for(prop in row.cells) {
       str += _wrap(row.cells[prop], tag, '');
     }
     return _wrap(str, 'tr', '');
-  };
+  },
 
   // Wrap string in tag.
-  var _wrap = function(str, tag, style) {
+  _wrap = function(str, tag, style) {
     var attr = (style) ? ' style="' + style + '"' : '';
     return '<' + tag + attr + '>' + str + '</' + tag + '>';
   };
-
-
-  /* Data labels */
-
-  var _error  = 'sheetrock-error',
-      _loaded = 'sheetrock-loaded',
-      _offset = 'sheetrock-row-offset';
 
 
   /* Default options */
