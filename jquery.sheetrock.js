@@ -165,7 +165,7 @@
     }
 
     // Output a header row if needed.
-    if(!options.offset) {
+    if(!options.offset && !options.headersOff) {
       if(header || !options.headers) {
         options.target.append(options.rowHandler({
           num: 0,
@@ -184,14 +184,19 @@
         var counter = Math.max(0, options.offset + i + 1 + header - options.headers),
             objData = {num: counter, cells: {}};
 
-        $.each(obj.c, function(x, cell) {
-          var style = (options.formatting) ? _style(cell) : false,
-              value = (cell && _has(cell, 'v')) ? options.cellHandler(cell.v) : '';
-          objData.cells[labels[x]] = (style) ? _wrap(value, 'span', style) : value;
-        });
+        // Suppress header row if requested.
+        if(counter || !options.headersOff) {
 
-        // Pass to row handler and append to target.
-        options.target.append(options.rowHandler(objData));
+          $.each(obj.c, function(x, cell) {
+            var style = (options.formatting) ? _style(cell) : false,
+                value = (cell && _has(cell, 'v')) ? options.cellHandler(cell.v) : '';
+            objData.cells[labels[x]] = (style) ? _wrap(value, 'span', style) : value;
+          });
+
+          // Pass to row handler and append to target.
+          options.target.append(options.rowHandler(objData));
+
+        }
 
       }
 
@@ -309,7 +314,11 @@
   },
 
   // Shorthand log to console.
-  _log = (window.console && console.log) ? console.log : $.noop,
+  _log = function(stat) {
+    if(window.console && console.log) {
+      console.log(stat);
+    }
+  },
 
   // Extract the key from a spreadsheet URL.
   _key = function(url) {
@@ -386,6 +395,8 @@
     url:        '',     // String  -- Google spreadsheet URL
 
     headers:    0,      // Integer -- Number of header rows
+    headersOff: false,  // Boolean -- Suppress header row output
+
     labels:     [],     // Array   -- Override returned column labels
     formatting: false,  // Boolean -- Include Google HTML formatting
     chunkSize:  0,      // Integer -- Number of rows to fetch (0 = all)
