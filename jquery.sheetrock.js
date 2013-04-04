@@ -9,27 +9,35 @@
   $.fn.sheetrock = function(options) {
 
     // Load options.
-    var options = _options($.extend({}, $.fn.sheetrock.options, options), this);
+    options = _options($.extend({}, $.fn.sheetrock.options, options), this);
 
     // Abort if options were not validated.
-    if(!options) return this;
+    if(!options) {
+      return this;
+    }
 
     // Fetch data.
     _fetch(options);
 
-  }
+  };
 
   // Send request with prevalidated options.
   var _fetch = function(options) {
 
     // Load queued options.
-    if(_has(options, 'queued')) options = options.queued;
+    if(_has(options, 'queued')) {
+      options = options.queued;
+    }
 
     // Queue cached options.
-    if(_has(options, 'cached')) options.queued = options.cached;
+    if(_has(options, 'cached')) {
+      options.queued = options.cached;
+    }
 
     // Show loading indicator.
-    if(options.loading) options.loading.show();
+    if(options.loading) {
+      options.loading.show();
+    }
 
     // Enable chunking, if requested, and store offset as jQuery.data.
     if(options.chunkSize && options.target) {
@@ -61,13 +69,17 @@
         // IF valid THEN process ELSE error.
         if(_validate(data)) {
           this.dataHandler(data, this);
-        } else {
-          if(this.target) $.data(this.target[0], _error, 1);
+        } else if(this.target) {
+          $.data(this.target[0], _error, 1);
         }
 
         // Clean up.
-        if(this.loading) this.loading.hide();
-        if(this.userCallback) this.userCallback(this);
+        if(this.loading) {
+          this.loading.hide();
+        }
+        if(this.userCallback) {
+          this.userCallback(this);
+        }
         $.fn.sheetrock.working--;
 
       }
@@ -113,13 +125,15 @@
 
     }
 
-  }
+  };
 
   // Parse data, row by row.
   var _parse = function(data, options) {
 
     // Debug returned data
-    if(options.debug) _log(data);
+    if(options.debug) {
+      _log(data);
+    }
 
     // The Google API generates an unrecoverable error when the 'offset' 
     // is larger than the number of available rows. As a workaround, we 
@@ -130,14 +144,16 @@
     var loaded = (!options.chunkSize || last < options.chunkSize) ? 1 : 0;
 
     // Store loaded status on target element.
-    if(options.target) $.data(options.target[0], _loaded, loaded);
+    if(options.target) {
+      $.data(options.target[0], _loaded, loaded);
+    }
 
     // Determine if Google has extracted column labels from a header row.
     var header = ($.map(data.table.cols, _header).length) ? 1 : 0;
 
     // If no column labels are provided (or if there are too many or too 
     // few), use the returned column labels.
-    var labels = (options.labels && options.labels.length == data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
+    var labels = (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, _labels);
 
     // Output a header row if needed.
     if(!options.offset) {
@@ -172,7 +188,7 @@
 
     });
 
-  }
+  };
 
   // Get and store all column labels.
   var _cols = function(data) {
@@ -180,7 +196,7 @@
       $.fn.sheetrock.labels[col.id] = (_has(col, 'label')) ? col.label.replace(/ /g, '') : col.id;
     });
     return true;
-  }
+  };
 
 
   /* Validation and assembly */
@@ -193,21 +209,23 @@
     options.gid = _gid(options.url) || false;
 
     // Validate chunk size and header rows.
-    options.chunkSize = (target.length) ? parseInt(options.chunkSize) || 0 : 0;
-    options.headers = parseInt(options.headers) || 0;
+    options.chunkSize = (target.length) ? parseInt(options.chunkSize, 10) || 0 : 0;
+    options.headers = parseInt(options.headers, 10) || 0;
 
     // Calculate offset.
-    options.offset = (options.chunkSize) ? parseInt($.data(target[0], _offset)) || 0 : 0;
+    options.offset = (options.chunkSize) ? parseInt($.data(target[0], _offset), 10) || 0 : 0;
 
     // Add `this` to callback context.
     options.target = (target.length) ? target : false;
 
     // Determine if the data is already loaded or previously generated an error.
-    var loaded = (target.length) ? parseInt($.data(target[0], _loaded)) || 0 : 0;
-    var error  = (target.length) ? parseInt($.data(target[0], _error))  || 0 : 0;
+    var loaded = (target.length) ? parseInt($.data(target[0], _loaded), 10) || 0 : 0;
+    var error  = (target.length) ? parseInt($.data(target[0], _error), 10)  || 0 : 0;
 
     // Make sure `loading` is a jQuery object.
-    if(options.loading && !(options.loading instanceof jQuery)) options.loading = $(options.loading);
+    if(options.loading && !(options.loading instanceof jQuery)) {
+      options.loading = $(options.loading);
+    }
 
     // Require `this` or a handler to receive the data.
     if(!target.length && options.dataHandler === _parse) {
@@ -235,16 +253,20 @@
     // Fetch column labels if they are needed.
     } else if(options.sql && $.isEmptyObject($.fn.sheetrock.labels)) {
       _log('Fetching column labels.');
-      if(options.loading) options.loading.show();
+      if(options.loading) {
+        options.loading.show();
+      }
       options = $.extend({}, options, {sql: '', chunkSize: 1, offset: 0, loading: false, target: false, dataHandler: _cols, userCallback: _fetch, cached: options});
     }
 
     // Debug options.
-    if(options.debug) _log(options);
+    if(options.debug) {
+      _log(options);
+    }
 
     return options;
 
-  }
+  };
 
   // Create AJAX request paramater object.
   var _params = function(options) {
@@ -256,11 +278,13 @@
     };
 
     // Optional SQL request.
-    if(options.sql) params.tq = _swap(options.sql);
+    if(options.sql) {
+      params.tq = _swap(options.sql);
+    }
 
     return params;
  
-  }
+  };
 
 
   /* Miscellaneous functions */
@@ -268,44 +292,42 @@
   // Trim string.
   var _trim = function(str) {
     return str.toString().replace(/^ +/, '').replace(/ +$/, '');
-  }
+  };
 
   // Shorthand object property lookup.
   var _has = function(obj, prop) {
     return (typeof obj[prop] === 'undefined') ? false : true;
-  }
+  };
 
   // Shorthand log to console.
-  var _log = function(item) {
-    window.console && console.log && console.log(item);
-  }
+  var _log = (window.console && console.log) ? console.log : $.noop;
 
   // Extract the key from a spreadsheet URL.
   var _key = function(url) {
     var keyRegExp = new RegExp('key=([a-z0-9]{30,})&?','i');
     return (keyRegExp.test(url)) ? url.match(keyRegExp)[1] : false;
-  }
+  };
 
   // Extract the gid from a spreadsheet URL.
   var _gid = function(url) {
     var gidRegExp = new RegExp('gid=([0-9]+)','i');
     return (gidRegExp.test(url)) ? url.match(gidRegExp)[1] : false;
-  }
+  };
 
   // Determine if the a header row has been populated into column labels.
   var _header = function(col) {
     return _label(col) || null;
-  }
+  };
 
   // Get column labels or letters from returned data.
   var _labels = function(col) {
     return _label(col) || col.id;
-  }
+  };
 
   // Extract valid label from column, if it exists.
   var _label = function(col) {
     return (_has(col, 'label')) ? col.label.replace(/\s/g, '') : false;
-  }
+  };
 
   // Swap column %labels% with column letters.
   var _swap = function(sql) {
@@ -313,32 +335,34 @@
       sql = sql.replace(new RegExp('%' + val + '%', 'g'), key);
     });
     return sql;
-  }
+  };
 
   // Convert array to object.
   var _obj = function(arr) {
     var obj = {};
     $.each(arr, function(i, str) { obj[str] = str; });
     return obj;
-  }
+  };
 
   // Extract formatting from a Google spreadsheet cell.
   var _style = function(cell) {
     return (cell && _has(cell, 'p') && _has(cell.p, 'style')) ? cell.p.style : false;
-  }
+  };
 
   // Output object to HTML (default row handler).
   var _output = function(row) {
-    var str = '', tag = (row.num) ? 'td' : 'th';
-    for(prop in row.cells) str += _wrap(row.cells[prop], tag, '');
+    var prop, str = '', tag = (row.num) ? 'td' : 'th';
+    for(prop in row.cells) {
+      str += _wrap(row.cells[prop], tag, '');
+    }
     return _wrap(str, 'tr', '');
-  }
+  };
 
   // Wrap string in tag.
   var _wrap = function(str, tag, style) {
-    var attr = (style) ? ' style="' + style + '"' : ''
+    var attr = (style) ? ' style="' + style + '"' : '';
     return '<' + tag + attr + '>' + str + '</' + tag + '>';
-  }
+  };
 
 
   /* Data labels */
