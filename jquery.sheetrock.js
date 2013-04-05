@@ -7,8 +7,6 @@
 
 ;(function($) {
 
-  "use strict";
-
   $.fn.sheetrock = function(options) {
 
     // Load and validate options.
@@ -18,24 +16,20 @@
     if(options) {
 
       // Create a deferred object to allow for prefetching.
-      var deferred = new $.Deferred();
+      var deferred = new $.Deferred(),
+
+      // Define options to prefetch column labels.
+      prefetch = {
+        sql: 'select * limit 1',
+        dataHandler: _columns_hash,
+        userCallback: false,
+        target: false
+      };
 
       // Prefetch column labels if they are needed.
       if(options.sql && $.isEmptyObject(options.columns)) {
-
         _log('Prefetching column labels.');
-
-        // Define options to prefetch column labels.
-        var prefetch = {
-          sql: 'select * limit 1',
-          dataHandler: _columns_hash,
-          userCallback: false,
-          target: false
-        };
-
-        // Prefetch column labels.
         _fetch($.extend({}, options, prefetch)).always(deferred.resolve);
-
       } else {
         deferred.resolve();
       }
