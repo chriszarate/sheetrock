@@ -22,7 +22,7 @@
       prefetch = {
         sql: 'select * limit 1',
         dataHandler: _columns_hash,
-        userCallback: false,
+        userCallback: $.noop,
         target: false
       };
 
@@ -144,9 +144,7 @@
     }
 
     // Let the user know we're done.
-    if(this.userCallback) {
-      this.userCallback(this);
-    }
+    this.userCallback(this);
 
     // Decrement the `working` flag.
     $.fn.sheetrock.working--;
@@ -507,7 +505,7 @@
     // You can provide a function to be called when all processing is 
     // complete. The options hash is passed to this function.
 
-    userCallback: false,  // Function
+    userCallback: $.noop,  // Function
 
     // If you have a loading indicator on your page, provide a jQuery object 
     // or selector here. It will be shown when the request starts and hidden 
