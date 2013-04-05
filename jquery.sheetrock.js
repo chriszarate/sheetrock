@@ -67,9 +67,7 @@
   _fetch = function(options) {
 
     // Show loading indicator.
-    if(options.loading) {
-      options.loading.show();
-    }
+    options.loading.show();
 
     // Enable chunking, if requested, and store offset as jQuery.data.
     if(options.chunkSize && options.target) {
@@ -139,9 +137,7 @@
   _always = function() {
 
     // Hide loading indicator.
-    if(this.loading) {
-      this.loading.hide();
-    }
+    this.loading.hide();
 
     // Let the user know we're done.
     this.userCallback(this);
@@ -511,7 +507,7 @@
     // or selector here. It will be shown when the request starts and hidden 
     // when it ends.
 
-    loading: false  // jQuery object or selector
+    loading: $()  // jQuery object or selector
 
   };
 
