@@ -27,15 +27,13 @@
         // Define options to prefetch column labels.
         var prefetch = {
           sql: 'select * limit 1',
+          dataHandler: _columns_hash,
+          userCallback: false,
           target: false
         };
 
         // Prefetch column labels.
-        _fetch($.extend({}, options, prefetch))
-          .done(function(data) {
-            options.columns = _columns[options.key + options.gid] = _columns_hash(data.table.cols);
-            deferred.resolve();
-          });
+        _fetch($.extend({}, options, prefetch)).always(deferred.resolve);
 
       } else {
         deferred.resolve();
@@ -43,38 +41,7 @@
 
       // Fetch data.
       deferred.done(function() {
-
-        _fetch(options)
-
-          .done(function(data) {
-
-            // If the data is valid, pass it on to the parser. Otherwise, 
-            // record the error so that we don't keep trying.
-
-            if(_validate(data)) {
-              options.dataHandler(data, options);
-            } else {
-              _put(options.target, _error, 1);
-              return _log('Returned data failed validation.');
-            }
-
-          })
-
-          .always(function() {
-
-            // Cleanup.
-            if(options.loading) {
-              options.loading.hide();
-            }
-
-            // Let the user know we're done.
-            if(options.userCallback) {
-              options.userCallback(options);
-            }
-            $.fn.sheetrock.working--;
-
-          });
-
+        _fetch(options);
       });
 
     }
@@ -115,17 +82,17 @@
       _put(options.target, _offset, options.offset + options.chunkSize);
     }
 
-    // Create callback environment and turn on `working` flag.
+    // Create callback environment
     options.callback = 'sheetrock_' + _callbackIndex++;
+
+    // Increment the `working` flag.
     $.fn.sheetrock.working++;
 
-    // Create AJAX request parameters from config options.
-    var params = _params(options);
+    // Create AJAX request.
+    var request = {
 
-    // Send request.
-    return $.ajax({
-
-      data: params,
+      data: _params(options),
+      context: options,
       url: 'https://spreadsheets.google.com/tq',
 
       dataType: 'jsonp',
@@ -133,7 +100,13 @@
       jsonp: false,
       jsonpCallback: options.callback
 
-    });
+    };
+
+    // Debug request.
+    _log(request, options.debug);
+
+    // Send request.
+    return $.ajax(request).done(_validate).fail(_fail).always(_always);
 
   },
 
@@ -143,62 +116,104 @@
   // Validate returned data.
   _validate = function(data) {
 
+    // Enumerate warnings.
+    _enumerate(data, 'warnings');
+
+    // Enumerate errors.
+    _enumerate(data, 'errors');
+
     // Check for successful response types.
-    if(_has(data, 'status') && (data.status === 'ok' || data.status === 'warning') && _has(data, 'table')) {
-
-      // Enumerate any warnings.
-      if(_has(data, 'warnings')) {
-        $.each(data.warnings, function(i, warning) { _log(warning); });
-      }
-
-      return true;
-
+    if(_has(data, 'status', 'table') && _has(data.table, 'cols', 'rows')) {
+      this.dataHandler.call(_extend.call(this, data), data);
     } else {
-
-      // Enumerate any errors.
-      if(_has(data, 'errors')) {
-        $.each(data.errors, function(i, error) {
-          _log(error.message);
-          _log(error.detailed_message);
-        });
-      }
-
-      return false;
-
+      _fail.call(this, data);
     }
 
   },
 
-  // Parse data, row by row.
-  _parse = function(data, options) {
+  // Generic error handler for AJAX errors.
+  _fail = function(data) {
+    _put(this.target, _error, 1);
+    _log('Request failed.');
+    _log(data, this.debug);
+  },
 
-    // Debug returned data
-    _log(data, options.debug);
+  // Generic cleanup function for AJAX requests.
+  _always = function() {
+
+    // Hide loading indicator.
+    if(this.loading) {
+      this.loading.hide();
+    }
+
+    // Let the user know we're done.
+    if(this.userCallback) {
+      this.userCallback(this);
+    }
+
+    // Decrement the `working` flag.
+    $.fn.sheetrock.working--;
+
+  },
+
+  // Enumerate messages.
+  _enumerate = function(data, state) {
+    if(_has(data, state)) {
+      $.each(data[state], function(i, status) {
+        if(_has(status, 'detailed_message')) {
+          _log(status.detailed_message);
+        } else if(_has(status, 'message')) {
+          _log(status.message);
+        }
+      });
+    }
+  },
+
+  // Extract information about the response and extend the options hash.
+  _extend = function(data) {
+
+    // Store reference to options hash.
+    var options = this;
+
+    // Initialize parsed options hash.
+    options.parsed = {};
 
     // The Google API generates an unrecoverable error when the 'offset' 
     // is larger than the number of available rows. As a workaround, we 
     // request one more row than we need and stop when we see less rows 
     // than we requested.
 
-    var last   = (options.chunkSize) ? Math.min(data.table.rows.length, options.chunkSize) : data.table.rows.length,
-        loaded = (!options.chunkSize || last < options.chunkSize) ? 1 : 0,
+    options.parsed.last   = (options.chunkSize) ? Math.min(data.table.rows.length, options.chunkSize) : data.table.rows.length;
+    options.parsed.loaded = (!options.chunkSize || options.parsed.last < options.chunkSize) ? 1 : 0;
 
-        // Determine if Google has extracted column labels from a header row.
-        header = ($.map(data.table.cols, _map_label).length) ? 1 : 0,
+    // Determine if Google has extracted column labels from a header row.
+    options.parsed.header = ($.map(data.table.cols, _map_label).length) ? 1 : 0;
 
-        // If no column labels are provided (or if there are too many or too 
-        // few), use the returned column labels.
-        labels = (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, _map_label_letter);
+    // If no column labels are provided (or if there are too many or too 
+    // few), use the returned column labels.
+    options.parsed.labels = (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, _map_label_letter);
 
     // Store loaded status on target element.
-    _put(options.target, _loaded, loaded);
+    _put(options.target, _loaded, options.parsed.loaded);
+    return options;
+
+  },
+
+  // Parse data, row by row.
+  _parse = function(data) {
+
+    // Store reference to options hash.
+    var options = this;
+
+    // Debug returned data
+    _log(data, options.debug);
 
     // Output a header row if needed.
     if(!options.offset && !options.headersOff) {
-      if(header || !options.headers) {
+      if(options.parsed.header || !options.headers) {
         options.target.append(options.rowHandler({
           num: 0,
-          cells: _arr_to_obj(labels)
+          cells: _arr_to_obj(options.parsed.labels)
         }));
       }
     }
@@ -208,9 +223,9 @@
 
     $.each(data.table.rows, function(i, obj) {
 
-      if(_has(obj, 'c') && i < last) {
+      if(_has(obj, 'c') && i < options.parsed.last) {
 
-        var counter = _nat(options.offset + i + 1 + header - options.headers),
+        var counter = _nat(options.offset + i + 1 + options.parsed.header - options.headers),
             objData = {num: counter, cells: {}};
 
         // Suppress header row if requested.
@@ -219,7 +234,7 @@
           $.each(obj.c, function(x, cell) {
             var style = (options.formatting) ? _style(cell) : false,
                 value = (cell && _has(cell, 'v')) ? options.cellHandler(cell.v) : '';
-            objData.cells[labels[x]] = (style) ? _wrap(value, 'span', style) : value;
+            objData.cells[options.parsed.labels[x]] = (style) ? _wrap(value, 'span', style) : value;
           });
 
           // Pass to row handler and append to target.
@@ -231,6 +246,15 @@
 
     });
 
+  },
+
+  // Store a columns hash in the plugin scope.
+  _columns_hash = function(data) {
+    var hash = {};
+    $.each(data.table.cols, function(i, col) {
+      hash[col.id] = _map_label_letter(col);
+    });
+    _columns[this.key + this.gid] = hash;
   },
 
 
@@ -294,7 +318,7 @@
 
     // Optional SQL request.
     if(options.sql) {
-      params.tq = _swap(options.sql, options.columns);
+      params.tq = _swap(options.sql, _columns[options.key + options.gid] || options.columns);
     }
 
     return params;
@@ -314,14 +338,19 @@
     return Math.max(0, parseInt(str, 10) || 0);
   },
 
-  // Shorthand object property lookup.
-  _has = function(obj, prop) {
-    return _def(obj[prop]);
+  // Shorthand object property lookup. Accepts multiple properties.
+  _has = function(obj) {
+    for(var i = 1; i < arguments.length; i++) {
+      if(!_def(obj[arguments[i]])) {
+        return false;
+      }
+    }
+    return true;
   },
 
   // Shorthand test for variable definition.
-  _def = function(variable) {
-    return (typeof variable === 'undefined') ? false : true;
+  _def = function(def) {
+    return (typeof def === 'undefined') ? false : true;
   },
 
   // Shorthand log to console.
@@ -374,15 +403,6 @@
   // Map function: Return column label or letter.
   _map_label_letter = function(col) {
     return _label(col) || col.id;
-  },
-
-  // Create a columns hash from columns data.
-  _columns_hash = function(cols) {
-    var hash = {};
-    $.each(cols, function(i, col) {
-      hash[col.id] = _map_label_letter(col);
-    });
-    return hash;
   },
 
   // Swap column %labels% with column letters.
@@ -479,9 +499,9 @@
 
     // Providing your own data handler means you don't want any processing 
     // to take place except for basic validation. The returned data, if 
-    // valid, is passed to your data handler (along with an options hash) 
-    // and it will be completely up to you to do something with it. The 
-    // cell handler and row handler functions will not be called.
+    // valid, is passed to your data handler (with the options hash as 
+    // `this`) and it will be completely up to you to do something with it. 
+    // The cell handler and row handler functions will not be called.
 
     dataHandler: _parse,  // Function
 
