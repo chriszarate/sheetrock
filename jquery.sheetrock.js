@@ -447,10 +447,13 @@
 
   $.fn.sheetrock.options = {
 
+    // Full documentation is available at:
+    // http://github.com/chriszarate/Sheetrock
+
     // You must provide, at minimum, the `url` of your spreadsheet. 
     // Everything else is optional! Defaults can be overridden either 
-    // globally ($.fn.sheetrock.key = value) or per-call using the 
-    // passed options object.
+    // globally ($.fn.sheetrock.options.key = value) or per-call using 
+    // the passed options object.
 
     url:        '',     // String  -- Google spreadsheet URL
 
@@ -477,13 +480,15 @@
     columns: {},  // Object -- Hash of column letters and labels
 
     // Providing a row handler is the recommended way to override the 
-    // default data formatting. This function should accept a row object 
-    // and a row number (header = 0, first data row = 1). The properties 
-    // of this object will be named after its column labels. Your function 
-    // should return content (a DOM/jQuery object or an HTML string) that 
-    // is ready to be appended to your target element. A very easy way to 
-    // do this is to provide an Underscore.js template (which is itself a 
-    // function).
+    // default data formatting. Your function should accept a row object.
+    // A row object has two properties: `num`, which contains a row number 
+    // (header = 0, first data row = 1, and so on); and `cells`, which is
+    // itself an object. The properties of `cells` will be named after the 
+    // column labels of the returned data (e.g., `Name`, `Phone`). Your 
+    // function should return content (a DOM/jQuery object or an HTML 
+    // string) that is ready to be appended to your target element. A very 
+    // easy way to do this is to provide a compiled Handlebars or Underscore
+    // template (which is itself a function).
 
     rowHandler: _output,  // Function
 
@@ -493,9 +498,9 @@
     cellHandler: _trim,  // Function
 
     // Providing your own data handler means you don't want any processing 
-    // to take place except for basic validation. The returned data, if 
-    // valid, is passed to your data handler (with the options hash as 
-    // `this`) and it will be completely up to you to do something with it. 
+    // to take place except for basic validation and inspection. The returned 
+    // data, if valid, is passed to your data handler (with the options hash 
+    // as `this`) and it will be completely up to you to do something with it. 
     // The cell handler and row handler functions will not be called.
 
     dataHandler: _parse,  // Function
@@ -505,7 +510,7 @@
 
     userCallback: false,  // Function
 
-    // If you have a loading indicator in your page, provide a jQuery object 
+    // If you have a loading indicator on your page, provide a jQuery object 
     // or selector here. It will be shown when the request starts and hidden 
     // when it ends.
 
