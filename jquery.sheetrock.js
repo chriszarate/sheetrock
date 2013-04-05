@@ -117,6 +117,9 @@
     // Enumerate errors.
     _enumerate(data, 'errors');
 
+    // Debug returned data.
+    _log(data, this.debug);
+
     // Check for successful response types.
     if(_has(data, 'status', 'table') && _has(data.table, 'cols', 'rows')) {
       this.dataHandler.call(_extend.call(this, data), data);
@@ -130,7 +133,6 @@
   _fail = function(data) {
     _put(this.target, _error, 1);
     _log('Request failed.');
-    _log(data, this.debug);
   },
 
   // Generic cleanup function for AJAX requests.
@@ -199,9 +201,6 @@
 
     // Store reference to options hash.
     var options = this;
-
-    // Debug returned data
-    _log(data, options.debug);
 
     // Output a header row if needed.
     if(!options.offset && !options.headersOff) {
