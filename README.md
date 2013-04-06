@@ -266,6 +266,9 @@ applied in the spreadsheet. It’s usually a bit wacky, so take care when enabli
 * Sheetrock sometimes outputs useful information to the browser console, including options 
   validation problems and warnings and errors reported by Google’s API.
 * At any time, you can find the number of outstanding AJAX requests in `$.fn.sheetrock.working`.
+* You can also latch onto the most recent jQuery promise via `$.fn.sheetrock.promise`.
+* If you need to change the Google API endpoint—maybe because you want to use a caching proxy—
+  that’s at `$.fn.sheetrock.server`.
 
 
 ## Projects using Sheetrock
