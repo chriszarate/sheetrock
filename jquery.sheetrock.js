@@ -99,7 +99,7 @@
 
       data: _params(options),
       context: options,
-      url: 'https://spreadsheets.google.com/tq',
+      url: $.fn.sheetrock.server,
 
       dataType: 'jsonp',
       cache: true,
@@ -535,6 +535,9 @@
     userCallback: $.noop,
     target: false
   };
+
+  // Google API endpoint.
+  $.fn.sheetrock.server = 'https://spreadsheets.google.com/tq';
 
   // This property is set to the number of active requests. This can be useful 
   // for monitoring or for infinite scroll bindings.
