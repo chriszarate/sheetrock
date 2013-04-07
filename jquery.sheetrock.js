@@ -9,8 +9,11 @@
 
   $.fn.sheetrock = function(options) {
 
+    // Validate and store `this`.
+    options.target = (this.length) ? this : false;
+
     // Load and validate options.
-    options = _options($.extend({}, $.fn.sheetrock.options, options, _isth(this)));
+    options = _options($.fn.sheetrock.options, options);
 
     // Proceed if options are valid.
     if(options) {
@@ -264,7 +267,10 @@
   /* Validation and assembly */
 
   // Validate user-passed options.
-  _options = function(options) {
+  _options = function(defaults, options) {
+
+    // Extend defaults.
+    options = $.extend({}, defaults, options);
 
     // Get spreadsheet key and gid.
     options.key = _key(options.url);
@@ -360,12 +366,6 @@
       console.log(msg);
     }
     return false;
-  },
-
-  // Validate `this` for options hash.
-  _isth = function(el) {
-    var target = (el.length) ? el : false;
-    return {target: target};
   },
 
   // Shorthand data retrieval.
