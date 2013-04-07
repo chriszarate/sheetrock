@@ -17,26 +17,7 @@
 
     // Proceed if options are valid.
     if(options) {
-
-      // Removed fulfilled promises.
-      _promises = $.grep(_promises, _fulfilled, true);
-
-      // Add most recent promise.
-      _promises.push($.fn.sheetrock.promise);
-
-      // Chain off of previous promise.
-      $.fn.sheetrock.promise = $.fn.sheetrock.promise
-
-        // Prefetch column labels.
-        .pipe(function() {
-          return _prefetch(options);
-        })
-
-        // Fetch data.
-        .pipe(function() {
-          return _fetch(options);
-        });
-
+      _init(options);
     }
 
     // Allow jQuery object chaining.
@@ -60,6 +41,32 @@
   _error  = 'sheetrockError',
   _loaded = 'sheetrockLoaded',
   _offset = 'sheetrockRowOffset',
+
+
+  /* Init */
+
+  _init = function(options) {
+
+    // Removed fulfilled promises.
+    _promises = $.grep(_promises, _fulfilled, true);
+
+    // Add most recent promise.
+    _promises.push($.fn.sheetrock.promise);
+
+    // Chain off of previous promise.
+    $.fn.sheetrock.promise = $.fn.sheetrock.promise
+
+      // Prefetch column labels.
+      .pipe(function() {
+        return _prefetch(options);
+      })
+
+      // Fetch data.
+      .pipe(function() {
+        return _fetch(options);
+      });
+
+  },
 
 
   /* Fetch */
