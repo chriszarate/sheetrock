@@ -75,11 +75,19 @@
   _prefetch = function(options) {
 
     // Retrieve column labels.
-    var columns = _columns[options.key + options.gid] || options.columns;
+    var columns = _columns[options.key + options.gid] || options.columns,
+
+    // Options for prefetching column labels
+    prefetch = {
+      sql: 'select * limit 1',
+      dataHandler: _columns_hash,
+      userCallback: $.noop,
+      target: false
+    };
 
     if(options.sql && $.isEmptyObject(columns)) {
       _log('Prefetching column labels.');
-      return _fetch($.extend({}, options, $.fn.sheetrock.prefetch));
+      return _fetch($.extend({}, options, prefetch));
     } else {
       return new $.Deferred().resolve();
     }
