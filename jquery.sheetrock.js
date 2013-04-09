@@ -75,7 +75,7 @@
   _prefetch = function(options) {
 
     // Options for prefetching column labels
-    prefetch = {
+    var prefetch = {
       sql: 'select * limit 1',
       dataHandler: _columns_hash,
       userCallback: $.noop,
@@ -293,7 +293,7 @@
     options.headers = _nat(options.headers);
 
     // Retrieve column labels.
-    options.columns = _columns[options.key + options.gid] || options.columns || {},
+    options.columns = _columns[options.key + options.gid] || options.columns || {};
 
     // Retrieve offset.
     options.offset = (options.chunkSize) ? _get(options.target, _offset) : 0;
