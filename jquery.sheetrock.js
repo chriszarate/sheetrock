@@ -472,74 +472,23 @@
 
   $.fn.sheetrock.options = {
 
-    // Full documentation is available at:
+    // Documentation is available at:
     // http://github.com/chriszarate/Sheetrock
 
-    // You must provide, at minimum, the `url` of your spreadsheet. 
-    // Everything else is optional! Defaults can be overridden either 
-    // globally ($.fn.sheetrock.options.key = value) or per-call using 
-    // the passed options object.
-
-    url:        '',     // String  -- Google spreadsheet URL
-
-    headers:    0,      // Integer -- Number of header rows
-    headersOff: false,  // Boolean -- Suppress header row output
-
-    labels:     [],     // Array   -- Override *returned* column labels
-    formatting: false,  // Boolean -- Include Google HTML formatting
-    chunkSize:  0,      // Integer -- Number of rows to fetch (0 = all)
-    debug:      false,  // Boolean -- Output raw data to the console
-
-    // By default, Google only allows column letters (e.g., A, B) in 
-    // visualization SQL queries. If you prefer, you can use column labels 
-    // in your SQL query and they will be swapped out with the 
-    // corresponding column letters. Wrap column labels in percent signs,
-    // e.g., "select %name%,%age% where %age% > 21".
-
-    sql: '',  // String  -- Google Visualization API query (SQL-like)
-
-    // If you want don't want to bother with making sure the column labels 
-    // that you use match the ones used in the spreadsheet, you can 
-    // override them using a hash, e.g., {A: 'ID', B: 'Name', C: 'Phone'}.
-
-    columns: {},  // Object -- Hash of column letters and labels
-
-    // Providing a row handler is the recommended way to override the 
-    // default data formatting. Your function should accept a row object.
-    // A row object has two properties: `num`, which contains a row number 
-    // (header = 0, first data row = 1, and so on); and `cells`, which is
-    // itself an object. The properties of `cells` will be named after the 
-    // column labels of the returned data (e.g., `Name`, `Phone`). Your 
-    // function should return content (a DOM/jQuery object or an HTML 
-    // string) that is ready to be appended to your target element. A very 
-    // easy way to do this is to provide a compiled Handlebars or Underscore
-    // template (which is itself a function).
-
-    rowHandler: _output,  // Function
-
-    // This function is used to process every cell value. It should return 
-    // a string. The provided default is a simple trim function.
-
-    cellHandler: _trim,  // Function
-
-    // Providing your own data handler means you don't want any processing 
-    // to take place except for basic validation and inspection. The returned 
-    // data, if valid, is passed to your data handler (with the options hash 
-    // as `this`) and it will be completely up to you to do something with it. 
-    // The cell handler and row handler functions will not be called.
-
-    dataHandler: _parse,  // Function
-
-    // You can provide a function to be called when all processing is 
-    // complete. The options hash is passed to this function.
-
-    userCallback: $.noop,  // Function
-
-    // If you have a loading indicator on your page, provide a jQuery object 
-    // or selector here. It will be shown when the request starts and hidden 
-    // when it ends.
-
-    loading: $()  // jQuery object or selector
+    url:          '',       // String  -- Google spreadsheet URL
+    sql:          '',       // String  -- Google Visualization API query (SQL-like)
+    columns:      {},       // Object  -- Hash of column letters and labels
+    labels:       [],       // Array   -- Override *returned* column labels
+    chunkSize:    0,        // Integer -- Number of rows to fetch (0 = all)
+    rowHandler:   _output,  // Function
+    cellHandler:  _trim,    // Function
+    dataHandler:  _parse,   // Function
+    userCallback: $.noop,   // Function
+    loading:      $(),      // jQuery object or selector
+    debug:        false,    // Boolean -- Output raw data to the console
+    headers:      0,        // Integer -- Number of header rows
+    headersOff:   false,    // Boolean -- Suppress header row output
+    formatting:   false     // Boolean -- Include Google HTML formatting
 
   };
 
