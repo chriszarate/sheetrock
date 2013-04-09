@@ -74,9 +74,6 @@
   // Prefetch column labels.
   _prefetch = function(options) {
 
-    // Retrieve column labels.
-    var columns = _columns[options.key + options.gid] || options.columns,
-
     // Options for prefetching column labels
     prefetch = {
       sql: 'select * limit 1',
@@ -85,7 +82,7 @@
       target: false
     };
 
-    if(options.sql && $.isEmptyObject(columns)) {
+    if(options.sql.indexOf('%') !== -1 && $.isEmptyObject(options.columns)) {
       _log('Prefetching column labels.');
       return _fetch($.extend({}, options, prefetch));
     } else {
@@ -294,6 +291,9 @@
     // Validate chunk size and header rows.
     options.chunkSize = (options.target) ? _nat(options.chunkSize) : 0;
     options.headers = _nat(options.headers);
+
+    // Retrieve column labels.
+    options.columns = _columns[options.key + options.gid] || options.columns || {},
 
     // Retrieve offset.
     options.offset = (options.chunkSize) ? _get(options.target, _offset) : 0;
