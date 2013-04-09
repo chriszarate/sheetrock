@@ -492,14 +492,6 @@
 
   };
 
-  // Options for prefetching column labels.
-  $.fn.sheetrock.prefetch = {
-    sql: 'select * limit 1',
-    dataHandler: _columns_hash,
-    userCallback: $.noop,
-    target: false
-  };
-
   // Google API endpoint.
   $.fn.sheetrock.server = 'https://spreadsheets.google.com/tq';
 
