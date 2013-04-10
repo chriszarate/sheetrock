@@ -165,6 +165,15 @@ letters (e.g., A, B) in queries. If you prefer, you can use column labels in you
 and they will be swapped out with the corresponding column letters. Wrap column labels in 
 percent signs, e.g., `"select %name%,%age% where %age% > 21"`.
 
+### chunkSize
+* Default `0`
+* Expects non-negative integer
+
+Use this option to enable lazy-loading or chunking of the data. When set to `0`, Sheetrock 
+will fetch all available rows. When set to `10`, for example, it will fetch ten rows and keep
+track of how many rows have been requested (by storing an `offset` on the targeted element
+using jQuery’s `$.data`). On the next request, it will pick up where it left off.
+
 ### columns
 * Default `{}`
 * Expects hash map of column letters to strings
@@ -181,15 +190,6 @@ overhead (additional AJAX request) of prefetching the column labels.
 Override the *returned* column labels with an array of strings. This option is useful when
 you have complicated queries and would like a shorthand way of referencing them in your
 templates. The length of this array must match the number of columns in the returned data.
-
-### chunkSize
-* Default `0`
-* Expects non-negative integer
-
-Use this option to enable lazy-loading or chunking of the data. When set to `0`, Sheetrock 
-will fetch all available rows. When set to `10`, for example, it will fetch ten rows and keep
-track of how many rows have been requested (by storing an `offset` on the targeted element
-using jQuery’s `$.data`). On the next request, it will pick up where it left off.
 
 ### rowHandler
 * Default `_output` (internal function; provides HTML table row output)
@@ -267,8 +267,14 @@ applied in the spreadsheet. It’s usually a bit wacky, so take care when enabli
   validation problems and warnings and errors reported by Google’s API.
 * At any time, you can find the number of outstanding AJAX requests in `$.fn.sheetrock.working`.
 * You can also latch onto the most recent jQuery promise via `$.fn.sheetrock.promise`.
+* On large spreadsheets (~5000 rows), the performance of Google’s API when using `sql` queries 
+  can be sluggish and, in some cases, can severely affect the responsiveness of your 
+  application. At this point, consider caching the responses for reuse (see below).
 * If you need to change the Google API endpoint—maybe because you want to use a caching proxy—
   that’s at `$.fn.sheetrock.server`.
+* Sheetrock will also accept a second parameter of response data to be used instead of making 
+  an API request. Make sure you pass an object and not a JSON string. This is an easy way to 
+  manually reuse cached data.
 
 
 ## Projects using Sheetrock

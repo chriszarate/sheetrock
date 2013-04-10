@@ -7,17 +7,24 @@
 
 ;(function($) {
 
-  $.fn.sheetrock = function(options) {
+  $.fn.sheetrock = function(options, data) {
 
     // Validate and store `this`.
     options.target = (this.length) ? this : false;
 
     // Load and validate options.
-    options = _options($.fn.sheetrock.options, options);
+    options = _options(options);
 
-    // Proceed if options are valid.
     if(options) {
-      _init(options);
+
+      if(_def(data) && data !== null) {
+        // Process bootstrapped data.
+        _data(options, data);
+      } else {
+        // Proceed if options are valid.
+        _init(options);
+      }
+
     }
 
     // Allow jQuery object chaining.
@@ -43,8 +50,9 @@
   _offset = 'sheetrockRowOffset',
 
 
-  /* Init */
+  /* Task runners */
 
+  // Load data from API.
   _init = function(options) {
 
     // Removed fulfilled promises.
@@ -65,6 +73,20 @@
       .pipe(function() {
         return _fetch(options);
       });
+
+  },
+
+  // Load local data.
+  _data = function(options, data) {
+
+    // Populate user-facing indicators.
+    _begin(options);
+
+    // Validate and load data.
+    _validate.call(options, data);
+
+    // Clean up.
+    _always.call(options);
 
   },
 
@@ -94,8 +116,8 @@
   // Send request with prevalidated options.
   _fetch = function(options) {
 
-    // Show loading indicator.
-    options.loading.show();
+    // Populate user-facing indicators.
+    _begin(options);
 
     // Enable chunking, if requested, and store offset as jQuery.data.
     if(options.chunkSize && options.target) {
@@ -105,9 +127,6 @@
 
     // Create callback environment
     options.callback = 'sheetrock_' + _callbackIndex++;
-
-    // Increment the `working` flag.
-    $.fn.sheetrock.working++;
 
     // Create AJAX request.
     var request = {
@@ -133,6 +152,17 @@
 
 
   /* Data parsing */
+
+  // Populate user-facing indicators.
+  _begin = function(options) {
+
+    // Show loading indicator.
+    options.loading.show();
+
+    // Increment the `working` flag.
+    $.fn.sheetrock.working++;
+
+  },
 
   // Validate returned data.
   _validate = function(data) {
@@ -279,10 +309,10 @@
   /* Validation and assembly */
 
   // Validate user-passed options.
-  _options = function(defaults, options) {
+  _options = function(options) {
 
     // Extend defaults.
-    options = $.extend({}, defaults, options);
+    options = $.extend({}, $.fn.sheetrock.options, options);
 
     // Get spreadsheet key and gid.
     options.key = _key(options.url);
@@ -343,7 +373,7 @@
     }
 
     return params;
- 
+
   },
 
 
@@ -477,9 +507,9 @@
 
     url:          '',       // String  -- Google spreadsheet URL
     sql:          '',       // String  -- Google Visualization API query (SQL-like)
+    chunkSize:    0,        // Integer -- Number of rows to fetch (0 = all)
     columns:      {},       // Object  -- Hash of column letters and labels
     labels:       [],       // Array   -- Override *returned* column labels
-    chunkSize:    0,        // Integer -- Number of rows to fetch (0 = all)
     rowHandler:   _output,  // Function
     cellHandler:  _trim,    // Function
     dataHandler:  _parse,   // Function
