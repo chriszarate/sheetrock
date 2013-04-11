@@ -266,7 +266,8 @@ applied in the spreadsheet. It’s usually a bit wacky, so take care when enabli
 * Sheetrock sometimes outputs useful information to the browser console, including options 
   validation problems and warnings and errors reported by Google’s API.
 * At any time, you can find the number of outstanding AJAX requests in `$.fn.sheetrock.working`.
-* You can also latch onto the most recent jQuery promise via `$.fn.sheetrock.promise`.
+* You can also latch onto the most recent jQuery promise via `$.fn.sheetrock.promise`. Make 
+  sure you return a promise so that Sheetrock can continue to chain off of it.
 * On large spreadsheets (~5000 rows), the performance of Google’s API when using `sql` queries 
   can be sluggish and, in some cases, can severely affect the responsiveness of your 
   application. At this point, consider caching the responses for reuse (see below).
@@ -279,7 +280,7 @@ applied in the spreadsheet. It’s usually a bit wacky, so take care when enabli
 
 ## Projects using Sheetrock
 
-* [TAGS-viewer][tags]
+* [TAGS Viewer][tags]
 
 
 ## Credits and license
