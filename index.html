@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <style type="text/css">
+
+      body {
+        margin: 3em;
+        padding: 0;
+        width: 800px;
+      }
+
+      #url, #sql {
+        width: 750px;
+      }
+
+      #chunk {
+        width: 40px;
+      }
+
+    </style>
+
+    <title>jQuery Sheetrock Demo</title>
+
+  </head>
+
+  <body>
+
+    <h3>jQuery Sheetrock demo</h3>
+
+    <p>Quickly connect to, query, and lazy-load data from Google Spreadsheets. This is a simple example; <strong><a href="https://github.com/chriszarate/Sheetrock">view documentation on GitHub.</a></strong></p>
+
+    <a href="https://github.com/chriszarate/Sheetrock"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+    <br>
+
+    <p>
+      <h4>Google Spreadsheet URL</h4>
+      <input id="url" type="text" value="https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0">
+    </p>
+
+    <p>
+      <h4>SQL query</h4>
+      <input id="sql" type="text" size="40" value="select A,B,C,D,E,L where E = 'Both' order by L desc">
+    </p>
+
+    <p>
+      <h4>Chunk size</h4>
+      <input id="chunk" type="text" value="20">
+    </p>
+
+    <p>
+      <button id="urlButton" type="button" class="btn">Load</button>
+    </p>
+
+    <br>
+
+    <table id="stats" class="table"></table>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+    <script src="jquery.sheetrock.js"></script>
+
+    <script>
+
+      $('#urlButton').click(function() {
+
+        $('#stats').sheetrock({
+          url: $('#url').val(),
+          sql: $('#sql').val(),
+          chunkSize: $('#chunk').val() || 0,
+          debug: true
+        });
+
+      });
+
+    </script>
+
+  </body>
+
+</html>
