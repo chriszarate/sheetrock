@@ -1,22 +1,22 @@
 # jQuery Sheetrock
 
-Sheetrock is a jQuery plugin for querying, retrieving, and displaying data from 
+Sheetrock is a jQuery plugin for querying, retrieving, and displaying data from
 Google Spreadsheets. All you need is the URL of a [public Google Spreadsheet][public].
 It requires no backend whatsoever—everything is done in the browser.
 
 Basic retrieval is a snap but you can also:
 
-* Query sheets using the SQL-like [Google Visualization query language][query] 
+* Query sheets using the SQL-like [Google Visualization query language][query]
   (filters, sorting, grouping, and more)
 * Lazy-load large data sets (infinite scroll with ease)
-* Mix in your favorite template system ([Handlebars][handlebars], 
+* Mix in your favorite template system ([Handlebars][handlebars],
   [Underscore][underscore], etc.)
 * Customize to your heart’s content with your own handlers and callbacks
 
 
 ## Use
 
-Here’s a very basic example that fetches an entire sheet (from [this spreadsheet][sheet]) 
+Here’s a very basic example that fetches an entire sheet (from [this spreadsheet][sheet])
 and populates a table. (The output is truncated here.)
 
 ```html
@@ -24,7 +24,7 @@ and populates a table. (The output is truncated here.)
 ```
 
 ```javascript
-var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0'; 
+var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0';
 
 $('#stats').sheetrock({
   url: mySpreadsheet
@@ -35,13 +35,13 @@ $('#stats').sheetrock({
 
 ---
 
-The entire sheet has hundreds of rows, so loading the whole thing could bog down a 
-page and overwhelm a reader. By passing a `sql` query, we can limit our scope. We can 
-also provide a `chunkSize` to load just a portion of the data. We can always grab more 
-data later—Sheetrock **keeps track of how many rows you’ve requested** and the next 
+The entire sheet has hundreds of rows, so loading the whole thing could bog down a
+page and overwhelm a reader. By passing a `sql` query, we can limit our scope. We can
+also provide a `chunkSize` to load just a portion of the data. We can always grab more
+data later—Sheetrock **keeps track of how many rows you’ve requested** and the next
 request will pick up where you left off.
 
-Let’s look at switch hitters and rank them by batting average. We’ll ignore the other 
+Let’s look at switch hitters and rank them by batting average. We’ll ignore the other
 stats and fetch just the top ten to help focus the reader’s attention.
 
 ```html
@@ -60,8 +60,8 @@ $('#quick-stats').sheetrock({
 
 ---
 
-Tables are nice, but we might want to represent the data in different ways. Let’s 
-generate an ordered list by passing in an [Underscore][underscore] template. This time 
+Tables are nice, but we might want to represent the data in different ways. Let’s
+generate an ordered list by passing in an [Underscore][underscore] template. This time
 we’ll rank the top five players by home runs.
 
 ```html
@@ -69,7 +69,7 @@ we’ll rank the top five players by home runs.
 <ol id="hr">
   <script type="text/underscore-template" id="hr-template">
     <li>
-      <strong><%= cells.First %> <%= cells.Last %></strong>, 
+      <strong><%= cells.First %> <%= cells.Last %></strong>,
       <%= cells.Team %>, <%= cells.HR %>
     </li>
   </script>
@@ -97,8 +97,8 @@ $('#hr').sheetrock({
 
 ---
 
-Next, let’s group some data. For a more readable query, we’ll use column labels (`%Team%` 
-and `%RBI%`) instead of column letters, and we’ll specify the labels we want Sheetrock to 
+Next, let’s group some data. For a more readable query, we’ll use column labels (`%Team%`
+and `%RBI%`) instead of column letters, and we’ll specify the labels we want Sheetrock to
 use when it returns the data (`labels: ['Team', 'RBI']`).
 
 ```html
@@ -136,13 +136,13 @@ $('#team-rbi').sheetrock({
 Sheetrock expects a hash map of options as a parameter, e.g.:
 
 ```javascript
-$('#element').sheetrock({
+$('#table').sheetrock({
   url: '[...]',
   sql: '[...]'
 });
 ```
 
-Your options override Sheetrock’s defaults on a per-request basis. You can also globally 
+Your options override Sheetrock’s defaults on a per-request basis. You can also globally
 override defaults like this:
 
 ```javascript
@@ -153,23 +153,23 @@ $.fn.sheetrock.options.url = '[...]';
 * Default `''`
 * Expects string
 
-The URL of a public Google spreadsheet. ([How do I make a spreadsheet public?][public]) 
+The URL of a public Google spreadsheet. ([How do I make a spreadsheet public?][public])
 This is the only required option.
 
 ### sql
 * Default `''`
 * Expects string
 
-A [Google Visualization API query][query] string. By default, Google only allows column 
-letters (e.g., A, B) in queries. If you prefer, you can use column labels in your query 
-and they will be swapped out with the corresponding column letters. Wrap column labels in 
+A [Google Visualization API query][query] string. By default, Google only allows column
+letters (e.g., A, B) in queries. If you prefer, you can use column labels in your query
+and they will be swapped out with the corresponding column letters. Wrap column labels in
 percent signs, e.g., `"select %name%,%age% where %age% > 21"`.
 
 ### chunkSize
 * Default `0`
 * Expects non-negative integer
 
-Use this option to enable lazy-loading or chunking of the data. When set to `0`, Sheetrock 
+Use this option to enable lazy-loading or chunking of the data. When set to `0`, Sheetrock
 will fetch all available rows. When set to `10`, for example, it will fetch ten rows and keep
 track of how many rows have been requested (by storing an `offset` on the targeted element
 using jQuery’s `$.data`). On the next request, it will pick up where it left off.
@@ -179,8 +179,8 @@ using jQuery’s `$.data`). On the next request, it will pick up where it left o
 * Expects hash map of column letters to strings
 
 If you want don’t want to bother with making sure the column labels that you use in your
-query match the ones used in the spreadsheet—they must match exactly—you can override 
-them using a hash map, e.g., `{A: 'ID', B: 'Name', C: 'Phone'}`. This also avoids the 
+query match the ones used in the spreadsheet—they must match exactly—you can override
+them using a hash map, e.g., `{A: 'ID', B: 'Name', C: 'Phone'}`. This also avoids the
 overhead (additional AJAX request) of prefetching the column labels.
 
 ### labels
@@ -195,13 +195,13 @@ templates. The length of this array must match the number of columns in the retu
 * Default `_output` (internal function; provides HTML table row output)
 * Expects function
 
-Providing your own row handler is the recommended way to override the default table row 
-formatting. Your function should accept a row object. A row object has two properties: 
-`num`, which contains a row number (header = `0`, first data row = `1`, and so on); and 
-`cells`, which is itself an object. The properties of `cells` will be named after the 
-column labels of the returned data (e.g., `Team`, `RBI`). Your function should return 
-content (a DOM/jQuery object or an HTML string) that is ready to be appended to your target 
-element. A very easy way to do this is to provide a compiled [Handlebars][handlebars] or 
+Providing your own row handler is the recommended way to override the default table row
+formatting. Your function should accept a row object. A row object has two properties:
+`num`, which contains a row number (header = `0`, first data row = `1`, and so on); and
+`cells`, which is itself an object. The properties of `cells` will be named after the
+column labels of the returned data (e.g., `Team`, `RBI`). Your function should return
+content (a DOM/jQuery object or an HTML string) that is ready to be appended to your target
+element. A very easy way to do this is to provide a compiled [Handlebars][handlebars] or
 [Underscore][underscore] template (which is itself a function).
 
 ### cellHandler
@@ -214,37 +214,37 @@ The cell handler is used to process every cell value. It should return a string.
 * Default `_parse` (internal function; loops through data and calls row handler)
 * Expects function
 
-Providing your own data handler means you don’t want any data processing to take place 
-except for basic validation and inspection. The returned data, if valid, is passed to 
-your data handler (with the options hash as `this`) and it will be completely up to you 
+Providing your own data handler means you don’t want any data processing to take place
+except for basic validation and inspection. The returned data, if valid, is passed to
+your data handler (with the options hash as `this`) and it will be completely up to you
 to do something with it. The cell handler and row handler will not be called.
 
 ### userCallback
 * Default `$.noop`
 * Expects function
 
-You can provide a function to be called when all processing is complete. The options 
+You can provide a function to be called when all processing is complete. The options
 hash is passed to this function.
 
 ### loading
 * Default `$()`
 * Expects jQuery object or selector
 
-If you have a loading indicator on your page, provide a jQuery object or selector here. 
+If you have a loading indicator on your page, provide a jQuery object or selector here.
 It will be shown when the request starts and hidden when it ends.
 
 ### debug
 * Default `false`
 * Expects Boolean
 
-Output raw request and response data to the browser console. Useful for debugging when you 
+Output raw request and response data to the browser console. Useful for debugging when you
 are using your own handlers.
 
 ### headers
 * Default `0`
 * Expects non-negative integer
 
-The number of header rows in your spreadsheet. Sheetrock tries to identify this 
+The number of header rows in your spreadsheet. Sheetrock tries to identify this
 automatically but Google’s response format makes it difficult.
 
 ### headersOff
@@ -261,21 +261,27 @@ For each cell, Google passes along HTML formatting intended to replicate any for
 applied in the spreadsheet. It’s usually a bit wacky, so take care when enabling this option.
 
 
+## Caching
+
+On large spreadsheets (~5000 rows), the performance of Google’s API when using
+`sql` queries can be sluggish and, in some cases, can severely affect the
+responsiveness of your application. At this point, consider caching the
+responses for reuse.
+* Sheetrock provides a way to reuse manually cached data. It accepts a second
+parameter of response data to be used instead of making an API request (e.g.,
+`$('#table').sheetrock(options, cachedResponse);`). Make sure you pass an
+object and not a JSON string.
+* If you need to change the Google API endpoint—maybe because you want to use
+a caching proxy—that’s at `$.fn.sheetrock.server`.
+
+
 ## Tips and troubleshooting
 
-* Sheetrock sometimes outputs useful information to the browser console, including options 
+* Sheetrock sometimes outputs useful information to the browser console, including options
   validation problems and warnings and errors reported by Google’s API.
 * At any time, you can find the number of outstanding AJAX requests in `$.fn.sheetrock.working`.
-* You can also latch onto the most recent jQuery promise via `$.fn.sheetrock.promise`. Make 
+* You can also latch onto the most recent jQuery promise via `$.fn.sheetrock.promise`. Make
   sure you return a promise so that Sheetrock can continue to chain off of it.
-* On large spreadsheets (~5000 rows), the performance of Google’s API when using `sql` queries 
-  can be sluggish and, in some cases, can severely affect the responsiveness of your 
-  application. At this point, consider caching the responses for reuse (see below).
-* If you need to change the Google API endpoint—maybe because you want to use a caching proxy—
-  that’s at `$.fn.sheetrock.server`.
-* Sheetrock will also accept a second parameter of response data to be used instead of making 
-  an API request. Make sure you pass an object and not a JSON string. This is an easy way to 
-  manually reuse cached data.
 
 
 ## Projects using Sheetrock
@@ -285,8 +291,8 @@ applied in the spreadsheet. It’s usually a bit wacky, so take care when enabli
 
 ## Credits and license
 
-Sheetrock was inspired by [Tabletop.js][tabletop] (which will teach you jazz piano). 
-[John Brecht][brecht] came up with the name. Sheetrock is released under the MIT 
+Sheetrock was inspired by [Tabletop.js][tabletop] (which will teach you jazz piano).
+[John Brecht][brecht] came up with the name. Sheetrock is released under the MIT
 license.
 
 
