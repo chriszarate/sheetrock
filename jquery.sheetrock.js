@@ -227,9 +227,9 @@
     // Initialize parsed options hash.
     options.parsed = {};
 
-    // The Google API generates an unrecoverable error when the 'offset' 
-    // is larger than the number of available rows. As a workaround, we 
-    // request one more row than we need and stop when we see less rows 
+    // The Google API generates an unrecoverable error when the 'offset'
+    // is larger than the number of available rows. As a workaround, we
+    // request one more row than we need and stop when we see less rows
     // than we requested.
 
     options.parsed.last   = (options.chunkSize) ? Math.min(data.table.rows.length, options.chunkSize) : data.table.rows.length;
@@ -238,7 +238,7 @@
     // Determine if Google has extracted column labels from a header row.
     options.parsed.header = ($.map(data.table.cols, _map_label).length) ? 1 : 0;
 
-    // If no column labels are provided (or if there are too many or too 
+    // If no column labels are provided (or if there are too many or too
     // few), use the returned column labels.
     options.parsed.labels = (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, _map_label_letter);
 
@@ -266,7 +266,7 @@
       }
     }
 
-    // Each table cell ('c') can contain two properties: 'p' contains 
+    // Each table cell ('c') can contain two properties: 'p' contains
     // formatting and 'v' contains the actual cell value.
 
     $.each(data.table.rows, function(i, obj) {
@@ -425,7 +425,7 @@
 
   // Extract the key from a spreadsheet URL.
   _key = function(url) {
-    var keyRegExp = new RegExp('key=([a-z0-9]{30,})&?','i');
+    var keyRegExp = new RegExp('key=([a-z0-9\-]{30,})&?','i');
     return (keyRegExp.test(url)) ? url.match(keyRegExp)[1] : false;
   },
 
@@ -525,7 +525,7 @@
   // Google API endpoint.
   $.fn.sheetrock.server = 'https://spreadsheets.google.com/tq';
 
-  // This property is set to the number of active requests. This can be useful 
+  // This property is set to the number of active requests. This can be useful
   // for monitoring or for infinite scroll bindings.
   $.fn.sheetrock.working = 0;
 
