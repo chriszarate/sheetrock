@@ -31,7 +31,7 @@ $('#stats').sheetrock({
 });
 ```
 
-<table id="stats"><tbody><tr><th>Team</th><th>Pos</th><th>First</th><th>Last</th><th>Bats</th><th>AB</th><th>R</th><th>H</th><th>HR</th><th>RBI</th><th>SB</th><th>BA</th></tr><tr><td>PHI</td><td>MI</td><td>Luis</td><td>Aguayo</td><td>Right</td><td>133</td><td>17</td><td>28</td><td>4</td><td>13</td><td>1</td><td>0.211</td></tr><tr><td>SFG</td><td>UT</td><td>Mike</td><td>Aldrete</td><td>Left</td><td>216</td><td>27</td><td>54</td><td>2</td><td>25</td><td>1</td><td>0.25</td></tr><tr><td>PIT</td><td>LF</td><td>Bill</td><td>Almon</td><td>Right</td><td>196</td><td>29</td><td>43</td><td>7</td><td>27</td><td>11</td><td>0.219</td></tr><tr><td>LAD</td><td>IF</td><td>Dave</td><td>Anderson</td><td>Right</td><td>216</td><td>31</td><td>53</td><td>1</td><td>15</td><td>5</td><td>0.245</td></tr><tr><td>HOU</td><td>C</td><td>Alan</td><td>Ashby</td><td>Both</td><td>315</td><td>24</td><td>81</td><td>7</td><td>38</td><td>1</td><td>0.257</td></tr><tr><td>NYM</td><td>2B</td><td>Wally</td><td>Backman</td><td>Both</td><td>387</td><td>67</td><td>124</td><td>1</td><td>27</td><td>13</td><td>0.32</td></tr><tr><td>HOU</td><td>C</td><td>Mark</td><td>Bailey</td><td>Both</td><td>153</td><td>9</td><td>27</td><td>4</td><td>15</td><td>1</td><td>0.176</td></tr><tr><td>HOU</td><td>RF</td><td>Kevin</td><td>Bass</td><td>Both</td><td>591</td><td>83</td><td>184</td><td>20</td><td>79</td><td>22</td><td>0.311</td></tr><tr><td>CIN</td><td>3B</td><td>Buddy</td><td>Bell</td><td>Right</td><td>568</td><td>89</td><td>158</td><td>20</td><td>75</td><td>2</td><td>0.278</td></tr><tr><td>PIT</td><td>SS</td><td>Rafael</td><td>Belliard</td><td>Right</td><td>309</td><td>33</td><td>72</td><td>0</td><td>31</td><td>12</td><td>0.233</td></tr><tr><td colspan="12">[...]</td></tr></tbody></table>
+<table id="stats"><tbody><tr><th>Team</th><th>Pos</th><th>First</th><th>Last</th><th>Bats</th><th>AB</th><th>R</th><th>H</th><th>HR</th><th>RBI</th><th>SB</th><th>BA</th></tr><tr><td>PHI</td><td>MI</td><td>Luis</td><td>Aguayo</td><td>Right</td><td>133</td><td>17</td><td>28</td><td>4</td><td>13</td><td>1</td><td>0.211</td></tr><tr><td>SFG</td><td>UT</td><td>Mike</td><td>Aldrete</td><td>Left</td><td>216</td><td>27</td><td>54</td><td>2</td><td>25</td><td>1</td><td>0.25</td></tr><tr><td>PIT</td><td>LF</td><td>Bill</td><td>Almon</td><td>Right</td><td>196</td><td>29</td><td>43</td><td>7</td><td>27</td><td>11</td><td>0.219</td></tr><tr><td>LAD</td><td>IF</td><td>Dave</td><td>Anderson</td><td>Right</td><td>216</td><td>31</td><td>53</td><td>1</td><td>15</td><td>5</td><td>0.245</td></tr><tr><td>HOU</td><td>C</td><td>Alan</td><td>Ashby</td><td>Both</td><td>315</td><td>24</td><td>81</td><td>7</td><td>38</td><td>1</td><td>0.257</td></tr><tr><td>NYM</td><td>2B</td><td>Wally</td><td>Backman</td><td>Both</td><td>387</td><td>67</td><td>124</td><td>1</td><td>27</td><td>13</td><td>0.32</td></tr><tr><td>HOU</td><td>C</td><td>Mark</td><td>Bailey</td><td>Both</td><td>153</td><td>9</td><td>27</td><td>4</td><td>15</td><td>1</td><td>0.176</td></tr><tr><td>HOU</td><td>RF</td><td>Kevin</td><td>Bass</td><td>Both</td><td>591</td><td>83</td><td>184</td><td>20</td><td>79</td><td>22</td><td>0.311</td></tr><tr><td>CIN</td><td>3B</td><td>Buddy</td><td>Bell</td><td>Right</td><td>568</td><td>89</td><td>158</td><td>20</td><td>75</td><td>2</td><td>0.278</td></tr><tr><td>PIT</td><td>SS</td><td>Rafael</td><td>Belliard</td><td>Right</td><td>309</td><td>33</td><td>72</td><td>0</td><td>31</td><td>12</td><td>0.233</td></tr><tr><td colspan="12"><em>[Output intentionally truncated]</em></td></tr></tbody></table>
 
 ---
 
@@ -58,7 +58,7 @@ $('#quick-stats').sheetrock({
 
 <table id="quick-stats"><tbody><tr><th>Team</th><th>Pos</th><th>First</th><th>Last</th><th>Bats</th><th>BA</th></tr><tr><td>MON</td><td>LF</td><td>Tim</td><td>Raines</td><td>Both</td><td>0.334</td></tr><tr><td>NYM</td><td>2B</td><td>Wally</td><td>Backman</td><td>Both</td><td>0.32</td></tr><tr><td>HOU</td><td>RF</td><td>Kevin</td><td>Bass</td><td>Both</td><td>0.311</td></tr><tr><td>CHC</td><td>OF</td><td>Jerry</td><td>Mumphrey</td><td>Both</td><td>0.304</td></tr><tr><td>PIT</td><td>2B</td><td>Johnny</td><td>Ray</td><td>Both</td><td>0.301</td></tr><tr><td>STL</td><td>MI</td><td>Jose</td><td>Oquendo</td><td>Both</td><td>0.297</td></tr><tr><td>MON</td><td>CF</td><td>Mitch</td><td>Webster</td><td>Both</td><td>0.29</td></tr><tr><td>NYM</td><td>OF</td><td>Mookie</td><td>Wilson</td><td>Both</td><td>0.289</td></tr><tr><td>MON</td><td>1B</td><td>Wallace</td><td>Johnson</td><td>Both</td><td>0.283</td></tr><tr><td>STL</td><td>SS</td><td>Ozzie</td><td>Smith</td><td>Both</td><td>0.28</td></tr></tbody></table>
 
----
+### Templating
 
 Tables are nice, but we might want to represent the data in different ways. Let’s
 generate an ordered list by passing in an [Underscore][underscore] template. This time
@@ -95,7 +95,7 @@ $('#hr').sheetrock({
 4. **Dale Murphy**, ATL, 29
 5. **Eric Davis**, CIN, 27
 
----
+### Advanced queries
 
 Next, let’s group some data. For a more readable query, we’ll use column labels (`%Team%`
 and `%RBI%`) instead of column letters, and we’ll specify the labels we want Sheetrock to
@@ -287,6 +287,7 @@ a caching proxy—that’s at `$.fn.sheetrock.server`.
 ## Projects using Sheetrock
 
 * [TAGS Viewer][tags]
+* Tell me about your project on the [Wiki][wiki]!
 
 
 ## Credits and license
@@ -302,5 +303,6 @@ license.
 [handlebars]: http://handlebarsjs.com
 [sheet]:      https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0
 [tags]:       https://github.com/mlaa/tags-viewer
+[wiki]:       https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock
 [tabletop]:   http://builtbybalance.com/Tabletop/
 [brecht]:     http://about.me/john.brecht
