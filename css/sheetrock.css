@@ -1,16 +1,17 @@
 html {
-  background-color: #8bc;
+  background-color: #f5f2f0;
 }
 
 body {
   width: 40em;
   margin: 4em auto;
   padding: 3em;
-  padding-top: 0.01em;
+  padding-top: 0.1em;
   font-family: "PT Sans", Helvetica, Arial, sans-serif;
   font-size: 1.2em;
   background-color: #fff;
   line-height: 1.5em;
+  border: solid 1px #e9e9e9;
 }
 
 h1, h2, h3 {
