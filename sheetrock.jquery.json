@@ -1,0 +1,31 @@
+{
+  "name": "sheetrock",
+  "title": "jQuery Sheetrock",
+  "description": "Quickly connect to, query, and lazy-load data from Google Spreadsheets.",
+  "keywords": [
+    "jquery",
+    "spreadsheet",
+    "tables",
+    "google",
+    "googledocs",
+    "ajax",
+    "nodb"
+  ],
+  "version": "0.1.0",
+  "author": {
+    "name": "Chris Zarate",
+    "url": "http://chris.zarate.org"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://mit-license.org"
+    }
+  ],
+  "bugs": "https://github.com/chriszarate/sheetrock/issues",
+  "homepage": "http://chriszarate.github.io/sheetrock/",
+  "docs": "http://chriszarate.github.io/sheetrock/",
+  "dependencies": {
+    "jquery": ">=1.5"
+  }
+}
