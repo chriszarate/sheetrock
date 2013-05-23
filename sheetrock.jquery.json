@@ -26,6 +26,6 @@
   "homepage": "http://chriszarate.github.io/sheetrock/",
   "docs": "http://chriszarate.github.io/sheetrock/",
   "dependencies": {
-    "jquery": ">=1.5"
+    "jquery": ">=1.6"
   }
 }
