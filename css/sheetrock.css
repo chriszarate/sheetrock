@@ -28,6 +28,10 @@ a:hover {
   text-decoration: underline;
 }
 
+iframe {
+  display: none;
+}
+
 code.inline {
   padding: 2px 4px;
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
@@ -48,6 +52,16 @@ p.operator {
   font-weight: bold;
 }
 
+p.fiddle {
+  margin: 0 0 1em 0;
+}
+
+p.fiddle a {
+  color: #69c;
+  font-weight: normal;
+  text-decoration: underline;
+}
+
 div.output {
   margin-bottom: 2em;
   padding: 1em;
@@ -57,4 +71,8 @@ div.output {
 
 div.output h3 {
   margin: 0.25em 0;
+}
+
+em.grey {
+  color: #999;
 }

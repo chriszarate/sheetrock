@@ -81,7 +81,7 @@ $('#stats').sheetrock({
         <tr>
           <td>PIT</td><td>SS</td><td>Rafael</td><td>Belliard</td><td>Right</td><td>309</td><td>33</td><td>72</td><td>0</td><td>31</td><td>12</td><td>0.233</td>
         </tr>
-        <tr><td colspan="12"><em>[Output intentionally truncated]</em></td></tr>
+        <tr><td colspan="12"><em class="grey">[Output intentionally truncated]</em></td></tr>
       </table>
     </div>
 
@@ -89,11 +89,11 @@ $('#stats').sheetrock({
 
     <p>Let’s look at switch hitters and rank them by batting average. We’ll ignore the other stats and fetch just the top ten to help focus the reader’s attention.</p>
 
-<pre><code class="language-markup">&lt;table id="quick-stats"&gt;&lt;/table&gt;</code></pre>
+<pre><code class="language-markup">&lt;table id="switch-hitters"&gt;&lt;/table&gt;</code></pre>
 
     <p class="operator">+</p>
 
-<pre><code class="language-javascript">$('#quick-stats').sheetrock({
+<pre><code class="language-javascript">$('#switch-hitters').sheetrock({
   url: mySpreadsheet,
   sql: "select A,B,C,D,E,L where E = 'Both' order by L desc",
   chunkSize: 10
@@ -137,6 +137,9 @@ $('#stats').sheetrock({
       </table>
     </div>
 
+    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-table-2" class="fiddle-link" href="http://jsfiddle.net/bL8rQ/"><span>Show</span> a jsFiddle for this example.</a></p>
+    <iframe id="fiddle-table-2-iframe" width="100%" height="300" src="http://jsfiddle.net/bL8rQ/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
     <h3>Templating</h3>
 
     <p>Tables are nice, but we might want to represent the data in different ways. Let’s generate an ordered list by passing in an <a href="http://underscorejs.org">Underscore</a> template. This time we’ll rank the top five players by home runs.</p>
@@ -176,6 +179,9 @@ $('#hr').sheetrock({
       </ol>
     </div>
 
+    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-1" class="fiddle-link" href="http://jsfiddle.net/8S2EM/"><span>Show</span> a jsFiddle for this example.</a></p>
+    <iframe id="fiddle-template-1-iframe" width="100%" height="300" src="http://jsfiddle.net/8S2EM/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
     <h3>Advanced queries</h3>
 
     <p>Next, let’s group some data. For a more readable query, we’ll use column labels (<code class="inline">%Team%</code> and <code class="inline">%RBI%</code>) instead of column letters, and we’ll specify the labels we want Sheetrock to use when it returns the data (<code class="inline">labels: ['Team', 'RBI']</code>).</p>
@@ -212,6 +218,9 @@ $('#team-rbi').sheetrock({
         <li><strong>SDP</strong>, 591</li>
       </ol>
     </div>
+
+    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-2" class="fiddle-link" href="http://jsfiddle.net/xwvn7/"><span>Show</span> a jsFiddle for this example.</a></p>
+    <iframe id="fiddle-template-2-iframe" width="100%" height="300" src="http://jsfiddle.net/xwvn7/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
     <h2>Options</h2>
 
@@ -366,9 +375,17 @@ $('#team-rbi').sheetrock({
 
     <p>Sheetrock was inspired by <a href="http://builtbybalance.com/Tabletop/">Tabletop.js</a> (which will teach you jazz piano). <a href="http://about.me/john.brecht">John Brecht</a> came up with the name. Sheetrock is released under the MIT license.</p>
 
+    <a href="https://github.com/chriszarate/sheetrock"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="js/prism-custom.js"></script>
 
-    <a href="https://github.com/chriszarate/sheetrock"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <script>
+      $('.fiddle-link').on('click', function() {
+        $('#' + this.id + '-iframe').toggle();
+        return false;
+      })
+    </script>
 
   </body>
 
