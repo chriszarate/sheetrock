@@ -14,7 +14,12 @@ Basic retrieval is a snap but you can also:
 * Customize to your heart’s content with your own handlers and callbacks
 
 
-## Use
+## Interactive documentation
+
+**Visit [http://chriszarate.github.io/sheetrock/][gh-pages] for a version of this documentation that includes jsFiddles.**
+
+
+## Usage
 
 Here’s a very basic example that fetches an entire sheet (from [this spreadsheet][sheet])
 and populates a table. (The output is truncated here.)
@@ -45,11 +50,11 @@ Let’s look at switch hitters and rank them by batting average. We’ll ignore 
 stats and fetch just the top ten to help focus the reader’s attention.
 
 ```html
-<table id="quick-stats"></table>
+<table id="switch-hitters"></table>
 ```
 
 ```javascript
-$('#quick-stats').sheetrock({
+$('#switch-hitters').sheetrock({
   url: mySpreadsheet,
   sql: "select A,B,C,D,E,L where E = 'Both' order by L desc",
   chunkSize: 10
@@ -301,6 +306,7 @@ license.
 [query]:      https://developers.google.com/chart/interactive/docs/querylanguage
 [underscore]: http://underscorejs.org
 [handlebars]: http://handlebarsjs.com
+[gh-pages]:   http://chriszarate.github.io/sheetrock/
 [sheet]:      https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0
 [tags]:       https://github.com/mlaa/tags-viewer
 [wiki]:       https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock
