@@ -503,7 +503,7 @@
   $.fn.sheetrock.options = {
 
     // Documentation is available at:
-    // http://github.com/chriszarate/Sheetrock
+    // http://github.com/chriszarate/sheetrock
 
     url:          '',       // String  -- Google spreadsheet URL
     sql:          '',       // String  -- Google Visualization API query (SQL-like)
