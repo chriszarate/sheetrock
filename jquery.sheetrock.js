@@ -65,12 +65,12 @@
     $.fn.sheetrock.promise = $.fn.sheetrock.promise
 
       // Prefetch column labels.
-      .pipe(function() {
+      .then(function() {
         return _prefetch(options);
       })
 
       // Fetch data.
-      .pipe(function() {
+      .then(function() {
         return _fetch(options);
       });
 
