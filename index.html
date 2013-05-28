@@ -138,7 +138,7 @@ $('#stats').sheetrock({
     </div>
 
     <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-table-2" class="fiddle-link" href="http://jsfiddle.net/bL8rQ/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-table-2-iframe" width="100%" height="300" src="http://jsfiddle.net/bL8rQ/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+    <iframe id="fiddle-table-2-iframe" width="100%" height="400" data-src="http://jsfiddle.net/bL8rQ/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
     <h3>Templating</h3>
 
@@ -180,7 +180,7 @@ $('#hr').sheetrock({
     </div>
 
     <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-1" class="fiddle-link" href="http://jsfiddle.net/8S2EM/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-template-1-iframe" width="100%" height="300" src="http://jsfiddle.net/8S2EM/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+    <iframe id="fiddle-template-1-iframe" width="100%" height="300" data-src="http://jsfiddle.net/8S2EM/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
     <h3>Advanced queries</h3>
 
@@ -220,7 +220,7 @@ $('#team-rbi').sheetrock({
     </div>
 
     <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-2" class="fiddle-link" href="http://jsfiddle.net/xwvn7/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-template-2-iframe" width="100%" height="300" src="http://jsfiddle.net/xwvn7/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+    <iframe id="fiddle-template-2-iframe" width="100%" height="300" data-src="http://jsfiddle.net/xwvn7/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
     <h2>Options</h2>
 
@@ -381,10 +381,17 @@ $('#team-rbi').sheetrock({
     <script src="js/prism-custom.js"></script>
 
     <script>
+
       $('.fiddle-link').on('click', function() {
-        $('#' + this.id + '-iframe').toggle();
+        if(!$(this).data('loaded')) {
+          $('#' + this.id + '-iframe').show().attr('src', function() {
+            return $(this).data('src');
+          });
+          $(this).data('loaded', true);
+        }
         return false;
-      })
+      });
+
     </script>
 
   </body>
