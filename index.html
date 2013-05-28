@@ -32,14 +32,16 @@
 
     <h2>Usage</h2>
 
-    <p>Here’s a very basic example that fetches an entire sheet (from <a href="https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0">this spreadsheet</a>) and populates a table. (The output is truncated here.)</p>
+    <p>Here’s a very basic example that fetches an entire sheet from <a href="https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0">this spreadsheet</a> (1986 National League batting statistics) and populates a table. (The output is truncated here.)</p>
 
 <pre><code class="language-markup">&lt;table id="stats"&gt;&lt;/table&gt;</code></pre>
 
     <p class="operator">+</p>
 
-<pre><code class="language-javascript">var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0';
+<pre><code class="language-javascript">// Define spreadsheet URL.
+var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0';
 
+// Load spreadsheet.
 $('#stats').sheetrock({
   url: mySpreadsheet
 });</code></pre>
@@ -93,7 +95,8 @@ $('#stats').sheetrock({
 
     <p class="operator">+</p>
 
-<pre><code class="language-javascript">$('#switch-hitters').sheetrock({
+<pre><code class="language-javascript">// Load top ten switch hitters.
+$('#switch-hitters').sheetrock({
   url: mySpreadsheet,
   sql: "select A,B,C,D,E,L where E = 'Both' order by L desc",
   chunkSize: 10
@@ -156,8 +159,10 @@ $('#stats').sheetrock({
 
     <p class="operator">+</p>
 
-<pre><code class="language-javascript">var HRTemplate = _.template($('#hr-template').html());
+<pre><code class="language-javascript">// Compile Underscore.js template for HR leaders.
+var HRTemplate = _.template($('#hr-template').html());
 
+// Load top five HR leaders.
 $('#hr').sheetrock({
   url: mySpreadsheet,
   sql: "select A,C,D,I order by I desc",
@@ -195,8 +200,10 @@ $('#hr').sheetrock({
 
     <p class="operator">+</p>
 
-<pre><code class="language-javascript">var RBITemplate = _.template($('#team-rbi-template').html());
+<pre><code class="language-javascript">// Compile Underscore.js template for team RBI leaders.
+var RBITemplate = _.template($('#team-rbi-template').html());
 
+// Load top five team RBI leaders.
 $('#team-rbi').sheetrock({
   url: mySpreadsheet,
   sql: "select %Team%,sum(%RBI%) group by %Team% order by sum(%RBI%) desc",
