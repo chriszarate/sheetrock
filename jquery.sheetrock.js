@@ -1,11 +1,13 @@
 /*
- * jQuery Sheetrock
+ * jQuery Sheetrock v0.1.2
  * Quickly connect to, query, and lazy-load data from Google Spreadsheets
  * Requires jQuery >=1.6
  * http://github.com/chriszarate/sheetrock
  */
 
 ;(function($) {
+
+  "use strict";
 
   $.fn.sheetrock = function(options, data) {
 
@@ -87,11 +89,8 @@
   // Prefetch column labels.
   _prefetch = function(options) {
 
-    // Initialize promise.
-    var deferred = $.Deferred(),
-
     // Options for prefetching column labels
-    prefetch = {
+    var prefetch = {
       sql: 'select * limit 1',
       dataHandler: _columns_hash,
       userCallback: $.noop,
@@ -100,21 +99,15 @@
 
     if(options.sql.indexOf('%') !== -1 && !_get_columns(options)) {
       _log('Prefetching column labels.');
-      _fetch($.extend({}, options, prefetch)).done(function() {
-        deferred.resolve();
-      });
+      return _fetch($.extend({}, options, prefetch));
     } else {
-      deferred.resolve();
+      return $.Deferred().resolve();
     }
-
-    return deferred.promise();
 
   },
 
   // Send request with prevalidated options.
   _fetch = function(options) {
-
-    var deferred = $.Deferred();
 
     // Populate user-facing indicators.
     _begin(options);
@@ -146,15 +139,11 @@
     _log(request, options.debug);
 
     // Send request.
-    $.ajax(request)
+    return $.ajax(request)
+      .promise()
       .done(_validate)
-      .done(function() {
-        deferred.resolve();
-      })
       .fail(_fail)
       .always(_always);
-
-    return deferred.promise();
 
   },
 
@@ -439,7 +428,7 @@
 
   // Extract the key from a spreadsheet URL.
   _key = function(url) {
-    var keyRegExp = new RegExp('key=([a-z0-9\-]{30,})&?','i');
+    var keyRegExp = new RegExp('key=([a-z0-9-]{30,})&?','i');
     return (keyRegExp.test(url)) ? url.match(keyRegExp)[1] : false;
   },
 
