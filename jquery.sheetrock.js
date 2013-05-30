@@ -87,9 +87,6 @@
   // Prefetch column labels.
   _prefetch = function(options) {
 
-    // Initialize promise.
-    var deferred = $.Deferred(),
-
     // Options for prefetching column labels
     prefetch = {
       sql: 'select * limit 1',
@@ -100,21 +97,15 @@
 
     if(options.sql.indexOf('%') !== -1 && !_get_columns(options)) {
       _log('Prefetching column labels.');
-      _fetch($.extend({}, options, prefetch)).done(function() {
-        deferred.resolve();
-      });
+      return _fetch($.extend({}, options, prefetch));
     } else {
-      deferred.resolve();
+      return $.Deferred().resolve();
     }
-
-    return deferred.promise();
 
   },
 
   // Send request with prevalidated options.
   _fetch = function(options) {
-
-    var deferred = $.Deferred();
 
     // Populate user-facing indicators.
     _begin(options);
@@ -146,15 +137,11 @@
     _log(request, options.debug);
 
     // Send request.
-    $.ajax(request)
+    return $.ajax(request)
+      .promise()
       .done(_validate)
-      .done(function() {
-        deferred.resolve();
-      })
       .fail(_fail)
       .always(_always);
-
-    return deferred.promise();
 
   },
 
