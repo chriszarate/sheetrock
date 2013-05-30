@@ -426,7 +426,7 @@
 
   // Extract the key from a spreadsheet URL.
   _key = function(url) {
-    var keyRegExp = new RegExp('key=([a-z0-9\-]{30,})&?','i');
+    var keyRegExp = new RegExp('key=([a-z0-9-]{30,})&?','i');
     return (keyRegExp.test(url)) ? url.match(keyRegExp)[1] : false;
   },
 
