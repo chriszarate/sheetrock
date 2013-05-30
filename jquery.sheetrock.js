@@ -38,9 +38,6 @@
   // Column labels storage
   var _columns = {},
 
-  // Array of unfulfilled promises.
-  _promises = [],
-
   // Callback index
   _callbackIndex = 0,
 
@@ -54,12 +51,6 @@
 
   // Load data from API.
   _init = function(options) {
-
-    // Removed fulfilled promises.
-    _promises = $.grep(_promises, _fulfilled, true);
-
-    // Add most recent promise.
-    _promises.push($.fn.sheetrock.promise);
 
     // Chain off of previous promise.
     $.fn.sheetrock.promise = $.fn.sheetrock.promise
@@ -96,25 +87,34 @@
   // Prefetch column labels.
   _prefetch = function(options) {
 
+    // Initialize promise.
+    var deferred = $.Deferred(),
+
     // Options for prefetching column labels
-    var prefetch = {
+    prefetch = {
       sql: 'select * limit 1',
       dataHandler: _columns_hash,
       userCallback: $.noop,
       target: false
     };
 
-    if(options.sql.indexOf('%') !== -1 && $.isEmptyObject(options.columns)) {
+    if(options.sql.indexOf('%') !== -1 && !_get_columns(options)) {
       _log('Prefetching column labels.');
-      return _fetch($.extend({}, options, prefetch));
+      _fetch($.extend({}, options, prefetch)).done(function() {
+        deferred.resolve();
+      });
     } else {
-      return new $.Deferred().resolve();
+      deferred.resolve();
     }
+
+    return deferred.promise();
 
   },
 
   // Send request with prevalidated options.
   _fetch = function(options) {
+
+    var deferred = $.Deferred();
 
     // Populate user-facing indicators.
     _begin(options);
@@ -146,7 +146,15 @@
     _log(request, options.debug);
 
     // Send request.
-    return $.ajax(request).done(_validate).fail(_fail).always(_always);
+    $.ajax(request)
+      .done(_validate)
+      .done(function() {
+        deferred.resolve();
+      })
+      .fail(_fail)
+      .always(_always);
+
+    return deferred.promise();
 
   },
 
@@ -305,6 +313,15 @@
     _columns[this.key + this.gid] = hash;
   },
 
+  // Determine the best available columns hash, if any.
+  _get_columns = function(options) {
+    if($.isEmptyObject(options.columns)) {
+      return _columns[options.key + options.gid] || false;
+    } else {
+      return options.columns;
+    }
+  },
+
 
   /* Validation and assembly */
 
@@ -321,9 +338,6 @@
     // Validate chunk size and header rows.
     options.chunkSize = (options.target) ? _nat(options.chunkSize) : 0;
     options.headers = _nat(options.headers);
-
-    // Retrieve column labels.
-    options.columns = _columns[options.key + options.gid] || options.columns || {};
 
     // Retrieve offset.
     options.offset = (options.chunkSize) ? _get(options.target, _offset) : 0;
@@ -369,7 +383,7 @@
 
     // Optional SQL request.
     if(options.sql) {
-      params.tq = _swap(options.sql, _columns[options.key + options.gid] || options.columns);
+      params.tq = _swap(options.sql, _get_columns(options));
     }
 
     return params;
@@ -450,11 +464,6 @@
     return _label(col) || col.id;
   },
 
-  // Determine if a promise has been fulfilled.
-  _fulfilled = function(promise) {
-    return promise.state() === 'resolved';
-  },
-
   // Swap column %labels% with column letters.
   _swap = function(sql, columns) {
     $.each(columns, function(key, val) {
@@ -530,6 +539,6 @@
   $.fn.sheetrock.working = 0;
 
   // This property contains a jQuery promise for the most recent request.
-  $.fn.sheetrock.promise = new $.Deferred().resolve();
+  $.fn.sheetrock.promise = $.Deferred().resolve();
 
 })(jQuery);
