@@ -7,6 +7,8 @@
 
 ;(function($) {
 
+  "use strict";
+
   $.fn.sheetrock = function(options, data) {
 
     // Validate and store `this`.
@@ -88,7 +90,7 @@
   _prefetch = function(options) {
 
     // Options for prefetching column labels
-    prefetch = {
+    var prefetch = {
       sql: 'select * limit 1',
       dataHandler: _columns_hash,
       userCallback: $.noop,
