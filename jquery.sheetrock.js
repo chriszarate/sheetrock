@@ -542,4 +542,7 @@
   // This property contains a jQuery promise for the most recent request.
   $.fn.sheetrock.promise = $.Deferred().resolve();
 
+  // Version number.
+  $.fn.sheetrock.version = '0.1.2';
+
 });
