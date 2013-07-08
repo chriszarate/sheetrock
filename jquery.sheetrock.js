@@ -5,7 +5,19 @@
  * http://github.com/chriszarate/sheetrock
  */
 
-;(function($) {
+;(function(sheetrock) {
+
+  "use strict";
+
+  /* AMD support */
+
+  if(typeof define === 'function' && define.amd) {
+    define('jquery.sheetrock', ['jquery'], sheetrock);
+  } else {
+    sheetrock(window.jQuery);
+  }
+
+})(function($) {
 
   "use strict";
 
@@ -504,7 +516,7 @@
     // http://github.com/chriszarate/sheetrock
 
     url:          '',       // String  -- Google spreadsheet URL
-    sql:          '',       // String  -- Google Visualization API query (SQL-like)
+    sql:          '',       // String  -- Google Visualization API query
     chunkSize:    0,        // Integer -- Number of rows to fetch (0 = all)
     columns:      {},       // Object  -- Hash of column letters and labels
     labels:       [],       // Array   -- Override *returned* column labels
@@ -530,4 +542,4 @@
   // This property contains a jQuery promise for the most recent request.
   $.fn.sheetrock.promise = $.Deferred().resolve();
 
-})(jQuery);
+});
