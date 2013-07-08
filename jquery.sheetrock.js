@@ -475,7 +475,7 @@
 
   // Validate jQuery object or selector.
   _val_jquery = function(ref) {
-    return (ref && !(ref instanceof jQuery)) ? $(ref) : ref;
+    return (ref && !(ref instanceof $)) ? $(ref) : ref;
   },
 
   // Convert array to object.
