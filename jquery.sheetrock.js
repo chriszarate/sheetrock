@@ -1,11 +1,23 @@
 /*
- * jQuery Sheetrock v0.1.2
+ * jQuery Sheetrock v0.1.3
  * Quickly connect to, query, and lazy-load data from Google Spreadsheets
  * Requires jQuery >=1.6
  * http://github.com/chriszarate/sheetrock
  */
 
-;(function($) {
+;(function(sheetrock) {
+
+  "use strict";
+
+  /* AMD support */
+
+  if(typeof define === 'function' && define.amd) {
+    define('jquery.sheetrock', ['jquery'], sheetrock);
+  } else {
+    sheetrock(window.jQuery);
+  }
+
+})(function($) {
 
   "use strict";
 
@@ -463,7 +475,7 @@
 
   // Validate jQuery object or selector.
   _val_jquery = function(ref) {
-    return (ref && !(ref instanceof jQuery)) ? $(ref) : ref;
+    return (ref && !(ref instanceof $)) ? $(ref) : ref;
   },
 
   // Convert array to object.
@@ -504,7 +516,7 @@
     // http://github.com/chriszarate/sheetrock
 
     url:          '',       // String  -- Google spreadsheet URL
-    sql:          '',       // String  -- Google Visualization API query (SQL-like)
+    sql:          '',       // String  -- Google Visualization API query
     chunkSize:    0,        // Integer -- Number of rows to fetch (0 = all)
     columns:      {},       // Object  -- Hash of column letters and labels
     labels:       [],       // Array   -- Override *returned* column labels
@@ -530,4 +542,7 @@
   // This property contains a jQuery promise for the most recent request.
   $.fn.sheetrock.promise = $.Deferred().resolve();
 
-})(jQuery);
+  // Version number.
+  $.fn.sheetrock.version = '0.1.3';
+
+});
