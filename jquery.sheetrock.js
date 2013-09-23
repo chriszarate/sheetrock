@@ -1,5 +1,5 @@
 /*
- * jQuery Sheetrock v0.1.3
+ * jQuery Sheetrock v0.1.4
  * Quickly connect to, query, and lazy-load data from Google Spreadsheets
  * Requires jQuery >=1.6
  * http://github.com/chriszarate/sheetrock
@@ -440,13 +440,13 @@
 
   // Extract the key from a spreadsheet URL.
   _key = function(url) {
-    var keyRegExp = new RegExp('key=([a-z0-9-]{30,})&?','i');
+    var keyRegExp = new RegExp('key=([^&#]+)','i');
     return (keyRegExp.test(url)) ? url.match(keyRegExp)[1] : false;
   },
 
   // Extract the gid from a spreadsheet URL.
   _gid = function(url) {
-    var gidRegExp = new RegExp('gid=([0-9]+)','i');
+    var gidRegExp = new RegExp('gid=([^&#]+)','i');
     return (gidRegExp.test(url)) ? url.match(gidRegExp)[1] : false;
   },
 
@@ -543,6 +543,6 @@
   $.fn.sheetrock.promise = $.Deferred().resolve();
 
   // Version number.
-  $.fn.sheetrock.version = '0.1.3';
+  $.fn.sheetrock.version = '0.1.4';
 
 });
