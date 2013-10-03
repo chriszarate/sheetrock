@@ -1,5 +1,5 @@
 /*
- * jQuery Sheetrock v0.1.4
+ * jQuery Sheetrock v0.1.5
  * Quickly connect to, query, and lazy-load data from Google Spreadsheets
  * Requires jQuery >=1.6
  * http://github.com/chriszarate/sheetrock
@@ -262,13 +262,20 @@
   // Parse data, row by row.
   _parse = function(data) {
 
-    // Store reference to options hash.
-    var options = this;
+    // Store reference to options hash and target.
+    var options = this,
+        target = options.target;
+
+    // Add row group tags, if requested.
+    $.extend(options, {
+      thead: (options.rowGroups) ? $('<thead/>').appendTo(target) : target,
+      tbody: (options.rowGroups) ? $('<tbody/>').appendTo(target) : target
+    });
 
     // Output a header row if needed.
     if(!options.offset && !options.headersOff) {
       if(options.parsed.header || !options.headers) {
-        options.target.append(options.rowHandler({
+        options.thead.append(options.rowHandler({
           num: 0,
           cells: _arr_to_obj(options.parsed.labels)
         }));
@@ -295,13 +302,20 @@
           });
 
           // Pass to row handler and append to target.
-          options.target.append(options.rowHandler(objData));
+          if(objData.num) {
+            options.tbody.append(options.rowHandler(objData));
+          } else {
+            options.thead.append(options.rowHandler(objData));
+          }
 
         }
 
       }
 
     });
+
+    // fs
+    options.target.children('tr:has(th)').wrap('<thead></thead>');
 
   },
 
@@ -528,6 +542,7 @@
     debug:        false,    // Boolean -- Output raw data to the console
     headers:      0,        // Integer -- Number of header rows
     headersOff:   false,    // Boolean -- Suppress header row output
+    rowGroups:    false,    // Boolean -- Output <thead> and <tbody> tags
     formatting:   false     // Boolean -- Include Google HTML formatting
 
   };
@@ -543,6 +558,6 @@
   $.fn.sheetrock.promise = $.Deferred().resolve();
 
   // Version number.
-  $.fn.sheetrock.version = '0.1.4';
+  $.fn.sheetrock.version = '0.1.5';
 
 });
