@@ -314,9 +314,6 @@
 
     });
 
-    // fs
-    options.target.children('tr:has(th)').wrap('<thead></thead>');
-
   },
 
   // Store a columns hash in the plugin scope.
