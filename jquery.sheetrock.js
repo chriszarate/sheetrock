@@ -1,5 +1,5 @@
 /*
- * jQuery Sheetrock v0.1.5
+ * jQuery Sheetrock v0.1.6
  * Quickly connect to, query, and lazy-load data from Google Spreadsheets
  * Requires jQuery >=1.6
  * http://github.com/chriszarate/sheetrock
@@ -555,6 +555,6 @@
   $.fn.sheetrock.promise = $.Deferred().resolve();
 
   // Version number.
-  $.fn.sheetrock.version = '0.1.5';
+  $.fn.sheetrock.version = '0.1.6';
 
 });
