@@ -58,8 +58,11 @@
 
   /* Setup */
 
+  // Google API endpoint
+  var _server = 'https://spreadsheets.google.com/tq',
+
   // Placeholder for column labels
-  var _columnLabels = {},
+  _columnLabels = {},
 
   // Callback function index
   _callbackIndex = 0,
@@ -169,7 +172,7 @@
       // Use user options object as context (`this`) for data handler.
       context: options,
 
-      url: $.fn.sheetrock.server,
+      url: options.server,
       dataType: 'jsonp',
       cache: true,
 
@@ -661,6 +664,7 @@
 
     url:          '',          // String  -- Google spreadsheet URL
     sql:          '',          // String  -- Google Visualization API query
+    server:       _server,     // String  -- Google API endpoint
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     columns:      {},          // Object  -- Hash of column letters and labels
     labels:       [],          // Array   -- Override *returned* column labels
@@ -677,10 +681,7 @@
 
   };
 
-  // Google API endpoint.
-  $.fn.sheetrock.server = 'https://spreadsheets.google.com/tq';
-
-  // This property is set to true when there is an active AJAX request. This
+  // This property is set to `true` when there is an active AJAX request. This
   // can be useful for infinite scroll bindings or other monitoring.
   $.fn.sheetrock.working = false;
 
