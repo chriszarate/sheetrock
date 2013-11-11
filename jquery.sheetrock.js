@@ -23,8 +23,8 @@
 
   $.fn.sheetrock = function(options, data) {
 
-    // Validate and store `this`.
-    options.target = (this.length) ? this : false;
+    // Store reference to `this`.
+    options.target = this;
 
     // Load and validate options.
     options = _options(options);
@@ -348,7 +348,7 @@
     options.gid = _gid(options.url);
 
     // Validate chunk size and header rows.
-    options.chunkSize = (options.target) ? _nat(options.chunkSize) : 0;
+    options.chunkSize = (options.target.length) ? _nat(options.chunkSize) : 0;
     options.headers = _nat(options.headers);
 
     // Retrieve offset.
@@ -358,7 +358,7 @@
     options.loading = _val_jquery(options.loading);
 
     // Require `this` or a handler to receive the data.
-    if(!options.target && options.dataHandler === _parse) {
+    if(!options.target.length && options.dataHandler === _parse) {
       return _log('No element targeted or data handler provided.');
     // Abandon already-completed requests.
     } else if(_get(options.target, _loaded)) {
