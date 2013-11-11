@@ -279,12 +279,14 @@ On large spreadsheets (~5000 rows), the performance of Google’s API when using
 `sql` queries can be sluggish and, in some cases, can severely affect the
 responsiveness of your application. At this point, consider caching the
 responses for reuse.
+
+* If you need to change the Google API endpoint—maybe because you want to use
+a caching proxy like Amazon CloudFront—use the (undocumented) `server` option.
+
 * Sheetrock provides a way to reuse manually cached data. It accepts a second
 parameter of response data to be used instead of making an API request (e.g.,
 `$('#table').sheetrock(options, cachedResponse);`). Make sure you pass an
 object and not a JSON string.
-* If you need to change the Google API endpoint—maybe because you want to use
-a caching proxy—that’s at `$.fn.sheetrock.server`.
 
 
 ## Tips and troubleshooting
@@ -292,8 +294,10 @@ a caching proxy—that’s at `$.fn.sheetrock.server`.
 * Sheetrock sometimes outputs useful information to the browser console,
 including options validation problems and warnings and errors reported by
 Google’s API.
+
 * When there is an outstanding AJAX request, `$.fn.sheetrock.working` will be
 set to `true`. This can be useful for infinite scroll bindings, for example.
+
 * You can also latch onto the most recent jQuery promise via
 `$.fn.sheetrock.promise`. Make sure you return a another promise so that
 Sheetrock can continue to chain off of it.
