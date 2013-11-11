@@ -232,8 +232,8 @@
     // Show loading indicator.
     options.loading.show();
 
-    // Increment the `working` flag.
-    $.fn.sheetrock.working = $.fn.sheetrock.working + 1;
+    // Turn on the `working` flag.
+    $.fn.sheetrock.working = true;
 
   },
 
@@ -243,8 +243,8 @@
     // Hide the loading indicator.
     this.loading.hide();
 
-    // Decrement the `working` flag.
-    $.fn.sheetrock.working = $.fn.sheetrock.working - 1;
+    // Turn off the `working` flag.
+    $.fn.sheetrock.working = false;
 
     // Call the user's callback function.
     this.userCallback(this);
@@ -680,9 +680,9 @@
   // Google API endpoint.
   $.fn.sheetrock.server = 'https://spreadsheets.google.com/tq';
 
-  // This property is set to the number of active requests. This can be useful
-  // for user monitoring or for infinite scroll bindings.
-  $.fn.sheetrock.working = 0;
+  // This property is set to true when there is an active AJAX request. This
+  // can be useful for infinite scroll bindings or other monitoring.
+  $.fn.sheetrock.working = false;
 
   // This property contains a jQuery promise for the most recent request. If
   // you chain off of this, be sure to return another jQuery promise so
