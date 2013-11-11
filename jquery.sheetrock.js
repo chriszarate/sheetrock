@@ -532,8 +532,7 @@
     return Math.max(0, parseInt(str, 10) || 0);
   },
 
-  // Return true if an object has a property. Accepts multiple properties.
-  // _has(obj, 'prop1', 'prop2', [...])
+  // Return true if an object has all of the passed arguments as properties.
   _has = function(obj) {
     for(var i = 1; i < arguments.length; i = i + 1) {
       if(!_defined(obj[arguments[i]])) {
@@ -543,16 +542,21 @@
     return true;
   },
 
-  // Return true if variable is defined.
-  _defined = function(def) {
-    return (typeof def === 'undefined') ? false : true;
+  // Return true if all of the passed arguments are defined.
+  _defined = function() {
+    for(var i = 0; i < arguments.length; i = i + 1) {
+      if(typeof arguments[i] === 'undefined') {
+        return false;
+      }
+    }
+    return true;
   },
 
   // Log something to the browser console, if it exists. The argument "show"
   // is a Boolean (default = true) that determines whether to proceed.
   _console = function(msg, show) {
-    show = (_defined(show)) ? show : true;
-    if(show && window.console && console.log) {
+    show = (_defined(show, console)) ? show : true;
+    if(show && console.log) {
       console.log(msg);
     }
     return false;
