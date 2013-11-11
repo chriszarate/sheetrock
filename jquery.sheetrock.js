@@ -5,15 +5,14 @@
  * http://github.com/chriszarate/sheetrock
  */
 
-;(function(sheetrock) {
+(function(sheetrock) {
 
-  "use strict";
+  'use strict';
 
-  /*
-    AMD support
-    Since we are simply modifying the jQuery object, there is no need to
-    use a require statement to load this plugin.
-  */
+  // AMD support: Since we are simply modifying the jQuery object, there is no
+  // need to use a require statement to load this plugin.
+
+  /* global define */
 
   if(typeof define === 'function' && define.amd) {
     define('jquery.sheetrock', ['jquery'], sheetrock);
@@ -23,7 +22,7 @@
 
 })(function($) {
 
-  "use strict";
+  'use strict';
 
   $.fn.sheetrock = function(options, data) {
 
@@ -156,7 +155,8 @@
 
     // Specify a custom callback function since Google doesn't use the
     // default implementation favored by jQuery.
-    options.callback = 'sheetrock_callback_' + _callbackIndex++;
+    options.callback = 'sheetrock_callback_' + _callbackIndex;
+    _callbackIndex = _callbackIndex + 1;
 
     // AJAX request options
     var request = {
@@ -232,7 +232,7 @@
     options.loading.show();
 
     // Increment the `working` flag.
-    $.fn.sheetrock.working++;
+    $.fn.sheetrock.working = $.fn.sheetrock.working + 1;
 
   },
 
@@ -246,7 +246,7 @@
     this.userCallback(this);
 
     // Decrement the `working` flag.
-    $.fn.sheetrock.working--;
+    $.fn.sheetrock.working = $.fn.sheetrock.working - 1;
 
   },
 
@@ -514,7 +514,7 @@
   // Return true if an object has a property. Accepts multiple properties.
   // _has(obj, 'prop1', 'prop2', [...])
   _has = function(obj) {
-    for(var i = 1; i < arguments.length; i++) {
+    for(var i = 1; i < arguments.length; i = i + 1) {
       if(!_def(obj[arguments[i]])) {
         return false;
       }
