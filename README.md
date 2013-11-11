@@ -16,7 +16,8 @@ Basic retrieval is a snap but you can also:
 
 ## Interactive documentation
 
-**Visit [http://chriszarate.github.io/sheetrock/][gh-pages] for a version of this documentation that includes jsFiddles.**
+**Visit [http://chriszarate.github.io/sheetrock/][gh-pages] for a version of
+this documentation that includes jsFiddles.**
 
 
 ## Usage
@@ -288,11 +289,14 @@ a caching proxy—that’s at `$.fn.sheetrock.server`.
 
 ## Tips and troubleshooting
 
-* Sheetrock sometimes outputs useful information to the browser console, including options
-  validation problems and warnings and errors reported by Google’s API.
-* At any time, you can find the number of outstanding AJAX requests in `$.fn.sheetrock.working`.
-* You can also latch onto the most recent jQuery promise via `$.fn.sheetrock.promise`. Make
-  sure you return a promise so that Sheetrock can continue to chain off of it.
+* Sheetrock sometimes outputs useful information to the browser console,
+including options validation problems and warnings and errors reported by
+Google’s API.
+* When there is an outstanding AJAX request, `$.fn.sheetrock.working` will be
+set to `true`. This can be useful for infinite scroll bindings, for example.
+* You can also latch onto the most recent jQuery promise via
+`$.fn.sheetrock.promise`. Make sure you return a another promise so that
+Sheetrock can continue to chain off of it.
 
 
 ## Projects using Sheetrock
@@ -303,9 +307,9 @@ a caching proxy—that’s at `$.fn.sheetrock.server`.
 
 ## Credits and license
 
-Sheetrock was inspired by [Tabletop.js][tabletop] (which will teach you jazz piano).
-[John Brecht][brecht] came up with the name. Sheetrock is released under the MIT
-license.
+Sheetrock was inspired by [Tabletop.js][tabletop] (which will teach you jazz
+piano). [John Brecht][brecht] came up with the name. Sheetrock is released
+under the MIT license.
 
 
 [public]:     https://support.google.com/drive/bin/answer.py?hl=en&answer=2494822
