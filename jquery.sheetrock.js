@@ -2,7 +2,7 @@
  * jQuery Sheetrock v0.1.6
  * Quickly connect to, query, and lazy-load data from Google Spreadsheets
  * Requires jQuery >=1.6
- * http://github.com/chriszarate/sheetrock
+ * http://chriszarate.github.io/sheetrock/
  */
 
 (function(sheetrock) {
@@ -657,7 +657,7 @@
   $.fn.sheetrock.options = {
 
     // Documentation is available at:
-    // http://chriszarate.github.io/sheetrock
+    // http://chriszarate.github.io/sheetrock/
 
     url:          '',          // String  -- Google spreadsheet URL
     sql:          '',          // String  -- Google Visualization API query
