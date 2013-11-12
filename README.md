@@ -322,6 +322,8 @@ responses for reuse.
 ## Projects using Sheetrock
 
 * [TAGS Viewer][tags]
+* [Equity][equity]
+* [Kuppi][kuppi]
 * Tell me about your project on the [Wiki][wiki]!
 
 
@@ -332,13 +334,15 @@ piano). [John Brecht][brecht] came up with the name. Sheetrock is released
 under the MIT license.
 
 
-[public]:     https://support.google.com/drive/bin/answer.py?hl=en&answer=2494822
-[query]:      https://developers.google.com/chart/interactive/docs/querylanguage
+[public]: https://support.google.com/drive/bin/answer.py?hl=en&answer=2494822
+[query]: https://developers.google.com/chart/interactive/docs/querylanguage
 [underscore]: http://underscorejs.org
 [handlebars]: http://handlebarsjs.com
-[gh-pages]:   http://chriszarate.github.io/sheetrock/
-[sheet]:      https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0
-[tags]:       https://github.com/mlaa/tags-viewer
-[wiki]:       https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock
-[tabletop]:   http://builtbybalance.com/Tabletop/
-[brecht]:     http://about.me/john.brecht
+[gh-pages]: http://chriszarate.github.io/sheetrock/
+[sheet]: https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0
+[tags]: https://github.com/mlaa/tags-viewer
+[equity]: https://play.google.com/store/apps/details?id=com.leosoftwares.equity
+[kuppi]: https://play.google.com/store/apps/details?id=com.leosoftwares.kuppi
+[wiki]: https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock
+[tabletop]: http://builtbybalance.com/Tabletop/
+[brecht]: http://about.me/john.brecht
