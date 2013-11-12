@@ -280,10 +280,10 @@ automatically but Google’s response format makes it difficult.
 Set to `true` to suppress output of header row(s) to the row handler.
 
 ### rowGroups
-* Default `false`
+* Default `true`
 * Expects Boolean
 
-Set to `true` to enable use of row group tags (`<thead>` and `<tbody>`).
+Set to `false` to disable use of row group tags (`<thead>` and `<tbody>`).
 
 ### formatting
 * Default `false`
