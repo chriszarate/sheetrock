@@ -108,16 +108,16 @@ $('#hr').sheetrock({
 
 ### Advanced queries
 
-Next, let’s group some data. For a more readable query, we’ll use column
-labels (`%Team%` and `%RBI%`) instead of column letters, and we’ll specify the
-labels we want Sheetrock to use when it returns the data (`labels:
-['Team', 'RBI']`).
+Next, let’s group some data. For a more readable query, we’ll use the
+spreadsheet’s column labels (`%Team%` and `%RBI%`) instead of column letters,
+and we’ll specify the labels we want Sheetrock to use when it returns the data
+(`labels: ['TeamName', 'TeamRBI']`).
 
 ```html
 <h3>Team RBI</h3>
 <ol id="team-rbi">
   <script type="text/underscore-template" id="team-rbi-template">
-    <li><strong><%= cells.Team %></strong>, <%= cells.RBI %></li>
+    <li><strong><%= cells.TeamName %></strong>, <%= cells.TeamRBI %></li>
   </script>
 </ol>
 ```
@@ -130,7 +130,7 @@ $('#team-rbi').sheetrock({
   sql: "select %Team%,sum(%RBI%) group by %Team% order by sum(%RBI%) desc",
   chunkSize: 5,
   headersOff: true,
-  labels: ['Team', 'RBI'],
+  labels: ['TeamName', 'TeamRBI'],
   rowHandler: RBITemplate
 });
 ```
@@ -166,17 +166,17 @@ $.fn.sheetrock.options.url = '[...]';
 * Expects string
 
 The URL of a public Google spreadsheet. This is the only required option.
-([How do I make a spreadsheet public?][public])
+(*See* [How do I make a spreadsheet public?][public])
 
 ### sql
 * Default `''`
 * Expects string
 
 A [Google Visualization API query][query] string. By default, Google only
-allows column letters (e.g., A, B) in queries. If you prefer, you can use
-column labels in your query and they will be swapped out with the
-corresponding column letters. Wrap column labels in percent signs, e.g.,
-`"select %name%,%age% where %age% > 21"`.
+allows column letters (e.g., `A`, `B`) in queries. If you prefer, you can use
+the column labels of your spreadsheet in your query and they will be swapped
+out with the corresponding column letters. To do this, wrap column labels in
+percent signs, e.g., `select %name%,%age% where %age% > 21`.
 
 ### chunkSize
 * Default `0`
@@ -192,19 +192,26 @@ next request, it will pick up where it left off.
 * Default `{}`
 * Expects hash map of column letters to strings
 
-If you want don’t want to bother with making sure the column labels that you
-use in your query match the ones used in the spreadsheet—they must match
-exactly—you can override them using a hash map, e.g., `{A: 'ID', B: 'Name',
-C: 'Phone'}`. This also avoids the overhead (additional AJAX request) of
-prefetching the column labels.
+If you use column labels instead of column letters in your `sql` query (e.g.,
+`select %name%`), they must *exactly* match the ones used in your spreadsheet.
+If you don’t want to bother with that, you can supply your own column labels,
+e.g., `{A: 'ID', B: 'FullName', C: 'Age'}`. Then you can use your supplied
+column labels in your `sql` query (e.g., `select %FullName%`). This also
+avoids the overhead (additional AJAX request) of prefetching the column
+labels. **Note:** This option only applies to your `sql` query and has no
+effect on the column labels *returned* by Google’s API (see `labels`, below).
 
 ### labels
 * Default `[]`
 * Expects array of strings
 
-Override the *returned* column labels with an array of strings. This option is
-useful when you have complicated queries and would like a shorthand way of
-referencing them in your templates. The length of this array must match the number of columns in the returned data.
+Override the *returned* column labels with an array of strings. If you use
+your own row handler or template, you must reference column labels exactly as
+they are returned by Google’s API. Further, if your `sql` query uses `group`,
+`pivot`, or any of the [manipulation functions][manip], you will notice that
+Google’s returned column labels can be hard to predict. In those cases, this
+option can prove essential. The length of this array must match the number of
+columns in the returned data.
 
 ### rowHandler
 * Default `_toHTML` (internal function; provides HTML table row output)
@@ -228,8 +235,7 @@ The cell handler is used to process every cell value. It should return a
 string.
 
 ### dataHandler
-* Default `_parseData` (internal function; loops through data and calls row
-  handler)
+* Default `_parseData` (internal function; creates HTML table)
 * Expects function
 
 Providing your own data handler means you don’t want any data processing to
@@ -258,7 +264,7 @@ ends.
 * Expects Boolean
 
 Output raw request and response data to the browser console. Useful for
-debugging when you are using your own handlers.
+debugging, especially when you are using your own handlers.
 
 ### headers
 * Default `0`
@@ -283,14 +289,15 @@ Set to `true` to enable use of row group tags (`<thead>` and `<tbody>`).
 * Default `false`
 * Expects Boolean
 
-For each cell, Google passes along HTML formatting intended to replicate any
-formatting you applied in the spreadsheet. It’s usually a bit wacky, so take
-care when enabling this option.
+Google passes along HTML formatting intended to replicate any formatting you
+applied in the spreadsheet. When set to `true`, the default cell handler will
+wrap the cell value in a `span` with a `style` attribute. The formatting is
+usually a bit wacky, so take care when enabling this option.
 
 
 ## Caching
 
-On large spreadsheets (~5000 rows), the performance of Google’s API when using
+On large spreadsheets (~5,000 rows), the performance of Google’s API when using
 `sql` queries can be sluggish and, in some cases, can severely affect the
 responsiveness of your application. At this point, consider caching the
 responses for reuse.
