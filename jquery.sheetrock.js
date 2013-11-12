@@ -61,16 +61,18 @@
   // Google API endpoint
   var _server = 'https://spreadsheets.google.com/tq',
 
-  // Placeholder for column labels
-  _columnLabels = {},
+  // Placeholder for request status cache
+  _requestStatusCache = {
+    loaded: {},
+    failed: {},
+    offset: {}
+  },
+
+  // Placeholder for column labels cache
+  _columnLabelsCache = {},
 
   // Callback function index
   _callbackIndex = 0,
-
-  // Data labels
-  _errorFlag  = 'sheetrockError',
-  _loadedFlag = 'sheetrockLoaded',
-  _offsetFlag = 'sheetrockRowOffset',
 
 
   /* Task runners */
@@ -153,8 +155,8 @@
       options.sql += ' limit ' + (options.chunkSize + 1);
       options.sql += ' offset ' + options.offset;
 
-      // Store the new row offset on the target element using jQuery.data.
-      _putData(options.target, _offsetFlag, options.offset + options.chunkSize);
+      // Remember the new row offset.
+      _requestStatusCache.offset[options.requestID] = options.offset + options.chunkSize;
 
     }
 
@@ -257,8 +259,8 @@
   // Generic error handler for AJAX errors.
   _handleError = function() {
 
-    // Store an error flag on the target element using jQuery.data.
-    _putData(this.target, _errorFlag, 1);
+    // Remember that this request failed.
+    _requestStatusCache.failed[this.requestID] = true;
 
     // Log the error to the console.
     _console('Request failed.');
@@ -336,13 +338,9 @@
     options.parsed.last =
       (options.chunkSize) ? Math.min(data.table.rows.length, options.chunkSize) : data.table.rows.length;
 
-    // The request is fully loaded when the last returned row is smaller than
-    // the chunk size.
-    options.parsed.loaded =
-      (!options.chunkSize || options.parsed.last < options.chunkSize) ? 1 : 0;
-
-    // Store the loaded status on the target element using jQuery.data.
-    _putData(options.target, _loadedFlag, options.parsed.loaded);
+    // Remember whether this request has been fully loaded.
+    _requestStatusCache.loaded[options.requestID] =
+      !options.chunkSize || options.parsed.last < options.chunkSize;
 
     // Determine if Google has extracted column labels from a header row.
     options.parsed.header =
@@ -440,21 +438,21 @@
 
   },
 
-  // Cache column labels (indexed by key+gid) in the plugin scope. This way
+  // Cache column labels (indexed by key_gid) in the plugin scope. This way
   // column labels will only be prefetched once.
   _cacheColumnLabels = function(data) {
     var labels = {};
     $.each(data.table.cols, function(i, col) {
       labels[col.id] = _getColumnLabelOrLetter(col);
     });
-    _columnLabels[this.key + this.gid] = labels;
+    _columnLabelsCache[this.key + '_' + this.gid] = labels;
   },
 
   // Look for acceptable column labels first in the passed options, then in
   // the column label cache. Fallback to `false`, which triggers a prefetch.
   _getColumnLabels = function(options) {
     if($.isEmptyObject(options.columns)) {
-      return _columnLabels[options.key + options.gid] || false;
+      return _columnLabelsCache[options.key + '_' + options.gid] || false;
     } else {
       return options.columns;
     }
@@ -473,6 +471,9 @@
     options.key = _extractKey(options.url);
     options.gid = _extractGID(options.url);
 
+    // Set request ID (key_gid_sql).
+    options.requestID = options.key + '_' + options.gid + '_' + options.sql;
+
     // Validate chunk size.
     options.chunkSize = (options.target.length) ? _stringToNaturalNumber(options.chunkSize) : 0;
 
@@ -480,7 +481,7 @@
     options.headers = _stringToNaturalNumber(options.headers);
 
     // Retrieve current row offset.
-    options.offset = (options.chunkSize) ? _getData(options.target, _offsetFlag) : 0;
+    options.offset = _requestStatusCache.offset[options.requestID] || 0;
 
     // Make sure `loading` is a jQuery object.
     options.loading = _validatejQueryObject(options.loading);
@@ -491,12 +492,12 @@
     }
 
     // Abandon requests that have already been loaded.
-    if(_getData(options.target, _loadedFlag)) {
+    if(_requestStatusCache.loaded[options.requestID]) {
       return _console('No more rows to load!');
     }
 
     // Abandon requests that have previously generated an error.
-    if(_getData(options.target, _errorFlag)) {
+    if(_requestStatusCache.failed[options.requestID]) {
       return _console('A previous request for this resource failed.');
     }
 
@@ -563,16 +564,6 @@
       console.log(msg);
     }
     return false;
-  },
-
-  // Retrieve data from a DOM element using jQuery.data.
-  _getData = function(el, key) {
-    return (el.length) ? $.data(el[0], key) || 0 : 0;
-  },
-
-  // Store data on a DOM element using jQuery.data.
-  _putData = function(el, key, val) {
-    return (el.length) ? $.data(el[0], key, val) || 0 : 0;
   },
 
   // Extract the "key" from a Google Spreadsheet URL.

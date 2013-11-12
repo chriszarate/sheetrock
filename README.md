@@ -184,9 +184,8 @@ percent signs, e.g., `select %name%,%age% where %age% > 21`.
 
 Use this option to enable lazy-loading or chunking of the data. When set to
 `0`, Sheetrock will fetch all available rows. When set to `10`, for example,
-it will fetch ten rows and keep track of how many rows have been requested (by
-storing an `offset` on the targeted element using jQuery’s `$.data`). On the
-next request, it will pick up where it left off.
+it will fetch ten rows and keep track of how many rows have been requested. On
+the next request with the same query, it will pick up where it left off.
 
 ### columns
 * Default `{}`
