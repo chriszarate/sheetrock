@@ -255,9 +255,10 @@ responses for reuse.
 
 ## Credits and license
 
-Sheetrock was inspired by [Tabletop.js][tabletop] (which will teach you jazz
-piano). [John Brecht][brecht] came up with the name. Sheetrock is released
-under the [MIT license][license].
+Sheetrock was written by [Chris Zarate][me]. It was inspired in part by
+[Tabletop.js][tabletop] (which will teach you jazz piano).
+[John Brecht][brecht] came up with the name. Sheetrock is released under the
+[MIT license][license].
 
 
 [public]: https://support.google.com/drive/bin/answer.py?hl=en&answer=2494822
@@ -272,6 +273,7 @@ under the [MIT license][license].
 [equity]: https://play.google.com/store/apps/details?id=com.leosoftwares.equity
 [kuppi]: https://play.google.com/store/apps/details?id=com.leosoftwares.kuppi
 [wiki]: https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock
+[me]: http://chris.zarate.org
 [tabletop]: http://builtbybalance.com/Tabletop/
 [brecht]: http://about.me/john.brecht
 [license]: http://opensource.org/licenses/MIT
