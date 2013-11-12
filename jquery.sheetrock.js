@@ -676,7 +676,7 @@
     debug:        false,       // Boolean -- Output raw data to the console
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
-    rowGroups:    false,       // Boolean -- Output <thead> and <tbody> tags
+    rowGroups:    true,        // Boolean -- Output <thead> and <tbody> tags
     formatting:   false        // Boolean -- Include Google HTML formatting
 
   };
