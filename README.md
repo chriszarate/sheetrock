@@ -253,6 +253,11 @@ responses for reuse.
 * Tell me about your project on the [Wiki][wiki]!
 
 
+## Change log
+
+*See* [CHANGELOG.md][changelog].
+
+
 ## Credits and license
 
 Sheetrock was written by [Chris Zarate][me]. It was inspired in part by
@@ -273,6 +278,7 @@ Sheetrock was written by [Chris Zarate][me]. It was inspired in part by
 [equity]: https://play.google.com/store/apps/details?id=com.leosoftwares.equity
 [kuppi]: https://play.google.com/store/apps/details?id=com.leosoftwares.kuppi
 [wiki]: https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock
+[changelog]: https://github.com/chriszarate/sheetrock/blob/master/CHANGELOG.md
 [me]: http://chris.zarate.org
 [tabletop]: http://builtbybalance.com/Tabletop/
 [brecht]: http://about.me/john.brecht
