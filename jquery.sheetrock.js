@@ -486,6 +486,14 @@
     // Make sure `loading` is a jQuery object.
     options.loading = _validatejQueryObject(options.loading);
 
+    // If requested, reset request status.
+    if(options.resetStatus) {
+      _requestStatusCache.loaded[options.requestID] = false;
+      _requestStatusCache.failed[options.requestID] = false;
+      _requestStatusCache.offset[options.requestID] = 0;
+      options.offset = 0;
+    }
+
     // Require `this` or a data handler. Otherwise, the data has nowhere to go.
     if(!options.target.length && options.dataHandler === _parseData) {
       return _console('No element targeted or data handler provided.');
@@ -664,11 +672,12 @@
     dataHandler:  _parseData,  // Function
     userCallback: $.noop,      // Function
     loading:      $(),         // jQuery object or selector
-    debug:        false,       // Boolean -- Output raw data to the console
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
     rowGroups:    true,        // Boolean -- Output <thead> and <tbody> tags
-    formatting:   false        // Boolean -- Include Google HTML formatting
+    formatting:   false,       // Boolean -- Include Google HTML formatting
+    resetStatus:  false,       // Boolean -- Reset request status
+    debug:        false        // Boolean -- Output raw data to the console
 
   };
 

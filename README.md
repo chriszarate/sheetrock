@@ -258,13 +258,6 @@ If you have a loading indicator on your page, provide a jQuery object or
 selector here. It will be shown when the request starts and hidden when it
 ends.
 
-### debug
-* Default `false`
-* Expects Boolean
-
-Output raw request and response data to the browser console. Useful for
-debugging, especially when you are using your own handlers.
-
 ### headers
 * Default `0`
 * Expects non-negative integer
@@ -292,6 +285,22 @@ Google passes along HTML formatting intended to replicate any formatting you
 applied in the spreadsheet. When set to `true`, the default cell handler will
 wrap the cell value in a `span` with a `style` attribute. The formatting is
 usually a bit wacky, so take care when enabling this option.
+
+### resetStatus
+* Default `false`
+* Expects Boolean
+
+Reset request status. By default, Sheetrock remembers the row offset of a
+request, whether a request has been completely loaded already, or if it
+previously failed. Set to `true` to reset these indicators. This is useful if
+you want to reload data or load it in another context.
+
+### debug
+* Default `false`
+* Expects Boolean
+
+Output raw request and response data to the browser console. Useful for
+debugging, especially when you are using your own handlers.
 
 
 ## Caching
