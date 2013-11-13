@@ -70,6 +70,7 @@
 
     <p>The most basic use case of Sheetrock simply grabs the spreadsheet and makes a table out of it.</p>
 
+    <!-- We’re not actually running this code, so it’s mocked up. -->
     <pre><code class="language-markup clean-margins">
       <table id="statistics"></table>
     </code></pre>
@@ -88,7 +89,7 @@
 
     <h3>Basic example</h3>
 
-    <p>Let’s move on to something slightly more interesting. Using Sheetrock, we can limit our scope and analyze the data using SQL-like queries. We can also provide a `chunkSize` to load just a portion of the data. We can always grab more data later—Sheetrock **keeps track of how many rows you’ve requested** and the next request will pick up where you left off.</p>
+    <p>Let’s move on to something slightly more interesting. Using Sheetrock, we can limit our scope and analyze the data using SQL-like queries. We can also provide a `chunkSize` to load just a portion of the data. We can always grab more data later—Sheetrock <strong>keeps track of how many rows you’ve requested</strong> and the next request will pick up where you left off.</p>
 
     <p>Let’s look at switch hitters and rank them by batting average. We’ll only grab the columns we care about and fetch just the top ten to help focus the reader’s attention.</p>
 
@@ -192,7 +193,7 @@
 
     <h2>A peek under the hood</h2>
 
-    <p>This has nothing to do with Sheetrock, but if you’re interested, here’s how the examples on this page were generated. There’s no mockup code—this is the actual code that runs on the page!</p>
+    <p>This has nothing to do with Sheetrock, but if you’re interested, here’s how the examples on this page were generated. There’s no mockup code—everything including the code below is generated from the actual code that runs on this page.</p>
 
     <div class="prism-render language-markup src">
       <!-- Load Prism.js with JavaScript, markup, and bash support -->
