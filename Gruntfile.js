@@ -49,7 +49,7 @@ module.exports = function(grunt) {
         options: {
           banner: bannerTemplate,
           sourceMap: 'src/jquery.sheetrock.min.map',
-          sourceMappingURL: '/src/jquery.sheetrock.min.map'
+          sourceMappingURL: 'jquery.sheetrock.min.map'
         },
         files: {
           'src/jquery.sheetrock.min.js': [
