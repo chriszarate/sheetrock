@@ -7,9 +7,7 @@
 
     <link href="http://fonts.googleapis.com/css?family=PT+Sans:400,700" rel="stylesheet" type="text/css">
 
-    <link href="css/sheetrock.css" rel="stylesheet" type="text/css">
-    <link href="css/bootstrap-tables.css" rel="stylesheet" type="text/css">
-    <link href="css/prism-custom.css" rel="stylesheet" type="text/css">
+    <link href="http://chriszarate.github.io/sheetrock/src/sheetrock.min.css" rel="stylesheet" type="text/css">
 
     <title>jQuery Sheetrock</title>
 
@@ -19,385 +17,227 @@
 
     <h1>jQuery Sheetrock</h1>
 
-    <p>Sheetrock is a jQuery plugin for querying, retrieving, and displaying data from Google Spreadsheets. All you need is the URL of a <a href="https://support.google.com/drive/bin/answer.py?hl=en&amp;answer=2494822">public Google Spreadsheet</a>. It’s small (~2 kB) and requires no backend whatsoever—everything is done in the browser.</p>
+    <noscript><p class="error">This page requires JavaScript.</p></noscript>
+
+    <p>Sheetrock is a jQuery plugin for querying, retrieving, and displaying data from Google Spreadsheets. Use it to load entire sheets or leverage SQL-like queries to treat Google Spreadsheets as a quick-and-dirty JSON datastore. All you need is the URL of a <a href="https://support.google.com/drive/answer/2494822">public Google Spreadsheet</a>. It requires no backend code whatsoever—everything is done in the browser.</p>
 
     <p>Basic retrieval is a snap but you can also:</p>
 
     <ul>
-      <li>Query sheets using the SQL-like <a href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization query language</a> (filters, sorting, grouping, and more)</li>
+      <li>Query sheets using the SQL-like <a href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization query language</a> (filters, pivots, sorting, grouping, and more)</li>
       <li>Lazy-load large data sets (infinite scroll with ease)</li>
-      <li>Mix in your favorite template system (<a href="http://handlebarsjs.com">Handlebars</a>, <a href="http://underscorejs.org">Underscore</a>, etc.)</li>
+      <li>Mix in your favorite templating system (<a href="http://handlebarsjs.com">Handlebars</a>, <a href="http://underscorejs.org">Underscore</a>, etc.)</li>
       <li>Customize to your heart’s content with your own handlers and callbacks</li>
     </ul>
 
+
+    <h2>Documentation</h2>
+
+    <p>Please see the <a href="https://github.com/chriszarate/sheetrock">GitHub repository</a> for detailed documentation of the available options.</p>
+
+
     <h2>Usage</h2>
 
-    <p>Here’s a very basic example that fetches an entire sheet from <a href="https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0">this spreadsheet</a> (1986 National League batting statistics) and populates a table. (The output is truncated here.)</p>
+    <p>Using <a href="http://bower.io">Bower</a>?
 
-<pre><code class="language-markup">&lt;table id="stats"&gt;&lt;/table&gt;</code></pre>
+    <pre><code class="language-bash">bower install jquery-sheetrock</code></pre>
 
-    <p class="operator">+</p>
+    <p>Otherwise, just grab <a href="http://chriszarate.github.io/sheetrock/jquery.sheetrock.min.js">the latest version</a> (<a href="http://chriszarate.github.io/sheetrock/jquery.sheetrock.js">unminified</a>) and stash it in your project. Sheetrock requires jQuery &gt;= 1.6.</p>
 
-<pre><code class="language-javascript">// Define spreadsheet URL.
-var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0';
-
-// Load spreadsheet.
-$('#stats').sheetrock({
-  url: mySpreadsheet
-});</code></pre>
-
-    <p class="operator">=</p>
-
-    <div class="output">
-      <table class="table table-condensed table-striped">
-        <tr>
-          <th>Team</th><th>Pos</th><th>First</th><th>Last</th><th>Bats</th><th>AB</th><th>R</th><th>H</th><th>HR</th><th>RBI</th><th>SB</th><th>BA</th>
-        </tr>
-        <tr>
-          <td>PHI</td><td>MI</td><td>Luis</td><td>Aguayo</td><td>Right</td><td>133</td><td>17</td><td>28</td><td>4</td><td>13</td><td>1</td><td>0.211</td>
-        </tr>
-        <tr>
-          <td>SFG</td><td>UT</td><td>Mike</td><td>Aldrete</td><td>Left</td><td>216</td><td>27</td><td>54</td><td>2</td><td>25</td><td>1</td><td>0.25</td>
-        </tr>
-        <tr>
-          <td>PIT</td><td>LF</td><td>Bill</td><td>Almon</td><td>Right</td><td>196</td><td>29</td><td>43</td><td>7</td><td>27</td><td>11</td><td>0.219</td>
-        </tr>
-        <tr>
-          <td>LAD</td><td>IF</td><td>Dave</td><td>Anderson</td><td>Right</td><td>216</td><td>31</td><td>53</td><td>1</td><td>15</td><td>5</td><td>0.245</td>
-        </tr>
-        <tr>
-          <td>HOU</td><td>C</td><td>Alan</td><td>Ashby</td><td>Both</td><td>315</td><td>24</td><td>81</td><td>7</td><td>38</td><td>1</td><td>0.257</td>
-        </tr>
-        <tr>
-          <td>NYM</td><td>2B</td><td>Wally</td><td>Backman</td><td>Both</td><td>387</td><td>67</td><td>124</td><td>1</td><td>27</td><td>13</td><td>0.32</td>
-        </tr>
-        <tr>
-          <td>HOU</td><td>C</td><td>Mark</td><td>Bailey</td><td>Both</td><td>153</td><td>9</td><td>27</td><td>4</td><td>15</td><td>1</td><td>0.176</td>
-        </tr>
-        <tr>
-          <td>HOU</td><td>RF</td><td>Kevin</td><td>Bass</td><td>Both</td><td>591</td><td>83</td><td>184</td><td>20</td><td>79</td><td>22</td><td>0.311</td>
-        </tr>
-        <tr>
-          <td>CIN</td><td>3B</td><td>Buddy</td><td>Bell</td><td>Right</td><td>568</td><td>89</td><td>158</td><td>20</td><td>75</td><td>2</td><td>0.278</td>
-        </tr>
-        <tr>
-          <td>PIT</td><td>SS</td><td>Rafael</td><td>Belliard</td><td>Right</td><td>309</td><td>33</td><td>72</td><td>0</td><td>31</td><td>12</td><td>0.233</td>
-        </tr>
-        <tr><td colspan="12"><em class="grey">[Output intentionally truncated]</em></td></tr>
-      </table>
+    <div class="prism-render language-markup src">
+      <!-- Load jQuery from CloudFlare’s CDN. -->
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <!-- Load Sheetrock from the local environment. -->
+      <script src="src/jquery.sheetrock.min.js"></script>
     </div>
 
-    <p>The entire sheet has hundreds of rows, so loading the whole thing could bog down a page and overwhelm a reader. By passing a <code class="inline">sql</code> query, we can limit our scope. We can also provide a <code class="inline">chunkSize</code> to load just a portion of the data. We can always grab more data later—Sheetrock <strong>keeps track of how many rows you’ve requested</strong> and the next request will pick up where you left off.</p>
 
-    <p>Let’s look at switch hitters and rank them by batting average. We’ll ignore the other stats and fetch just the top ten to help focus the reader’s attention.</p>
+    <h2>Examples</h2>
 
-<pre><code class="language-markup">&lt;table id="switch-hitters"&gt;&lt;/table&gt;</code></pre>
+    <p>These are real, live examples. View source! Extend and adapt them! Table styling on this page is provided by <a href="http://getbootstrap.com">Bootstrap</a>. Syntax highlighting is powered by <a href="http://prismjs.com">Prism</a>.</p>
 
-    <p class="operator">+</p>
 
-<pre><code class="language-javascript">// Load top ten switch hitters.
-$('#switch-hitters').sheetrock({
-  url: mySpreadsheet,
-  sql: "select A,B,C,D,E,L where E = 'Both' order by L desc",
-  chunkSize: 10
-});</code></pre>
+    <h3>Specify a spreadsheet.</h3>
 
-    <p class="operator">=</p>
+    <p>Sheetrock’s only required option is the URL of a <a href="https://support.google.com/drive/answer/2494822">public Google Spreadsheet</a>. As an example, let’s use <a href="https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0">this spreadsheet</a>, which contains 1986 National League batting statistics.</p>
 
-    <div class="output">
-      <table class="table table-condensed table-striped">
-        <tr>
-          <th>Team</th><th>Pos</th><th>First</th><th>Last</th><th>Bats</th><th>BA</th>
-        </tr>
-        <tr>
-          <td>MON</td><td>LF</td><td>Tim</td><td>Raines</td><td>Both</td><td>0.334</td>
-        </tr>
-        <tr>
-          <td>NYM</td><td>2B</td><td>Wally</td><td>Backman</td><td>Both</td><td>0.32</td></tr>
-        <tr>
-          <td>HOU</td><td>RF</td><td>Kevin</td><td>Bass</td><td>Both</td><td>0.311</td></tr>
-        <tr>
-          <td>CHC</td><td>OF</td><td>Jerry</td><td>Mumphrey</td><td>Both</td><td>0.304</td>
-        </tr>
-        <tr>
-          <td>PIT</td><td>2B</td><td>Johnny</td><td>Ray</td><td>Both</td><td>0.301</td>
-        </tr>
-        <tr>
-          <td>STL</td><td>MI</td><td>Jose</td><td>Oquendo</td><td>Both</td><td>0.297</td>
-        </tr>
-        <tr>
-          <td>MON</td><td>CF</td><td>Mitch</td><td>Webster</td><td>Both</td><td>0.29</td>
-        </tr>
-        <tr>
-          <td>NYM</td><td>OF</td><td>Mookie</td><td>Wilson</td><td>Both</td><td>0.289</td>
-        </tr>
-        <tr>
-          <td>MON</td><td>1B</td><td>Wallace</td><td>Johnson</td><td>Both</td><td>0.283</td>
-        </tr>
-        <tr>
-          <td>STL</td><td>SS</td><td>Ozzie</td><td>Smith</td><td>Both</td><td>0.28</td>
-        </tr>
-      </table>
+    <script class="prism-render language-javascript">
+      // Define spreadsheet URL.
+      var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0';
+    </script>
+
+    <h3>Hello, world!</h3>
+
+    <p>The most basic use case of Sheetrock simply grabs the spreadsheet and makes a table out of it.</p>
+
+    <pre><code class="language-markup clean-margins">
+      <table id="statistics"></table>
+    </code></pre>
+
+    <pre><code class="language-javascript clean-margins">
+      // Load an entire sheet.
+      $('#statistics').sheetrock({
+        url: mySpreadsheet
+      });
+    </code></pre>
+
+    <p>However, that’s not very exciting, so we won’t show the result inline here—especially since the spreadsheet has a couple hundred rows.</p>
+
+    <h3>Basic example</h3>
+
+    <p>Let’s move on to something slightly more interesting. Using Sheetrock, we can limit our scope and analyze the data using SQL-like queries. We can also provide a `chunkSize` to load just a portion of the data. We can always grab more data later—Sheetrock **keeps track of how many rows you’ve requested** and the next request will pick up where you left off.</p>
+
+    <p>Let’s look at switch hitters and rank them by batting average. We’ll only grab the columns we care about and fetch just the top ten to help focus the reader’s attention.</p>
+
+    <div class="prism-render language-markup output">
+      <table id="switch-hitters"></table>
     </div>
 
-    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-table-2" class="fiddle-link" href="http://jsfiddle.net/bL8rQ/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-table-2-iframe" width="100%" height="400" data-src="http://jsfiddle.net/bL8rQ/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+    <script class="prism-render paired language-javascript">
+      // Load top ten switch hitters.
+      $('#switch-hitters').sheetrock({
+        url: mySpreadsheet,
+        sql: "select A,B,C,D,E,L where E = 'Both' order by L desc",
+        chunkSize: 10
+      });
+    </script>
+
+    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-table-2" class="fiddle-link" href="http://jsfiddle.net/7Gzjj/"><span>Show</span> a jsFiddle for this example.</a></p>
+    <iframe id="fiddle-table-2-iframe" width="100%" height="400" data-src="http://jsfiddle.net/7Gzjj/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
 
     <h3>Templating</h3>
 
-    <p>Tables are nice, but we might want to represent the data in different ways. Let’s generate an ordered list by passing in an <a href="http://underscorejs.org">Underscore</a> template. This time we’ll rank the top five players by home runs.</p>
+    <p>Tables are nice, but we might want to represent the data in different ways. Let’s generate an ordered list by passing in a Handlebars template. This time we’ll rank the top five players by home runs.</p>
 
-<pre><code class="language-markup">&lt;h3&gt;NL Home Run Leaders&lt;/h3&gt;
-&lt;ol id="hr"&gt;
-  &lt;script type="text/underscore-template" id="hr-template"&gt;
-    &lt;li&gt;
-      &lt;strong&gt;&lt;%= cells.First %&gt; &lt;%= cells.Last %&gt;&lt;/strong&gt;,
-      &lt;%= cells.Team %&gt;, &lt;%= cells.HR %&gt;
-    &lt;/li&gt;
-  &lt;/script&gt;
-&lt;/ol&gt;</code></pre>
+    <div class="prism-render language-markup src">
+      <!-- Load Handlebars.js from CloudFlare’s CDN. -->
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.1.2/handlebars.min.js"></script>
+    </div>
 
-    <p class="operator">+</p>
-
-<pre><code class="language-javascript">// Compile Underscore.js template for HR leaders.
-var HRTemplate = _.template($('#hr-template').html());
-
-// Load top five HR leaders.
-$('#hr').sheetrock({
-  url: mySpreadsheet,
-  sql: "select A,C,D,I order by I desc",
-  chunkSize: 5,
-  headersOff: true,
-  rowHandler: HRTemplate
-});</code></pre>
-
-    <p class="operator">=</p>
-
-    <div class="output">
-      <h3>NL Home Run Leaders</h3>
-      <ol>
-        <li><strong>Mike Schmidt</strong>, PHI, 37</li>
-        <li><strong>Glenn Davis</strong>, HOU, 31</li>
-        <li><strong>Dave Parker</strong>, CIN, 31</li>
-        <li><strong>Dale Murphy</strong>, ATL, 29</li>
-        <li><strong>Eric Davis</strong>, CIN, 27</li>
+    <div class="prism-render language-markup output">
+      <h4>NL Home Run Leaders</h4>
+      <ol id="hr">
+        <script id="hr-template" type="text/x-handlebars-template">
+          <li>
+            <strong>{{cells.First}} {{cells.Last}}</strong>,
+            {{cells.Team}}, {{cells.HR}}
+          </li>
+        </script>
       </ol>
     </div>
 
-    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-1" class="fiddle-link" href="http://jsfiddle.net/8S2EM/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-template-1-iframe" width="100%" height="300" data-src="http://jsfiddle.net/8S2EM/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+    <script class="prism-render language-javascript paired">
+      // Compile the Handlebars template for HR leaders.
+      var HRTemplate = Handlebars.compile($('#hr-template').html());
 
-    <h3>Advanced queries</h3>
+      // Load top five HR leaders.
+      $('#hr').sheetrock({
+        url: mySpreadsheet,
+        sql: "select A,C,D,I order by I desc",
+        chunkSize: 5,
+        headersOff: true,
+        rowHandler: HRTemplate
+      });
+    </script>
 
-    <p>Next, let’s group some data. For a more readable query, we’ll use column labels (<code class="inline">%Team%</code> and <code class="inline">%RBI%</code>) instead of column letters, and we’ll specify the labels we want Sheetrock to use when it returns the data (<code class="inline">labels: ['Team', 'RBI']</code>).</p>
+    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-1" class="fiddle-link" href="http://jsfiddle.net/szT5P/"><span>Show</span> a jsFiddle for this example.</a></p>
+    <iframe id="fiddle-template-1-iframe" width="100%" height="300" data-src="http://jsfiddle.net/szT5P/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-<pre><code class="language-markup">&lt;h3&gt;Team RBI&lt;/h3&gt;
-&lt;ol id="team-rbi"&gt;
-  &lt;script type="text/underscore-template" id="team-rbi-template"&gt;
-    &lt;li&gt;&lt;strong&gt;&lt;%= cells.Team %&gt;&lt;/strong&gt;, &lt;%= cells.RBI %&gt;&lt;/li&gt;
-  &lt;/script&gt;
-&lt;/ol&gt;</code></pre>
 
-    <p class="operator">+</p>
+    <h3>Grouping</h3>
 
-<pre><code class="language-javascript">// Compile Underscore.js template for team RBI leaders.
-var RBITemplate = _.template($('#team-rbi-template').html());
+    <p>Next, let’s group some data. For a more readable query, we’ll use column labels (<code class="inline">%Team%</code> and <code class="inline">%RBI%</code>) instead of column letters, and we’ll specify the labels we want Sheetrock to use when it returns the data (<code class="inline">labels: ['TeamName', 'TeamRBI']</code>).</p>
 
-// Load top five team RBI leaders.
-$('#team-rbi').sheetrock({
-  url: mySpreadsheet,
-  sql: "select %Team%,sum(%RBI%) group by %Team% order by sum(%RBI%) desc",
-  chunkSize: 5,
-  headersOff: true,
-  labels: ['Team', 'RBI'],
-  rowHandler: RBITemplate
-});</code></pre>
-
-    <p class="operator">=</p>
-
-    <div class="output">
-      <h3>Team RBI</h3>
-      <ol>
-        <li><strong>NYM</strong>, 686</li>
-        <li><strong>PHI</strong>, 638</li>
-        <li><strong>CIN</strong>, 614</li>
-        <li><strong>SFG</strong>, 595</li>
-        <li><strong>SDP</strong>, 591</li>
+    <div class="prism-render language-markup output">
+      <h4>Team RBI</h4>
+      <ol id="team-rbi">
+      <script id="team-rbi-template" type="text/x-handlebars-template">
+        <li><strong>{{cells.TeamName}}</strong>, {{cells.TeamRBI}}</li>
+      </script>
       </ol>
     </div>
 
-    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-2" class="fiddle-link" href="http://jsfiddle.net/xwvn7/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-template-2-iframe" width="100%" height="300" data-src="http://jsfiddle.net/xwvn7/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+    <script class="prism-render language-javascript paired">
+      // Compile Handlebars template for team RBI leaders.
+      var RBITemplate = Handlebars.compile($('#team-rbi-template').html());
 
-    <h2>Options</h2>
+      // Load top five team RBI leaders.
+      $('#team-rbi').sheetrock({
+        url: mySpreadsheet,
+        sql: "select %Team%,sum(%RBI%) group by %Team% order by sum(%RBI%) desc",
+        chunkSize: 5,
+        headersOff: true,
+        labels: ['TeamName', 'TeamRBI'],
+        rowHandler: RBITemplate
+      });
+    </script>
 
-    <p>Sheetrock expects a hash map of options as a parameter, e.g.:</p>
+    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-2" class="fiddle-link" href="http://jsfiddle.net/N4cmC/"><span>Show</span> a jsFiddle for this example.</a></p>
+    <iframe id="fiddle-template-2-iframe" width="100%" height="300" data-src="http://jsfiddle.net/N4cmC/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-<pre><code class="language-javascript">$('#table').sheetrock({
-  url: '[...]',
-  sql: '[...]'
-});</code></pre>
 
-    <p>Your options override Sheetrock’s defaults on a per-request basis. You can also globally override defaults like this:</p>
+    <h2>More?</h2>
 
-<pre><code class="language-javascript">$.fn.sheetrock.options.url = '[...]';</code></pre>
+    <p>Detailed documentation is available at the <a href="https://github.com/chriszarate/sheetrock">GitHub repository</a>. Please feel free to <a href="https://github.com/chriszarate/sheetrock/issues">raise an issue</a> if you are having a problem with Sheetrock.</p>
 
-    <h3>url</h3>
-
-    <ul>
-      <li>Default <code class="inline">''</code></li>
-      <li>Expects string</li>
-    </ul>
-    <p>The URL of a public Google spreadsheet. (<a href="https://support.google.com/drive/bin/answer.py?hl=en&amp;answer=2494822">How do I make a spreadsheet public?</a>) This is the only required option.</p>
-
-    <h3>sql</h3>
-
-    <ul>
-      <li>Default <code class="inline">''</code></li>
-      <li>Expects string</li>
-    </ul>
-    <p>A <a href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization API query</a> string. By default, Google only allows column letters (e.g., A, B) in queries. If you prefer, you can use column labels in your query and they will be swapped out with the corresponding column letters. Wrap column labels in percent signs, e.g., <code class="inline">"select %name%,%age% where %age% &gt; 21"</code>.</p>
-
-    <h3>chunkSize</h3>
-
-    <ul>
-      <li>Default <code class="inline">0</code></li>
-      <li>Expects non-negative integer</li>
-    </ul>
-    <p>Use this option to enable lazy-loading or chunking of the data. When set to <code class="inline">0</code>, Sheetrock will fetch all available rows. When set to <code class="inline">10</code>, for example, it will fetch ten rows and keep track of how many rows have been requested (by storing an <code class="inline">offset</code> on the targeted element using jQuery’s <code class="inline">$.data</code>). On the next request, it will pick up where it left off.</p>
-
-    <h3>columns</h3>
-
-    <ul>
-      <li>Default <code class="inline">{}</code></li>
-      <li>Expects hash map of column letters to strings</li>
-    </ul>
-    <p>If you want don’t want to bother with making sure the column labels that you use in your query match the ones used in the spreadsheet—they must match exactly—you can override them using a hash map, e.g., <code class="inline">{A: 'ID', B: 'Name', C: 'Phone'}</code>. This also avoids the overhead (additional AJAX request) of prefetching the column labels.</p>
-
-    <h3>labels</h3>
-
-    <ul>
-      <li>Default <code class="inline">[]</code></li>
-      <li>Expects array of strings</li>
-    </ul>
-    <p>Override the <em>returned</em> column labels with an array of strings. This option is useful when you have complicated queries and would like a shorthand way of referencing them in your templates. The length of this array must match the number of columns in the returned data.</p>
-
-    <h3>rowHandler</h3>
-
-    <ul>
-      <li>Default <code class="inline">_output</code> (internal function; provides HTML table row output)</li>
-      <li>Expects function</li>
-    </ul>
-    <p>Providing your own row handler is the recommended way to override the default table row formatting. Your function should accept a row object. A row object has two properties: <code class="inline">num</code>, which contains a row number (header = <code class="inline">0</code>, first data row = <code class="inline">1</code>, and so on); and <code class="inline">cells</code>, which is itself an object. The properties of <code class="inline">cells</code> will be named after the column labels of the returned data (e.g., <code class="inline">Team</code>, <code class="inline">RBI</code>). Your function should return content (a DOM/jQuery object or an HTML string) that is ready to be appended to your target element. A very easy way to do this is to provide a compiled <a href="http://handlebarsjs.com">Handlebars</a> or <a href="http://underscorejs.org">Underscore</a> template (which is itself a function).</p>
-
-    <h3>cellHandler</h3>
-
-    <ul>
-      <li>Default <code class="inline">_trim</code> (internal function; trims white space)</li>
-      <li>Expects function</li>
-    </ul>
-    <p>The cell handler is used to process every cell value. It should return a string.</p>
-
-    <h3>dataHandler</h3>
-
-    <ul>
-      <li>Default <code class="inline">_parse</code> (internal function; loops through data and calls row handler)</li>
-      <li>Expects function</li>
-    </ul>
-    <p>Providing your own data handler means you don’t want any data processing to take place except for basic validation and inspection. The returned data, if valid, is passed to your data handler (with the options hash as <code class="inline">this</code>) and it will be completely up to you to do something with it. The cell handler and row handler will not be called.</p>
-
-    <h3>userCallback</h3>
-
-    <ul>
-      <li>Default <code class="inline">$.noop</code></li>
-      <li>Expects function</li>
-    </ul>
-    <p>You can provide a function to be called when all processing is complete. The options hash is passed to this function.</p>
-
-    <h3>loading</h3>
-
-    <ul>
-      <li>Default <code class="inline">$()</code></li>
-      <li>Expects jQuery object or selector</li>
-    </ul>
-    <p>If you have a loading indicator on your page, provide a jQuery object or selector here. It will be shown when the request starts and hidden when it ends.</p>
-
-    <h3>debug</h3>
-
-    <ul>
-      <li>Default <code class="inline">false</code></li>
-      <li>Expects Boolean</li>
-    </ul>
-    <p>Output raw request and response data to the browser console. Useful for debugging when you are using your own handlers.</p>
-
-    <h3>headers</h3>
-
-    <ul>
-      <li>Default <code class="inline">0</code></li>
-      <li>Expects non-negative integer</li>
-    </ul>
-    <p>The number of header rows in your spreadsheet. Sheetrock tries to identify this automatically but Google’s response format makes it difficult.</p>
-
-    <h3>headersOff</h3>
-
-    <ul>
-      <li>Default <code class="inline">false</code></li>
-      <li>Expects Boolean</li>
-    </ul>
-    <p>Set to <code class="inline">true</code> to suppress output of header row(s) to the row handler.</p>
-
-    <h3>rowGroups</h3>
-
-    <ul>
-      <li>Default <code class="inline">false</code></li>
-      <li>Expects Boolean</li>
-    </ul>
-    <p>Set to <code class="inline">true</code>  to enable use of row group tags (<code class="inline">&lt;thead&gt;</code> and <code class="inline">&lt;tbody&gt;</code>).</p>
-
-    <h3>formatting</h3>
-
-    <ul>
-      <li>Default <code class="inline">false</code></li>
-      <li>Expects Boolean</li>
-    </ul>
-    <p>For each cell, Google passes along HTML formatting intended to replicate any formatting you applied in the spreadsheet. It’s usually a bit wacky, so take care when enabling this option.</p>
-
-    <h2>Caching</h2>
-
-    <p>On large spreadsheets (~5000 rows), the performance of Google’s API when using <code class="inline">sql</code> queries can be sluggish and, in some cases, can severely affect the responsiveness of your application. At this point, consider caching the responses for reuse.</p>
-
-    <ul>
-      <li>Sheetrock provides a way to reuse manually cached data. It accepts a second parameter of response data to be used instead of making an API request (e.g., <code class="inline">$('#table').sheetrock(options, cachedResponse);</code>). Make sure you pass an object and not a JSON string.</li>
-      <li>If you need to change the Google API endpoint—maybe because you want to use a caching proxy—that’s at <code class="inline">$.fn.sheetrock.server</code>.</li>
-    </ul>
-
-    <h2>Tips and troubleshooting</h2>
-
-    <ul>
-      <li>Sheetrock sometimes outputs useful information to the browser console, including options validation problems and warnings and errors reported by Google’s API.</li>
-      <li>At any time, you can find the number of outstanding AJAX requests in <code class="inline">$.fn.sheetrock.working</code>.</li>
-      <li>You can also latch onto the most recent jQuery promise via <code class="inline">$.fn.sheetrock.promise</code>. Make sure you return a promise so that Sheetrock can continue to chain off of it.</li>
-    </ul>
-
-    <h2>Projects using Sheetrock</h2>
-
-    <ul>
-      <li><a href="https://github.com/mlaa/tags-viewer">TAGS Viewer</a></li>
-      <li>Tell me about your project on the <a href="https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock">Wiki</a>!</li>
-    </ul>
 
     <h2>Credits and license</h2>
 
-    <p>Sheetrock was inspired by <a href="http://builtbybalance.com/Tabletop/">Tabletop.js</a> (which will teach you jazz piano). <a href="http://about.me/john.brecht">John Brecht</a> came up with the name. Sheetrock is released under the MIT license.</p>
+    <p>Sheetrock was written by <a href="http://chris.zarate.org">Chris Zarate</a> and is released under the <a href="http://opensource.org/licenses/MIT">MIT license</a>.</p>
 
-    <a href="https://github.com/chriszarate/sheetrock"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="js/prism-custom.js"></script>
+    <h2>A peek under the hood</h2>
 
-    <script>
+    <p>This has nothing to do with Sheetrock, but if you’re interested, here’s how the examples on this page were generated. There’s no mockup code—this is the actual code that runs on the page!</p>
 
-      $('.fiddle-link').on('click', function() {
+    <div class="prism-render language-markup src">
+      <!-- Load Prism.js with JavaScript, markup, and bash support -->
+      <script src="http://chriszarate.github.io/sheetrock/src/prism-custom.js"></script>
+    </div>
+
+    <!-- Local helper code -->
+    <script class="prism-render language-javascript">
+
+      /*
+       *  WE'LL DO IT LIVE!!!
+       *  Create source code examples using this page's actual content!
+       */
+
+      // Mirror the "source" of a content block in its own <pre><code> block.
+      var addCodeBlock = function() {
+
+        // Get language class(es).
+        var codeLanguages = $.map(this.className.split(/\s+/), function(val) {
+          return (val.indexOf('language-') === 0) ? val : null;
+        }).join(' ');
+
+        // Create <code> tag.
+        codeTag = $('<code></code>')
+          .addClass(codeLanguages)
+          .text(cleanMargins($(this).html())),
+
+        // Create wrapping <pre> tag.
+        preTag = $('<pre></pre>').append(codeTag);
+
+        // If this code block is paired with another previous block, then
+        // append in a special order and add some fun operators.
+        if($(this).hasClass('paired')) {
+          $(this).prev('.prism-render').before('<p class="operator">+</p>', preTag, '<p class="operator">=</p>');
+        } else {
+          // Otherwise, just add it normally.
+          $(this).before(preTag);
+        }
+
+      },
+
+      // Clean up the margins and leading/trailing newlines.
+      cleanMargins = function(str) {
+        return trimString(str).split(/\n {6}/).join('\n');
+      },
+
+      // Show a jsFiddle when clicked.
+      showFiddle = function() {
         if(!$(this).data('loaded')) {
           $('#' + this.id + '-iframe').show().attr('src', function() {
             return $(this).data('src');
@@ -405,7 +245,26 @@ $('#team-rbi').sheetrock({
           $(this).data('loaded', true);
         }
         return false;
+      },
+
+      // Trim. A string.
+      trimString = function(str) {
+        return str.replace(/^\s+/, '').replace(/\s+$/, '');
+      };
+
+      // Trim margins of specified content blocks.
+      $('.clean-margins').each(function() {
+        $(this).text(cleanMargins($(this).html()));
       });
+
+      // Mirror "source" for specified tags.
+      $('.prism-render').each(addCodeBlock);
+
+      // Show jsFiddles inline.
+      $('.fiddle-link').on('click', showFiddle);
+
+      // Add Bootstrap CSS classes to tables.
+      $('table').addClass('table table-condensed table-striped');
 
     </script>
 
