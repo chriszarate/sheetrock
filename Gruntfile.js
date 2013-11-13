@@ -49,12 +49,28 @@ module.exports = function(grunt) {
         options: {
           banner: bannerTemplate,
           sourceMap: 'src/jquery.sheetrock.min.map',
-          sourceMappingURL: 'jquery.sheetrock.min.map'
+          sourceMappingURL: './jquery.sheetrock.min.map',
+          sourceMapPrefix: 1
         },
         files: {
           'src/jquery.sheetrock.min.js': [
             'src/jquery.sheetrock.js'
           ]
+        }
+      }
+    },
+
+    // Fix Uglify's inability to drop paths from source map output.
+    "string-replace": {
+      fix: {
+        files: {
+          'src/jquery.sheetrock.min.map': 'src/jquery.sheetrock.min.map'
+        },
+        options: {
+          replacements: [{
+            pattern: '"file":"src/jquery.sheetrock.min.js"',
+            replacement: '"file":"jquery.sheetrock.min.js"'
+          }]
         }
       }
     },
@@ -83,7 +99,7 @@ module.exports = function(grunt) {
   });
 
   // Register tasks.
-  grunt.registerTask('default', ['jshint', 'uglify']);
-  grunt.registerTask('examples', ['jshint', 'uglify', 'cssmin']);
+  grunt.registerTask('default', ['jshint', 'uglify', 'string-replace']);
+  grunt.registerTask('examples', ['jshint', 'uglify', 'string-replace', 'cssmin']);
 
 };
