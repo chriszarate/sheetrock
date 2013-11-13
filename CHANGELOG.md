@@ -3,6 +3,7 @@
 ### v0.1.7
 
 * Added change log.
+* Move plugin code into `src` subfolder.
 * New `resetStatus` option resets the row offest, loaded, and error indicators
   on a per-unique-request basis. This is useful if you want to reload data,
   retry after an error, or load data in another context.
