@@ -199,7 +199,8 @@ em.grey {
 
   #github {
     max-width: 7.25em;
-    margin: 1.25em 1em 0 0;
+    margin: 1.25em 0.5em 0 0;
+    font-size: 0.9em;
     text-align: center;
   }
 
