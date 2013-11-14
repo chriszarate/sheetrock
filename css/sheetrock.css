@@ -1,17 +1,29 @@
-html {
-  background-color: #f5f2f0;
+/* Lato Web font */
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(http://themes.googleusercontent.com/static/fonts/lato/v6/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
 }
 
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lato Bold'), local('Lato-Bold'), url(http://themes.googleusercontent.com/static/fonts/lato/v6/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+}
+
+
 body {
-  width: 40em;
-  margin: 4em auto;
-  padding: 3em;
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 2em;
   padding-top: 0.1em;
-  font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
   font-size: 1.2em;
   background-color: #fff;
   line-height: 1.5em;
-  border: solid 1px #e9e9e9;
 }
 
 h1, h2, h3 {
