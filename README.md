@@ -272,8 +272,8 @@ Sheetrock was written by [Chris Zarate][me]. It was inspired in part by
 [handlebars]: http://handlebarsjs.com
 [gh-pages]: http://chriszarate.github.io/sheetrock/
 [bower]: http://bower.io
-[latest]: http://chriszarate.github.io/sheetrock/jquery.sheetrock.min.js
-[unminified]: http://chriszarate.github.io/sheetrock/jquery.sheetrock.js
+[latest]: http://chriszarate.github.io/sheetrock/src/jquery.sheetrock.min.js
+[unminified]: http://chriszarate.github.io/sheetrock/src/jquery.sheetrock.js
 [tags]: https://github.com/mlaa/tags-viewer
 [equity]: https://play.google.com/store/apps/details?id=com.leosoftwares.equity
 [kuppi]: https://play.google.com/store/apps/details?id=com.leosoftwares.kuppi
