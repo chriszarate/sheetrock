@@ -476,6 +476,7 @@
       _requestStatusCache.loaded[options.requestID] = false;
       _requestStatusCache.failed[options.requestID] = false;
       _requestStatusCache.offset[options.requestID] = 0;
+      _console('Resetting request status.');
     }
 
     // Retrieve current row offset.
