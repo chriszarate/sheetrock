@@ -1,5 +1,9 @@
 ## Change Log
 
+### v0.1.8
+
+* Moved caching of row offset to options validation function (see #18).
+
 ### v0.1.7
 
 * Added change log.
