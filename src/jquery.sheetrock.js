@@ -148,18 +148,6 @@
     // Spin up user-facing indicators.
     _beforeRequest(options);
 
-    // If requested, make a request for chunked data.
-    if(options.chunkSize && options.target) {
-
-      // Append a limit and row offest to the query to target the next chunk.
-      options.sql += ' limit ' + (options.chunkSize + 1);
-      options.sql += ' offset ' + options.offset;
-
-      // Remember the new row offset.
-      _requestStatusCache.offset[options.requestID] = options.offset + options.chunkSize;
-
-    }
-
     // Specify a custom callback function since Google doesn't use the
     // default implementation favored by jQuery.
     options.callback = 'sheetrock_callback_' + _callbackIndex;
@@ -480,9 +468,6 @@
     // Validate number of header rows.
     options.headers = _stringToNaturalNumber(options.headers);
 
-    // Retrieve current row offset.
-    options.offset = _requestStatusCache.offset[options.requestID] || 0;
-
     // Make sure `loading` is a jQuery object.
     options.loading = _validatejQueryObject(options.loading);
 
@@ -491,7 +476,22 @@
       _requestStatusCache.loaded[options.requestID] = false;
       _requestStatusCache.failed[options.requestID] = false;
       _requestStatusCache.offset[options.requestID] = 0;
-      options.offset = 0;
+      _console('Resetting request status.');
+    }
+
+    // Retrieve current row offset.
+    options.offset = _requestStatusCache.offset[options.requestID] || 0;
+
+    // If requested, make a request for chunked data.
+    if(options.chunkSize && options.target) {
+
+      // Append a limit and row offest to the query to target the next chunk.
+      options.sql += ' limit ' + (options.chunkSize + 1);
+      options.sql += ' offset ' + options.offset;
+
+      // Remember the new row offset.
+      _requestStatusCache.offset[options.requestID] = options.offset + options.chunkSize;
+
     }
 
     // Require `this` or a data handler. Otherwise, the data has nowhere to go.
