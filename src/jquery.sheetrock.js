@@ -398,8 +398,16 @@
             // Process cell formatting, if requested.
             var style = (options.formatting) ? _getFormatting(cell) : false,
 
+            // Extract cell value.
+            value = (cell && _has(cell, 'v')) ? cell.v : '';
+
+            // Avoid array cell values.
+            if(value instanceof Array) {
+              value = (_has(cell, 'f')) ? cell.f : value.join('');
+            }
+
             // Process cell value with cell handler function.
-            value = (cell && _has(cell, 'v')) ? options.cellHandler(cell.v) : '';
+            value = options.cellHandler(value);
 
             // Add the cell to the row object, using the desired column label
             // as the key.
