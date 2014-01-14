@@ -1,5 +1,9 @@
 ## Change Log
 
+### v0.1.9
+
+* Avoid array-like cell values (see #23).
+
 ### v0.1.8
 
 * Moved caching of row offset to options validation function (see #18).
