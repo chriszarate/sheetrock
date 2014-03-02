@@ -83,7 +83,7 @@ module.exports = function(grunt) {
         files: {
           'src/sheetrock.min.css': [
             'css/sheetrock.css',
-            'css/bootstrap-tables.css',
+            'css/bootstrap.css',
             'css/prism-custom.css'
           ]
         }
