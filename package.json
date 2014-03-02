@@ -13,8 +13,9 @@
     "grunt-contrib-jshint": "~0.6.4",
     "grunt-contrib-uglify": "~0.2.4",
     "grunt-contrib-cssmin": "~0.7.0",
+    "grunt-string-replace": "~0.2.4",
     "grunt-bumpup": "~0.4.2",
-    "load-grunt-tasks": "~0.1.0",
-    "grunt-string-replace": "~0.2.4"
+    "grunt-load-options": "~0.1.2",
+    "load-grunt-tasks": "~0.1.0"
   }
 }
