@@ -584,13 +584,26 @@
 
   // Extract the "key" from a Google Spreadsheet URL.
   _extractKey = function(url) {
-    var keyRegExp = new RegExp('key=([^&#]+)','i');
-    return (keyRegExp.test(url)) ? url.match(keyRegExp)[1] : false;
+
+    // Old Google Spreadsheets key format
+    var oldSheetsKeyRegExp = new RegExp('key=([^&#]+)','i');
+    if(oldSheetsKeyRegExp.test(url)) {
+      return url.match(oldSheetsKeyRegExp)[1];
+    }
+
+    // New Google Spreadsheets key format
+    var newSheetsKeyRegExp = new RegExp('spreadsheets/d/([^/#]+)','i');
+    if(newSheetsKeyRegExp.test(url)) {
+      return url.match(newSheetsKeyRegExp)[1];
+    }
+
+    return false;
+
   },
 
   // Extract the "gid" from a Google spreadsheet URL.
   _extractGID = function(url) {
-    var gidRegExp = new RegExp('gid=([^&#]+)','i');
+    var gidRegExp = new RegExp('gid=([^/&#]+)','i');
     return (gidRegExp.test(url)) ? url.match(gidRegExp)[1] : false;
   },
 
