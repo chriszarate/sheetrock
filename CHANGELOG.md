@@ -1,5 +1,12 @@
 ## Change Log
 
+### v0.1.10
+
+* Update key extraction to work with the new version of Google Spreadsheets
+  (see #31).
+* Add note about (hopefully temporary) incompatibility with the new version of
+  Google Spreadsheets (see #31).
+
 ### v0.1.9
 
 * Avoid array-like cell values (see #23).
