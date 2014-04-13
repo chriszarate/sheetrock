@@ -19,4 +19,12 @@ module.exports = function(grunt) {
     ]
   );
 
+  grunt.registerTask(
+    'test',
+    [
+      'uglify',
+      'qunit'
+    ]
+  );
+
 };
