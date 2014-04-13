@@ -6,8 +6,7 @@ module.exports = function(grunt) {
     'default',
     [
       'jshint',
-      'uglify',
-      'string-replace'
+      'uglify'
     ]
   );
 
@@ -16,7 +15,6 @@ module.exports = function(grunt) {
     [
       'jshint',
       'uglify',
-      'string-replace',
       'cssmin'
     ]
   );
