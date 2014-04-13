@@ -9,8 +9,7 @@
 
   'use strict';
 
-  // AMD support: Since we are simply modifying the jQuery object, there is no
-  // need to use a require statement to load this plugin.
+  // AMD support: We are simply modifying the jQuery object.
 
   /* global define */
 
