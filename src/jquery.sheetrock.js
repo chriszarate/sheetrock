@@ -245,13 +245,16 @@
   },
 
   // Generic error handler for AJAX errors.
-  _handleError = function() {
+  _handleError = function(data) {
 
     // Remember that this request failed.
     _requestStatusCache.failed[this.requestID] = true;
 
     // Log the error to the console.
     _console('Request failed.');
+
+    // Call the user's error handler.
+    this.errorHandler.call(this, data);
 
   },
 
@@ -691,6 +694,7 @@
     rowHandler:   _toHTML,     // Function
     cellHandler:  _trim,       // Function
     dataHandler:  _parseData,  // Function
+    errorHandler: $.noop,      // Function
     userCallback: $.noop,      // Function
     loading:      $(),         // jQuery object or selector
     headers:      0,           // Integer -- Number of header rows
