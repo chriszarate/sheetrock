@@ -1,5 +1,5 @@
-/* Load sheetrock.jquery.json */
+/* Read package.json */
 
 module.exports = function(grunt) {
-  return grunt.file.readJSON('sheetrock.jquery.json');
+  return grunt.file.readJSON('package.json');
 };

@@ -8,7 +8,7 @@ module.exports = {
         ' * <%= pkg.title %> v<%= pkg.version %>\n' +
         ' * <%= pkg.description %>\n' +
         ' * <%= pkg.homepage %>\n' +
-        ' * License: <%= pkg.licenses[0].type %>\n' +
+        ' * License: <%= pkg.license %>\n' +
         ' */'
     },
     files: {
