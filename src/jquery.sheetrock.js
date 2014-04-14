@@ -57,8 +57,17 @@
 
   /* Setup */
 
-  // Google API endpoint
-  var _server = 'https://spreadsheets.google.com/tq',
+  // Google API endpoints and key formats
+  var _spreadsheetTypes = {
+    'new': {
+      'endpoint': 'https://docs.google.com/spreadsheets/d/%key%/gviz/tq',
+      'keyFormat': new RegExp('spreadsheets/d/([^/#]+)','i')
+    },
+    'legacy': {
+      'endpoint': 'https://spreadsheets.google.com/tq?key=%key%',
+      'keyFormat': new RegExp('key=([^&#]+)','i')
+    }
+  },
 
   // Placeholder for request status cache
   _requestStatusCache = {
@@ -198,7 +207,7 @@
     var parameters = {
 
       // Google Spreadsheet identifiers
-      key: options.key,
+      //key: options.key,
       gid: options.gid,
 
       // Conform to Google's nonstandard callback syntax.
@@ -465,9 +474,16 @@
     // Extend default options.
     options = $.extend({}, $.fn.sheetrock.options, options);
 
+    // Get spreadsheet type ("new" or "legacy").
+    options.type = _getSpreadsheetType(options.url);
+
     // Get spreadsheet key and gid.
-    options.key = _extractKey(options.url);
+    options.key = _extractKey(options.url, options.type);
     options.gid = _extractGID(options.url);
+
+    // Set API endpoint.
+    options.server = (options.server.length) ? options.server : options.type.endpoint;
+    options.server = options.server.replace('%key%', options.key);
 
     // Set request ID (key_gid_sql).
     options.requestID = options.key + '_' + options.gid + '_' + options.sql;
@@ -584,23 +600,25 @@
     return false;
   },
 
+  // Get spreadsheet "type" from Google Spreadsheet URL (default is "new").
+  _getSpreadsheetType = function(url) {
+
+    var returnValue;
+
+    $.each(_spreadsheetTypes, function(key, spreadsheetType) {
+      if(spreadsheetType.keyFormat.test(url)) {
+        returnValue = spreadsheetType;
+        return false;
+      }
+    });
+
+    return returnValue || _spreadsheetTypes.new;
+
+  },
+
   // Extract the "key" from a Google Spreadsheet URL.
-  _extractKey = function(url) {
-
-    // Old Google Spreadsheets key format
-    var oldSheetsKeyRegExp = new RegExp('key=([^&#]+)','i');
-    if(oldSheetsKeyRegExp.test(url)) {
-      return url.match(oldSheetsKeyRegExp)[1];
-    }
-
-    // New Google Spreadsheets key format
-    var newSheetsKeyRegExp = new RegExp('spreadsheets/d/([^/#]+)','i');
-    if(newSheetsKeyRegExp.test(url)) {
-      return url.match(newSheetsKeyRegExp)[1];
-    }
-
-    return false;
-
+  _extractKey = function(url, spreadsheetType) {
+    return (spreadsheetType) ? url.match(spreadsheetType.keyFormat)[1] : false;
   },
 
   // Extract the "gid" from a Google spreadsheet URL.
@@ -686,7 +704,7 @@
 
     url:          '',          // String  -- Google spreadsheet URL
     sql:          '',          // String  -- Google Visualization API query
-    server:       _server,     // String  -- Google API endpoint
+    server:       '',          // String  -- Google API endpoint
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     columns:      {},          // Object  -- Hash of column letters and labels
     labels:       [],          // Array   -- Override *returned* column labels
