@@ -1,11 +1,5 @@
 # jQuery Sheetrock
 
-**Important:** The ["new version" of Google Sheets][new-sheets] does not yet
-provide an API, which is a prerequisite for Sheetrock. It is on their list of
-["missing features"][new-sheets-missing], so hopefully it will be added soon.
-In the meantime, you should continue to use the old version of Google Sheets
-with Sheetrock.
-
 Sheetrock is a jQuery plugin for querying, retrieving, and displaying data
 from Google Spreadsheets. Use it to load entire sheets or leverage SQL-like
 queries to treat Google Spreadsheets as a quick-and-dirty JSON datastore. All
@@ -272,8 +266,6 @@ Sheetrock was written by [Chris Zarate][me]. It was inspired in part by
 [MIT license][license].
 
 
-[new-sheets]: http://googledrive.blogspot.com/2013/12/newsheets.html
-[new-sheets-missing]: https://support.google.com/drive/answer/3543688
 [public]: https://support.google.com/drive/bin/answer.py?hl=en&answer=2494822
 [query]: https://developers.google.com/chart/interactive/docs/querylanguage
 [underscore]: http://underscorejs.org
