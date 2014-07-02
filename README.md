@@ -1,5 +1,7 @@
 # jQuery Sheetrock
 
+[![Build Status][build-status]][travis-ci]
+
 Sheetrock is a jQuery plugin for querying, retrieving, and displaying data
 from Google Spreadsheets. Use it to load entire sheets or leverage SQL-like
 queries to treat Google Spreadsheets as a quick-and-dirty JSON datastore. All
@@ -275,6 +277,8 @@ Sheetrock was written by [Chris Zarate][me]. It was inspired in part by
 [MIT license][license].
 
 
+[build-status]: https://travis-ci.org/chriszarate/sheetrock.svg?branch=master
+[travis-ci]: https://travis-ci.org/chriszarate/sheetrock
 [public]: https://support.google.com/drive/bin/answer.py?hl=en&answer=2494822
 [query]: https://developers.google.com/chart/interactive/docs/querylanguage
 [underscore]: http://underscorejs.org
