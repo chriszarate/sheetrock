@@ -1,5 +1,12 @@
 ## Change Log
 
+### v0.2.0
+
+* Compatibility with the new version of Google Spreadsheets! (#33)
+* Add `errorHandler` option to allow user to do something with AJAX errors.
+* Simple tests using QUnit.
+
+
 ### v0.1.10
 
 * Update key extraction to work with the new version of Google Spreadsheets
