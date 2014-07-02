@@ -147,6 +147,15 @@ will be completely up to you to do something with it. The cell handler and row
 handler will not be called.
 
 
+### errorHandler
+* Default `$.noop`
+* Expects function
+
+If you provide your own error handler, it will be called if Sheetrock
+encounters any AJAX errors (e.g., no network connection). The returned data, if
+any, is passed to your error handler (with the options hash as `this`).
+
+
 ### userCallback
 * Default `$.noop`
 * Expects function
