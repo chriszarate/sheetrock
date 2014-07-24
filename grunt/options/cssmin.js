@@ -5,7 +5,7 @@ module.exports = {
     options: {
       banner:
         '/*!\n' +
-        ' * <%= pkg.title %> v<%= pkg.version %>\n' +
+        ' * <%= pkg.name %> v<%= pkg.version %>\n' +
         ' * <%= pkg.description %>\n' +
         ' * <%= pkg.homepage %>\n' +
         ' * License: <%= pkg.license %>\n' +
