@@ -410,7 +410,7 @@
             var style = (options.formatting) ? _getFormatting(cell) : false,
 
             // Extract cell value.
-            value = (cell && _has(cell, 'v')) ? cell.v : '';
+            value = (cell && _has(cell, 'v') && cell.v) ? cell.v : '';
 
             // Avoid array cell values.
             if(value instanceof Array) {
