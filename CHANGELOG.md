@@ -1,5 +1,10 @@
 ## Change Log
 
+### v0.2.1
+
+* Handle null cell values (#37).
+
+
 ### v0.2.0
 
 * Compatibility with the new version of Google Spreadsheets! (#33)
