@@ -1,5 +1,5 @@
 /*!
- * jquery-sheetrock v0.2.1
+ * jquery-sheetrock v0.2.2
  * Quickly connect to, query, and lazy-load data from Google Spreadsheets.
  * http://chriszarate.github.io/sheetrock/
  * License: MIT
