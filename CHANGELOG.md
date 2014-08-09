@@ -1,5 +1,10 @@
 ## Change Log
 
+### v0.2.2
+
+* Improved error handling and provide failure tests.
+
+
 ### v0.2.1
 
 * Handle null cell values (#37).
