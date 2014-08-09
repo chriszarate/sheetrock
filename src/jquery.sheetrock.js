@@ -193,7 +193,7 @@
       .done(_processResponse)
 
       // Handle error.
-      .fail(_handleError)
+      .fail(_error)
 
       // Wind down user-facing indicators.
       .always(_afterRequest);
@@ -252,20 +252,6 @@
 
   },
 
-  // Generic error handler for AJAX errors.
-  _handleError = function(data) {
-
-    // Remember that this request failed.
-    _requestStatusCache.failed[this.requestID] = true;
-
-    // Log the error to the console.
-    _console('Request failed.');
-
-    // Call the user's error handler.
-    this.errorHandler.call(this, data);
-
-  },
-
   // Enumerate any messages embedded in the API response.
   _enumerateMessages = function(data, state) {
 
@@ -313,7 +299,7 @@
     } else {
 
       // The response seems empty; call the error handler.
-      _handleError.call(this, data);
+      _error.call(this, data);
 
     }
 
@@ -486,7 +472,9 @@
     options.server = options.server.replace('%key%', options.key);
 
     // Set request ID (key_gid_sql).
-    options.requestID = options.key + '_' + options.gid + '_' + options.sql;
+    if(options.key && options.gid) {
+      options.requestID = options.key + '_' + options.gid + '_' + options.sql;
+    }
 
     // Validate chunk size.
     options.chunkSize = (options.target.length) ? _stringToNaturalNumber(options.chunkSize) : 0;
@@ -498,7 +486,7 @@
     options.loading = _validatejQueryObject(options.loading);
 
     // If requested, reset request status.
-    if(options.resetStatus) {
+    if(options.resetStatus && options.requestID) {
       _requestStatusCache.loaded[options.requestID] = false;
       _requestStatusCache.failed[options.requestID] = false;
       _requestStatusCache.offset[options.requestID] = 0;
@@ -509,7 +497,7 @@
     options.offset = _requestStatusCache.offset[options.requestID] || 0;
 
     // If requested, make a request for chunked data.
-    if(options.chunkSize && options.target) {
+    if(options.chunkSize && options.target && options.requestID) {
 
       // Append a limit and row offest to the query to target the next chunk.
       options.sql += ' limit ' + (options.chunkSize + 1);
@@ -522,7 +510,27 @@
 
     // Require `this` or a data handler. Otherwise, the data has nowhere to go.
     if(!options.target.length && options.dataHandler === _parseData) {
-      return _console('No element targeted or data handler provided.');
+      return _error.call(options, null, 'No element targeted or data handler provided.');
+    }
+
+    // Require a spreadsheet URL.
+    if(!options.url) {
+      return _error.call(options, null, 'No spreadsheet URL provided.');
+    }
+
+    // Require a spreadsheet key.
+    if(!options.key) {
+      return _error.call(options, null, 'Could not find a key in the provided URL.');
+    }
+
+    // Require a spreadsheet gid.
+    if(!options.gid) {
+      return _error.call(options, null, 'Could not find a gid in the provided URL.');
+    }
+
+    // Abandon requests that have previously generated an error.
+    if(_requestStatusCache.failed[options.requestID]) {
+      return _error.call(options, null, 'A previous request for this resource failed.');
     }
 
     // Abandon requests that have already been loaded.
@@ -530,30 +538,31 @@
       return _console('No more rows to load!');
     }
 
-    // Abandon requests that have previously generated an error.
-    if(_requestStatusCache.failed[options.requestID]) {
-      return _console('A previous request for this resource failed.');
-    }
-
-    // Require a spreadsheet URL.
-    if(!options.url) {
-      return _console('No spreadsheet URL provided.');
-    }
-
-    // Require a spreadsheet key.
-    if(!options.key) {
-      return _console('Could not find a key in the provided URL.');
-    }
-
-    // Require a spreadsheet gid.
-    if(!options.gid) {
-      return _console('Could not find a gid in the provided URL.');
-    }
-
     // Log the validated options to the console, if requested.
     _console(options, options.debug);
 
     return options;
+
+  },
+
+  // General error handler.
+  _error = function(data, msg) {
+
+    // Set error message.
+    msg = msg || 'Request failed.';
+
+    // Remember that this request failed.
+    if(this && this.requestID) {
+      _requestStatusCache.failed[this.requestID] = true;
+    }
+
+    // Log the error to the console.
+    _console(msg);
+
+    // Call the user's error handler.
+    this.errorHandler.call(this, data, msg);
+
+    return false;
 
   },
 
@@ -618,7 +627,7 @@
 
   // Extract the "key" from a Google Spreadsheet URL.
   _extractKey = function(url, spreadsheetType) {
-    return (spreadsheetType) ? url.match(spreadsheetType.keyFormat)[1] : false;
+    return (spreadsheetType.keyFormat.test(url)) ? url.match(spreadsheetType.keyFormat)[1] : false;
   },
 
   // Extract the "gid" from a Google spreadsheet URL.
