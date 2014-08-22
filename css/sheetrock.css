@@ -115,24 +115,7 @@ em.grey {
   position: absolute;
   top: 0;
   right: 0;
-  margin: 3.5em -3.5em 0 0;
-  font-size: 0.9em;
-  font-weight: bold;
-  color: #fff;
-  background-color: #333;
-  line-height: 1.2em;
-  -webkit-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-
-#github a {
-  display: inline-block;
-  padding: 0.2em 3em;
-  color: #fff;
-}
-
-#github span {
-  margin-right: 0.3em;
+  border: 0;
 }
 
 
@@ -163,17 +146,6 @@ em.grey {
     line-height: 1.5em;
   }
 
-  #github {
-    margin: 2.85em 2.5em 0 0;
-    border-radius: 5px;
-    -webkit-transform: none;
-    transform: none;
-  }
-
-  #github a {
-    padding: 0.25em 1em 0.25em 0.8em;
-  }
-
 }
 
 
@@ -195,17 +167,6 @@ em.grey {
 
   ul {
     padding-left: 1.25em;
-  }
-
-  #github {
-    max-width: 7.25em;
-    margin: 1.25em 0.5em 0 0;
-    font-size: 0.9em;
-    text-align: center;
-  }
-
-  #github a {
-    padding-bottom: 0.3em;
   }
 
 }
