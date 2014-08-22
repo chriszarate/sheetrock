@@ -9,12 +9,12 @@
 
   'use strict';
 
-  // AMD support: We are simply modifying the jQuery object.
-
-  /* global define */
+  /* global define, module */
 
   if(typeof define === 'function' && define.amd) {
     define('jquery.sheetrock', ['jquery'], sheetrock);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = sheetrock;
   } else {
     sheetrock(window.jQuery);
   }
