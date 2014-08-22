@@ -1,5 +1,12 @@
 ## Change Log
 
+### v0.2.3
+
+* CommonJS support.
+* Move minified files to /dist.
+* Load Prism JS and CSS from CloudFlare's CDN.
+
+
 ### v0.2.2
 
 * Improved error handling and provide failure tests.
