@@ -59,11 +59,11 @@
 
   // Google API endpoints and key formats
   var _spreadsheetTypes = {
-    'new': {
+    '2014': {
       'endpoint': 'https://docs.google.com/spreadsheets/d/%key%/gviz/tq',
       'keyFormat': new RegExp('spreadsheets/d/([^/#]+)','i')
     },
-    'legacy': {
+    '2010': {
       'endpoint': 'https://spreadsheets.google.com/tq?key=%key%',
       'keyFormat': new RegExp('key=([^&#]+)','i')
     }
@@ -460,7 +460,7 @@
     // Extend default options.
     options = $.extend({}, $.fn.sheetrock.options, options);
 
-    // Get spreadsheet type ("new" or "legacy").
+    // Get spreadsheet type.
     options.type = _getSpreadsheetType(options.url);
 
     // Get spreadsheet key and gid.
@@ -609,7 +609,7 @@
     return false;
   },
 
-  // Get spreadsheet "type" from Google Spreadsheet URL (default is "new").
+  // Get spreadsheet "type" from Google Spreadsheet URL (default is "2014").
   _getSpreadsheetType = function(url) {
 
     var returnValue;
@@ -621,7 +621,7 @@
       }
     });
 
-    return returnValue || _spreadsheetTypes.new;
+    return returnValue || _spreadsheetTypes['2014'];
 
   },
 
