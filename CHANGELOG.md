@@ -1,5 +1,10 @@
 ## Change Log
 
+### v0.2.4
+
+* Avoid reserved keyword "new" to satisfy YUI compressor.
+
+
 ### v0.2.3
 
 * CommonJS support.
