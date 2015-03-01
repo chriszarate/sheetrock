@@ -40,6 +40,13 @@ stash it in your project. Sheetrock requires jQuery >= 1.6.
 <script src="jquery.sheetrock.min.js"></script>
 ```
 
+Shreetrock is also available on CloudFlare’s CDN:
+
+```html
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/0.2.4/dist/jquery.sheetrock.min.js"></script>
+```
+
 
 ## Options
 
