@@ -5,21 +5,21 @@
  * License: MIT
  */
 
-(function(sheetrock) {
+(function (root, factory) {
 
   'use strict';
 
-  /* global define, module */
+  /* global define, module, require */
 
-  if(typeof define === 'function' && define.amd) {
-    define('jquery.sheetrock', ['jquery'], sheetrock);
+  if (typeof define === 'function' && define.amd) {
+    define(['jquery'], factory);
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = sheetrock;
+    module.exports = factory(require('jquery'));
   } else {
-    sheetrock(window.jQuery);
+    factory(root.jQuery || root.$);
   }
 
-})(function($) {
+})(this, function ($) {
 
   'use strict';
 
