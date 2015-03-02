@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     'default',
     [
       'jshint',
-      'uglify'
+      'uglify:app'
     ]
   );
 
@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     'examples',
     [
       'jshint',
-      'uglify',
+      'uglify:app',
       'cssmin'
     ]
   );
@@ -22,7 +22,8 @@ module.exports = function(grunt) {
   grunt.registerTask(
     'test',
     [
-      'uglify',
+      'browserify',
+      'uglify:bundle',
       'qunit'
     ]
   );

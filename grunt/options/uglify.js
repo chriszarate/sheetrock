@@ -11,5 +11,12 @@ module.exports = {
         'src/jquery.sheetrock.js'
       ]
     }
+  },
+  bundle: {
+    files: {
+      'build/jquery.sheetrock.bundle.min.js': [
+        'build/jquery.sheetrock.bundle.js'
+      ]
+    }
   }
 };
