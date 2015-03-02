@@ -1,9 +1,10 @@
 {
   "name": "jquery-sheetrock",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Quickly connect to, query, and lazy-load data from Google Spreadsheets.",
   "keywords": [
-    "jquery",
+    "ecosystem:jquery",
+    "jquery-plugin",
     "spreadsheet",
     "tables",
     "google",
@@ -26,7 +27,7 @@
     "jquery": "^2.1.3",
     "load-grunt-tasks": "^0.4.0"
   },
-  "main": "src/jquery.sheetrock.js",
+  "main": "./src/jquery.sheetrock.js",
   "scripts": {
     "test": "grunt test"
   },

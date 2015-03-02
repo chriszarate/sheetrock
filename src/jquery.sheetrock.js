@@ -1,5 +1,5 @@
 /*!
- * jquery-sheetrock v0.2.4
+ * jquery-sheetrock v0.3.0
  * Quickly connect to, query, and lazy-load data from Google Spreadsheets.
  * http://chriszarate.github.io/sheetrock/
  * License: MIT
@@ -745,7 +745,7 @@
   sheetrock.promise = $.Deferred().resolve();
 
   sheetrock.options = defaults;
-  sheetrock.version = '0.2.4';
+  sheetrock.version = '0.3.0';
 
   $.fn.sheetrock = sheetrock;
   return sheetrock;

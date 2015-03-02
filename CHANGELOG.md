@@ -1,5 +1,12 @@
 ## Change Log
 
+### v0.3.0
+
+*
+* Published as NPM module (can be required and Browserified).
+* Better loading default prevents option being set to empty string.
+
+
 ### v0.2.4
 
 * Avoid reserved keyword "new" to satisfy YUI compressor.
