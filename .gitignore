@@ -1,3 +1,4 @@
 .DS_Store
 .AppleDouble
-node_modules/
+/node_modules
+/build

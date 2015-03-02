@@ -1,42 +1,42 @@
-module('Test invalid user inputs.');
+QUnit.module('Test invalid user inputs.');
 
 // Don't provide a data handler.
-asyncTest("Don't provide a data handler.", function() {
+QUnit.asyncTest("Don't provide a data handler.", function() {
 
-  expect(1);
+  QUnit.expect(1);
 
   // Load legacy-format spreadsheet.
   jQuery.fn.sheetrock({
     errorHandler: function(data, msg) {
-      ok(msg === 'No element targeted or data handler provided.', msg);
-      start();
+      QUnit.ok(msg === 'No element targeted or data handler provided.', msg);
+      QUnit.start();
     }
   });
 
 });
 
 // Omit the spreadsheet URL.
-asyncTest('Omit the spreadsheet URL.', function() {
+QUnit.asyncTest('Omit the spreadsheet URL.', function() {
 
-  expect(1);
+  QUnit.expect(1);
 
   // Load legacy-format spreadsheet.
   jQuery.fn.sheetrock({
     errorHandler: function(data, msg) {
-      ok(msg === 'No spreadsheet URL provided.', msg);
-      start();
+      QUnit.ok(msg === 'No spreadsheet URL provided.', msg);
+      QUnit.start();
     },
     dataHandler: function() {
-      start();
+      QUnit.start();
     }
   });
 
 });
 
 // Load a spreadsheet URL without a key.
-asyncTest('Load a spreadsheet URL without a key.', function() {
+QUnit.asyncTest('Load a spreadsheet URL without a key.', function() {
 
-  expect(1);
+  QUnit.expect(1);
 
   // Define invalid spreadsheet URL.
   var mySpreadsheet = 'https://docs.google.com/spreadsheet/';
@@ -45,20 +45,20 @@ asyncTest('Load a spreadsheet URL without a key.', function() {
   jQuery.fn.sheetrock({
     url: mySpreadsheet,
     errorHandler: function(data, msg) {
-      ok(msg === 'Could not find a key in the provided URL.', msg);
-      start();
+      QUnit.ok(msg === 'Could not find a key in the provided URL.', msg);
+      QUnit.start();
     },
     dataHandler: function() {
-      start();
+      QUnit.start();
     }
   });
 
 });
 
 // Load a spreadsheet URL without a gid.
-asyncTest('Load a spreadsheet URL without a gid.', function() {
+QUnit.asyncTest('Load a spreadsheet URL without a gid.', function() {
 
-  expect(1);
+  QUnit.expect(1);
 
   // Define invalid spreadsheet URL.
   var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=test';
@@ -67,11 +67,11 @@ asyncTest('Load a spreadsheet URL without a gid.', function() {
   jQuery.fn.sheetrock({
     url: mySpreadsheet,
     errorHandler: function(data, msg) {
-      ok(msg === 'Could not find a gid in the provided URL.', msg);
-      start();
+      QUnit.ok(msg === 'Could not find a gid in the provided URL.', msg);
+      QUnit.start();
     },
     dataHandler: function() {
-      start();
+      QUnit.start();
     }
   });
 
