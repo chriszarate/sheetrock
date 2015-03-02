@@ -656,7 +656,7 @@
 
   // Return true if the reference is a valid jQuery object or selector.
   _validatejQueryObject = function(ref) {
-    return (ref && !(ref instanceof $)) ? $(ref) : ref;
+    return (ref instanceof $) ? ref : $(ref);
   },
 
   // Convert an array to a object.
@@ -722,7 +722,7 @@
     dataHandler:  _parseData,  // Function
     errorHandler: $.noop,      // Function
     userCallback: $.noop,      // Function
-    loading:      $(),         // jQuery object or selector
+    loading:      '',          // jQuery object or selector
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
     rowGroups:    true,        // Boolean -- Output <thead> and <tbody> tags
