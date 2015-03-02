@@ -14,7 +14,7 @@
   if (typeof define === 'function' && define.amd) {
     define(['jquery'], factory);
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('jquery'));
+    factory(require('jquery'));
   } else {
     factory(root.jQuery || root.$);
   }
@@ -735,19 +735,19 @@
 
   /* API */
 
-  $.fn.sheetrock = sheetrock;
-  $.fn.sheetrock.options = defaults;
-
   // This property is set to `true` when there is an active AJAX request. This
   // can be useful for infinite scroll bindings or other monitoring.
-  $.fn.sheetrock.working = false;
+  sheetrock.working = false;
 
   // This property contains a jQuery promise for the most recent request. If
   // you chain off of this, be sure to return another jQuery promise so
   // Sheetrock can continue to chain off of it.
-  $.fn.sheetrock.promise = $.Deferred().resolve();
+  sheetrock.promise = $.Deferred().resolve();
 
-  // Version number.
-  $.fn.sheetrock.version = '0.2.4';
+  sheetrock.options = defaults;
+  sheetrock.version = '0.2.4';
+
+  $.fn.sheetrock = sheetrock;
+  return sheetrock;
 
 });
