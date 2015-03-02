@@ -23,7 +23,7 @@
 
   'use strict';
 
-  $.fn.sheetrock = function(options, bootstrappedData) {
+  var sheetrock = function (options, bootstrappedData) {
 
     // Store reference to `this`.
     options.target = this;
@@ -704,9 +704,9 @@
   };
 
 
-  /* Default options */
+  /* Defaults */
 
-  $.fn.sheetrock.options = {
+  var defaults = {
 
     // Documentation is available at:
     // http://chriszarate.github.io/sheetrock/
@@ -731,6 +731,12 @@
     debug:        false        // Boolean -- Output raw data to the console
 
   };
+
+
+  /* API */
+
+  $.fn.sheetrock = sheetrock;
+  $.fn.sheetrock.options = defaults;
 
   // This property is set to `true` when there is an active AJAX request. This
   // can be useful for infinite scroll bindings or other monitoring.
