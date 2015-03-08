@@ -264,7 +264,9 @@
       $.each(data[state], function (i, status) {
         if (has(status, 'detailed_message')) {
           /* jshint camelcase: false */
+          // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
           log(status.detailed_message);
+          // jscs:enable
         } else if (has(status, 'message')) {
           log(status.message);
         }
