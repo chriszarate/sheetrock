@@ -1,5 +1,7 @@
 /* grunt-contrib-uglify */
 
+'use strict';
+
 module.exports = {
   app: {
     options: {

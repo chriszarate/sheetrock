@@ -1,31 +1,17 @@
 /* grunt-contrib-jshint */
 
+'use strict';
+
 module.exports = {
   options: {
-    camelcase: true,
-    curly: true,
-    devel: true,
-    eqeqeq: true,
-    forin: true,
-    immed: true,
-    indent: 2,
-    latedef: true,
-    newcap: true,
-    noarg: true,
-    noempty: true,
-    plusplus: true,
-    quotmark: true,
-    strict: false,
-    trailing: true,
-    undef: true,
-    unused: true
+    jshintrc: true
   },
   app: {
-    options: {
-      browser: true
-    },
     files: {
-      src: ['src/jquery.sheetrock.js']
+      src: [
+        'src/**/*.js',
+        'grunt/**/*.js'
+      ]
     }
   }
 };
