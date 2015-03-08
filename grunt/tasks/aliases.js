@@ -16,6 +16,7 @@ module.exports = function (grunt) {
     'examples',
     [
       'jshint',
+      'jscs',
       'uglify:app',
       'cssmin'
     ]
@@ -25,6 +26,7 @@ module.exports = function (grunt) {
     'test',
     [
       'jshint',
+      'jscs',
       'browserify',
       'uglify:bundle',
       'qunit'
