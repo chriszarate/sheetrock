@@ -1,5 +1,7 @@
 /* grunt-browserify */
 
+'use strict';
+
 module.exports = {
   dist: {
     files: {
