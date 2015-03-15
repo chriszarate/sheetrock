@@ -15,7 +15,7 @@ QUnit.asyncTest('Load a legacy-format spreadsheet.', function() {
     errorHandler: function() {
       QUnit.start();
     },
-    dataHandler: function(data) {
+    callback: function(options, data) {
       QUnit.ok(data.status === 'ok', 'Received valid response from Google API.');
       QUnit.ok(data.table.cols.length === 6, 'Expect 6 columns.');
       QUnit.ok(data.table.rows.length === 35, 'Expect 35 columns.');
@@ -41,7 +41,7 @@ QUnit.asyncTest('Load a new-format spreadsheet.', function() {
     errorHandler: function() {
       QUnit.start();
     },
-    dataHandler: function(data) {
+    callback: function(options, data) {
       QUnit.ok(data.status === 'ok', 'Received valid response from Google API.');
       QUnit.ok(data.table.cols.length === 6, 'Expect 6 columns.');
       QUnit.ok(data.table.rows.length === 35, 'Expect 35 columns.');
