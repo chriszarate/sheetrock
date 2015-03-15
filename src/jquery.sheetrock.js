@@ -545,11 +545,24 @@
   // Documentation is available at:
   // https://github.com/chriszarate/sheetrock/
 
+  sheetrock.version = '0.3.0';
+
   // Changes in 1.0.0:
   // -----------------
   // - *renamed* .options => .defaults
   // - *removed* .promise -- requests are no longer chained
   // - *removed* .working -- use callback function
+
+  // Todo:
+  // -----
+  // - rename chunkSize
+  // - rename userCallback
+  // - pass data to userCallback
+  // - always append data when Sheetrock is chained to jQuery object
+  // - remove dataHandler option (merged with userCallback)
+  // - remove/merge labels option?
+  // - remove/merge errorHandler option?
+  // - remove/merge header options?
 
   sheetrock.defaults = {
 
@@ -577,8 +590,6 @@
     debug:        false        // Boolean -- Output raw data to the console
 
   };
-
-  sheetrock.version = '0.3.0';
 
   $.fn.sheetrock = sheetrock;
   return sheetrock;
