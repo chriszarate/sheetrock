@@ -155,9 +155,6 @@
     // Show loading indicator.
     options.loading.show();
 
-    // Turn on the `working` flag.
-    $.fn.sheetrock.working = true;
-
   };
 
   // Wind down user-facing indicators and call user callback function.
@@ -165,9 +162,6 @@
 
     // Hide the loading indicator.
     this.loading.hide();
-
-    // Turn off the `working` flag.
-    $.fn.sheetrock.working = false;
 
     // Call the user's callback function.
     this.userCallback(this);
@@ -605,6 +599,7 @@
   // -----------------
   // - *renamed* .options => .defaults
   // - *removed* .promise -- requests are no longer chained
+  // - *removed* .working -- use callback function
 
   sheetrock.defaults = {
 
@@ -632,10 +627,6 @@
     debug:        false        // Boolean -- Output raw data to the console
 
   };
-
-  // This property is set to `true` when there is an active AJAX request. This
-  // can be useful for infinite scroll bindings or other monitoring.
-  sheetrock.working = false;
 
   sheetrock.version = '0.3.0';
 
