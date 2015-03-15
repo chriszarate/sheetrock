@@ -172,7 +172,7 @@
       // Use user options object as context (`this`) for data handler.
       context: options,
 
-      url: options.server,
+      url: options.apiEndpoint,
       dataType: 'jsonp',
       cache: true,
 
@@ -475,8 +475,7 @@
     options.gid = extractGID(options.url);
 
     // Set API endpoint.
-    options.server = (options.server.length) ? options.server : options.type.endpoint;
-    options.server = options.server.replace('%key%', options.key);
+    options.apiEndpoint = options.type.endpoint.replace('%key%', options.key);
 
     // Set request ID (key_gid_query).
     if (options.key && options.gid) {
@@ -725,10 +724,10 @@
     // Changes in 1.0.0:
     // -----------------
     // - sql => query
+    // - *removed* server -- pass data as parameter instead
 
     url:          '',          // String  -- Google spreadsheet URL
     query:        '',          // String  -- Google Visualization API query
-    server:       '',          // String  -- Google API endpoint
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     columns:      {},          // Object  -- Hash of column letters and labels
     labels:       [],          // Array   -- Override *returned* column labels
