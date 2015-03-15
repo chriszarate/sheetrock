@@ -170,7 +170,7 @@
       this.dataHandler.call(parsedOptions, data);
 
       // Call the user's callback function.
-      this.callback(this);
+      this.callback(this, data);
 
     } else {
 
@@ -556,7 +556,6 @@
   // Todo:
   // -----
   // - rename chunkSize
-  // - pass data to userCallback
   // - always append data when Sheetrock is chained to jQuery object
   // - remove dataHandler option (merged with userCallback)
   // - remove/merge labels option?
