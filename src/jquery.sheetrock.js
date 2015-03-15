@@ -72,8 +72,8 @@
     offset: {}
   };
 
-  // Callback function index
-  var callbackIndex = 0;
+  // JSONP callback function index
+  var jsonpCallbackIndex = 0;
 
 
   /* Data fetchers */
@@ -83,8 +83,8 @@
 
     // Specify a custom callback function since Google doesn't use the
     // default implementation favored by jQuery.
-    options.callback = 'sheetrock_callback_' + callbackIndex;
-    callbackIndex = callbackIndex + 1;
+    var jsonpCallbackName = 'sheetrock_callback_' + jsonpCallbackIndex;
+    jsonpCallbackIndex = jsonpCallbackIndex + 1;
 
     // AJAX request options
     var request = {
@@ -93,7 +93,7 @@
       data: {
         gid: options.gid,
         tq: options.query,
-        tqx: 'responseHandler:' + options.callback
+        tqx: 'responseHandler:' + jsonpCallbackName
       },
 
       // Use user options object as context (`this`) for data handler.
@@ -105,7 +105,7 @@
 
       // Use custom callback function (see above).
       jsonp: false,
-      jsonpCallback: options.callback
+      jsonpCallback: jsonpCallbackName
 
     };
 
@@ -170,7 +170,7 @@
       this.dataHandler.call(parsedOptions, data);
 
       // Call the user's callback function.
-      this.userCallback(this);
+      this.callback(this);
 
     } else {
 
@@ -312,7 +312,8 @@
     options = $.extend({}, $.fn.sheetrock.defaults, options);
 
     // Support some legacy option names.
-    options.query = options.query || options.sql;
+    options.query = options.sql || options.query;
+    options.callback = options.userCallback || options.callback;
 
     // Get spreadsheet type.
     options.type = getSpreadsheetType(options.url);
@@ -555,7 +556,6 @@
   // Todo:
   // -----
   // - rename chunkSize
-  // - rename userCallback
   // - pass data to userCallback
   // - always append data when Sheetrock is chained to jQuery object
   // - remove dataHandler option (merged with userCallback)
@@ -582,7 +582,7 @@
     rowHandler:   toHTML,      // Function
     dataHandler:  parseData,   // Function
     errorHandler: $.noop,      // Function
-    userCallback: $.noop,      // Function
+    callback:     $.noop,      // Function
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
     resetStatus:  false,       // Boolean -- Reset request status
