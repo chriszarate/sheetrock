@@ -11,7 +11,7 @@ QUnit.asyncTest('Load a legacy-format spreadsheet.', function() {
   // Load legacy-format spreadsheet.
   jQuery.fn.sheetrock({
     url: myLegacySpreadsheet,
-    sql: "select A,B,C,D,E,L where E = 'Both' order by L desc",
+    query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
     errorHandler: function() {
       QUnit.start();
     },
@@ -37,7 +37,7 @@ QUnit.asyncTest('Load a new-format spreadsheet.', function() {
   // Load new-format spreadsheet.
   jQuery.fn.sheetrock({
     url: myNewSpreadsheet,
-    sql: "select A,B,C,D,E,L where E = 'Both' order by L desc",
+    query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
     errorHandler: function() {
       QUnit.start();
     },

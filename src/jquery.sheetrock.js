@@ -128,15 +128,15 @@
 
     // Options for prefetching column labels
     var prefetchOptions = {
-      sql: 'select * limit 1',
+      query: 'select * limit 1',
       dataHandler: cacheColumnLabels,
       userCallback: $.noop,
       target: false
     };
 
-    // Proceed if column labels are not present (either in the SQL query via
-    // the '%label%' technique or in the passed options).
-    if (options.sql.indexOf('%') !== -1 && !getColumnLabels(options)) {
+    // Proceed if column labels are not present (either in the query via the
+    // '%label%' technique or in the passed options).
+    if (options.query.indexOf('%') !== -1 && !getColumnLabels(options)) {
 
       // Make a special request for just the column labels.
       log('Prefetching column labels.');
@@ -218,8 +218,8 @@
     };
 
     // Swap column labels for column letters, if applicable.
-    if (options.sql) {
-      parameters.tq = swapLabels(options.sql, getColumnLabels(options));
+    if (options.query) {
+      parameters.tq = swapLabels(options.query, getColumnLabels(options));
     }
 
     return parameters;
@@ -464,6 +464,9 @@
     // Extend default options.
     options = $.extend({}, $.fn.sheetrock.options, options);
 
+    // Support some legacy option names.
+    options.query = options.query || options.sql;
+
     // Get spreadsheet type.
     options.type = getSpreadsheetType(options.url);
 
@@ -475,9 +478,9 @@
     options.server = (options.server.length) ? options.server : options.type.endpoint;
     options.server = options.server.replace('%key%', options.key);
 
-    // Set request ID (key_gid_sql).
+    // Set request ID (key_gid_query).
     if (options.key && options.gid) {
-      options.requestID = options.key + '_' + options.gid + '_' + options.sql;
+      options.requestID = options.key + '_' + options.gid + '_' + options.query;
     }
 
     // Validate chunk size.
@@ -504,8 +507,8 @@
     if (options.chunkSize && options.target && options.requestID) {
 
       // Append a limit and row offest to the query to target the next chunk.
-      options.sql += ' limit ' + (options.chunkSize + 1);
-      options.sql += ' offset ' + options.offset;
+      options.query += ' limit ' + (options.chunkSize + 1);
+      options.query += ' offset ' + options.offset;
 
       // Remember the new row offset.
       requestStatusCache.offset[options.requestID] = options.offset + options.chunkSize;
@@ -656,11 +659,11 @@
   };
 
   // Swap user-provided column labels (%label%) with column letters.
-  var swapLabels = function (sql, columns) {
+  var swapLabels = function (query, columns) {
     $.each(columns, function (key, val) {
-      sql = sql.replace(new RegExp('%' + val + '%', 'g'), key);
+      query = query.replace(new RegExp('%' + val + '%', 'g'), key);
     });
-    return sql;
+    return query;
   };
 
   // Return true if the reference is a valid jQuery object or selector.
@@ -719,8 +722,12 @@
     // Documentation is available at:
     // http://chriszarate.github.io/sheetrock/
 
+    // Changes in 1.0.0:
+    // -----------------
+    // - sql => query
+
     url:          '',          // String  -- Google spreadsheet URL
-    sql:          '',          // String  -- Google Visualization API query
+    query:        '',          // String  -- Google Visualization API query
     server:       '',          // String  -- Google API endpoint
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     columns:      {},          // Object  -- Hash of column letters and labels
