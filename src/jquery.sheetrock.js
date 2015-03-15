@@ -38,15 +38,9 @@
 
       // Check for bootstrapped data.
       if (isDefined(bootstrappedData) && bootstrappedData !== null) {
-
-        // Load bootstrapped data.
         loadBootstrappedData(options, bootstrappedData);
-
       } else {
-
-        // Initialize request for external data.
-        initializeRequest(options);
-
+        fetchRequest(options);
       }
 
     }
@@ -78,33 +72,11 @@
     offset: {}
   };
 
-  // Placeholder for column labels cache
-  var columnLabelsCache = {};
-
   // Callback function index
   var callbackIndex = 0;
 
 
   /* Task runners */
-
-  // Initiate request to Google Spreadsheets API. Use jQuery deferreds to make
-  // sure requests are processed synchronously.
-  var initializeRequest = function (options) {
-
-    // Chain off of previous promise.
-    $.fn.sheetrock.promise = $.fn.sheetrock.promise
-
-      // Prefetch column labels (if necessary).
-      .pipe(function () {
-        return prefetchColumnLabels(options);
-      })
-
-      // Fetch request.
-      .pipe(function () {
-        return fetchRequest(options);
-      });
-
-  };
 
   // Load bootstrapped data (no request to API).
   var loadBootstrappedData = function (options, data) {
@@ -123,35 +95,6 @@
 
   /* Data fetchers */
 
-  // Prefetch column labels (if necessary).
-  var prefetchColumnLabels = function (options) {
-
-    // Options for prefetching column labels
-    var prefetchOptions = {
-      query: 'select * limit 1',
-      dataHandler: cacheColumnLabels,
-      userCallback: $.noop,
-      target: false
-    };
-
-    // Proceed if column labels are not present (either in the query via the
-    // '%label%' technique or in the passed options).
-    if (options.query.indexOf('%') !== -1 && !getColumnLabels(options)) {
-
-      // Make a special request for just the column labels.
-      log('Prefetching column labels.');
-      return fetchRequest($.extend({}, options, prefetchOptions));
-
-    } else {
-
-      // Return a resolved deferred object so that the next request fires
-      // immediately.
-      return $.Deferred().resolve();
-
-    }
-
-  };
-
   // Fetch the requested data using the user's options.
   var fetchRequest = function (options) {
 
@@ -167,7 +110,11 @@
     var request = {
 
       // Convert user options into AJAX request parameters.
-      data: makeParameters(options),
+      data: {
+        gid: options.gid,
+        tq: options.query,
+        tqx: 'responseHandler:' + options.callback
+      },
 
       // Use user options object as context (`this`) for data handler.
       context: options,
@@ -186,10 +133,7 @@
     log(request, options.debug);
 
     // Send the request.
-    return $.ajax(request)
-
-      // Not sure this is necessary.
-      .promise()
+    $.ajax(request)
 
       // Validate the response data.
       .done(processResponse)
@@ -199,30 +143,6 @@
 
       // Wind down user-facing indicators.
       .always(afterRequest);
-
-  };
-
-  // Convert user options into AJAX request parameters.
-  var makeParameters = function (options) {
-
-    // Create new paramters object.
-    var parameters = {
-
-      // Google Spreadsheet identifiers
-      //key: options.key,
-      gid: options.gid,
-
-      // Conform to Google's nonstandard callback syntax.
-      tqx: 'responseHandler:' + options.callback
-
-    };
-
-    // Swap column labels for column letters, if applicable.
-    if (options.query) {
-      parameters.tq = swapLabels(options.query, getColumnLabels(options));
-    }
-
-    return parameters;
 
   };
 
@@ -430,26 +350,6 @@
 
   };
 
-  // Cache column labels (indexed by key_gid) in the plugin scope. This way
-  // column labels will only be prefetched once.
-  var cacheColumnLabels = function (data) {
-    var labels = {};
-    $.each(data.table.cols, function (i, col) {
-      labels[col.id] = getColumnLabelOrLetter(col);
-    });
-    columnLabelsCache[this.key + '_' + this.gid] = labels;
-  };
-
-  // Look for acceptable column labels first in the passed options, then in
-  // the column label cache. Fallback to `false`, which triggers a prefetch.
-  var getColumnLabels = function (options) {
-    if ($.isEmptyObject(options.columns)) {
-      return columnLabelsCache[options.key + '_' + options.gid] || false;
-    } else {
-      return options.columns;
-    }
-  };
-
 
   /* User input validator */
 
@@ -652,14 +552,6 @@
     return getColumnLabel(col) || col.id;
   };
 
-  // Swap user-provided column labels (%label%) with column letters.
-  var swapLabels = function (query, columns) {
-    $.each(columns, function (key, val) {
-      query = query.replace(new RegExp('%' + val + '%', 'g'), key);
-    });
-    return query;
-  };
-
   // Return true if the reference is a valid jQuery object or selector.
   var validatejQueryObject = function (ref) {
     return (ref instanceof $) ? ref : $(ref);
@@ -715,6 +607,7 @@
     // -----------------
     // - sql => query
     // - *removed* server -- pass data as parameter instead
+    // - *removed* columns -- always use column letters in query
     // - *removed* cellHandler -- use rowHandler for text formatting
     // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
     // - *removed* formatting -- almost useless, impossible to support
@@ -722,7 +615,6 @@
     url:          '',          // String  -- Google spreadsheet URL
     query:        '',          // String  -- Google Visualization API query
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
-    columns:      {},          // Object  -- Hash of column letters and labels
     labels:       [],          // Array   -- Override *returned* column labels
     rowHandler:   toHTML,      // Function
     dataHandler:  parseData,   // Function
@@ -739,14 +631,13 @@
 
   /* API */
 
+  // Changes in 1.0.0:
+  // -----------------
+  // - *removed* .promise -- requests are no longer chained
+
   // This property is set to `true` when there is an active AJAX request. This
   // can be useful for infinite scroll bindings or other monitoring.
   sheetrock.working = false;
-
-  // This property contains a jQuery promise for the most recent request. If
-  // you chain off of this, be sure to return another jQuery promise so
-  // Sheetrock can continue to chain off of it.
-  sheetrock.promise = $.Deferred().resolve();
 
   sheetrock.options = defaults;
   sheetrock.version = '0.3.0';
