@@ -38,7 +38,7 @@
 
       // Check for bootstrapped data.
       if (isDefined(bootstrappedData) && bootstrappedData !== null) {
-        loadBootstrappedData(options, bootstrappedData);
+        processResponse.call(options, bootstrappedData);
       } else {
         fetchRequest(options);
       }
@@ -76,30 +76,10 @@
   var callbackIndex = 0;
 
 
-  /* Task runners */
-
-  // Load bootstrapped data (no request to API).
-  var loadBootstrappedData = function (options, data) {
-
-    // Spin up user-facing indicators.
-    beforeRequest(options);
-
-    // Process the data as though it were a real response from the API.
-    processResponse.call(options, data);
-
-    // Wind down user-facing indicators.
-    afterRequest.call(options);
-
-  };
-
-
   /* Data fetchers */
 
   // Fetch the requested data using the user's options.
   var fetchRequest = function (options) {
-
-    // Spin up user-facing indicators.
-    beforeRequest(options);
 
     // Specify a custom callback function since Google doesn't use the
     // default implementation favored by jQuery.
@@ -139,34 +119,12 @@
       .done(processResponse)
 
       // Handle error.
-      .fail(handleError)
-
-      // Wind down user-facing indicators.
-      .always(afterRequest);
+      .fail(handleError);
 
   };
 
 
-  /* UI and AJAX helpers. */
-
-  // Spin up user-facing indicators.
-  var beforeRequest = function (options) {
-
-    // Show loading indicator.
-    options.loading.show();
-
-  };
-
-  // Wind down user-facing indicators and call user callback function.
-  var afterRequest = function () {
-
-    // Hide the loading indicator.
-    this.loading.hide();
-
-    // Call the user's callback function.
-    this.userCallback(this);
-
-  };
+  /* Data validators */
 
   // Enumerate any messages embedded in the API response.
   var enumerateMessages = function (data, state) {
@@ -190,9 +148,6 @@
 
   };
 
-
-  /* Data validators */
-
   // Validate API response.
   var processResponse = function (data) {
 
@@ -213,6 +168,9 @@
 
       // Pass the API response to the data handler.
       this.dataHandler.call(parsedOptions, data);
+
+      // Call the user's callback function.
+      this.userCallback(this);
 
     } else {
 
@@ -376,9 +334,6 @@
 
     // Validate number of header rows.
     options.headers = stringToNaturalNumber(options.headers);
-
-    // Make sure `loading` is a jQuery object.
-    options.loading = validatejQueryObject(options.loading);
 
     // If requested, reset request status.
     if (options.resetStatus && options.requestID) {
@@ -546,11 +501,6 @@
     return getColumnLabel(col) || col.id;
   };
 
-  // Return true if the reference is a valid jQuery object or selector.
-  var validatejQueryObject = function (ref) {
-    return (ref instanceof $) ? ref : $(ref);
-  };
-
   // Convert an array to a object.
   var arrayToObject = function (arr) {
     var obj = {};
@@ -609,6 +559,7 @@
     // - *removed* server -- pass data as parameter instead
     // - *removed* columns -- always use column letters in query
     // - *removed* cellHandler -- use rowHandler for text formatting
+    // - *removed* loading -- use callback function
     // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
     // - *removed* formatting -- almost useless, impossible to support
 
@@ -620,7 +571,6 @@
     dataHandler:  parseData,   // Function
     errorHandler: $.noop,      // Function
     userCallback: $.noop,      // Function
-    loading:      '',          // jQuery object or selector
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
     resetStatus:  false,       // Boolean -- Reset request status
