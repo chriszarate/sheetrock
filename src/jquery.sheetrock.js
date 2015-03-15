@@ -523,20 +523,19 @@
     for (cell in row.cells) {
       if (row.cells.hasOwnProperty(cell)) {
         // Wrap the cell value in the cell tag.
-        html += wrapTag(row.cells[cell], tag, '');
+        html += wrapTag(row.cells[cell], tag);
       }
     }
 
     // Wrap the cells in a table row tag.
-    return wrapTag(html, 'tr', '');
+    return wrapTag(html, 'tr');
 
   };
 
   // Wrap a string in tag. The style argument, if present, is populated into
   // an inline CSS style attribute. (Gross!)
-  var wrapTag = function (str, tag, style) {
-    var attribute = (style) ? ' style="' + style + '"' : '';
-    return '<' + tag + attribute + '>' + str + '</' + tag + '>';
+  var wrapTag = function (str, tag) {
+    return '<' + tag + '>' + str + '</' + tag + '>';
   };
 
 
