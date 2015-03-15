@@ -397,9 +397,6 @@
           // Loop through each cell in the row.
           $.each(obj.c, function (x, cell) {
 
-            // Process cell formatting, if requested.
-            var style = (options.formatting) ? getFormatting(cell) : false;
-
             // Extract cell value.
             var value = (cell && has(cell, 'v') && cell.v) ? cell.v : '';
 
@@ -408,12 +405,9 @@
               value = (has(cell, 'f')) ? cell.f : value.join('');
             }
 
-            // Trim cell value.
-            value = trim(value);
-
-            // Add the cell to the row object, using the desired column label
-            // as the key.
-            rowObject.cells[options.parsed.labels[x]] = (style) ? wrapTag(value, 'span', style) : value;
+            // Add the trimmed cell value to the row object, using the desired
+            // column label as the key.
+            rowObject.cells[options.parsed.labels[x]] = trim(value);
 
           });
 
@@ -680,11 +674,6 @@
     return obj;
   };
 
-  // Extract formatting from a Google spreadsheet cell.
-  var getFormatting = function (cell) {
-    return (cell && has(cell, 'p') && has(cell.p, 'style')) ? cell.p.style : false;
-  };
-
   // Default row handler: Output a row object as an HTML table row.
   var toHTML = function (row) {
 
@@ -728,6 +717,7 @@
     // - *removed* server -- pass data as parameter instead
     // - *removed* cellHandler -- use rowHandler for text formatting
     // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
+    // - *removed* formatting -- almost useless, impossible to support
 
     url:          '',          // String  -- Google spreadsheet URL
     query:        '',          // String  -- Google Visualization API query
@@ -741,7 +731,6 @@
     loading:      '',          // jQuery object or selector
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
-    formatting:   false,       // Boolean -- Include Google HTML formatting
     resetStatus:  false,       // Boolean -- Reset request status
     debug:        false        // Boolean -- Output raw data to the console
 
