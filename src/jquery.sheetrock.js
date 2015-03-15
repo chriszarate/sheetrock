@@ -354,11 +354,12 @@
     // Store reference to the options hash and target.
     var options = this;
     var target = options.target;
+    var isTable = (target.prop('tagName') === 'TABLE');
 
-    // Add row group tags (<thead>, <tbody>), if requested.
+    // Add row group tags (<thead>, <tbody>) if the target is a table.
     $.extend(options, {
-      thead: (options.rowGroups) ? $('<thead/>').appendTo(target) : target,
-      tbody: (options.rowGroups) ? $('<tbody/>').appendTo(target) : target
+      thead: (isTable) ? $('<thead/>').appendTo(target) : target,
+      tbody: (isTable) ? $('<tbody/>').appendTo(target) : target
     });
 
     // Output a header row, if needed.
@@ -726,6 +727,7 @@
     // - sql => query
     // - *removed* server -- pass data as parameter instead
     // - *removed* cellHandler -- use rowHandler for text formatting
+    // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
 
     url:          '',          // String  -- Google spreadsheet URL
     query:        '',          // String  -- Google Visualization API query
@@ -739,7 +741,6 @@
     loading:      '',          // jQuery object or selector
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
-    rowGroups:    true,        // Boolean -- Output <thead> and <tbody> tags
     formatting:   false,       // Boolean -- Include Google HTML formatting
     resetStatus:  false,       // Boolean -- Reset request status
     debug:        false        // Boolean -- Output raw data to the console
