@@ -357,7 +357,7 @@
   var validateOptions = function (options) {
 
     // Extend default options.
-    options = $.extend({}, $.fn.sheetrock.options, options);
+    options = $.extend({}, $.fn.sheetrock.defaults, options);
 
     // Support some legacy option names.
     options.query = options.query || options.sql;
@@ -596,16 +596,21 @@
   };
 
 
-  /* Defaults */
+  /* API */
 
-  var defaults = {
+  // Documentation is available at:
+  // https://github.com/chriszarate/sheetrock/
 
-    // Documentation is available at:
-    // http://chriszarate.github.io/sheetrock/
+  // Changes in 1.0.0:
+  // -----------------
+  // - *renamed* .options => .defaults
+  // - *removed* .promise -- requests are no longer chained
+
+  sheetrock.defaults = {
 
     // Changes in 1.0.0:
     // -----------------
-    // - sql => query
+    // - *renamed* sql => query
     // - *removed* server -- pass data as parameter instead
     // - *removed* columns -- always use column letters in query
     // - *removed* cellHandler -- use rowHandler for text formatting
@@ -628,18 +633,10 @@
 
   };
 
-
-  /* API */
-
-  // Changes in 1.0.0:
-  // -----------------
-  // - *removed* .promise -- requests are no longer chained
-
   // This property is set to `true` when there is an active AJAX request. This
   // can be useful for infinite scroll bindings or other monitoring.
   sheetrock.working = false;
 
-  sheetrock.options = defaults;
   sheetrock.version = '0.3.0';
 
   $.fn.sheetrock = sheetrock;
