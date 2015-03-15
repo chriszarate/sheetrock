@@ -166,11 +166,13 @@
       // Extend the options hash with useful information about the response.
       var parsedOptions = extendOptions.call(this, data);
 
-      // Pass the API response to the data handler.
-      this.dataHandler.call(parsedOptions, data);
+      // If there is an element being targeted, parse the data into HTML.
+      if (this.target.length) {
+        parseData.call(parsedOptions, data);
+      }
 
       // Call the user's callback function.
-      this.callback(this, data);
+      this.callback(parsedOptions, data);
 
     } else {
 
@@ -359,9 +361,9 @@
 
     }
 
-    // Require `this` or a data handler. Otherwise, the data has nowhere to go.
-    if (!options.target.length && options.dataHandler === parseData) {
-      return handleError.call(options, null, 'No element targeted or data handler provided.');
+    // Require `this` or a callback function. Otherwise, the data has nowhere to go.
+    if (!options.target.length && options.callback === $.noop) {
+      return handleError.call(options, null, 'No element targeted or callback provided.');
     }
 
     // Require a spreadsheet URL.
@@ -556,11 +558,10 @@
   // Todo:
   // -----
   // - rename chunkSize
-  // - always append data when Sheetrock is chained to jQuery object
-  // - remove dataHandler option (merged with userCallback)
   // - remove/merge labels option?
   // - remove/merge errorHandler option?
   // - remove/merge header options?
+  // - reduce dependency on .call
 
   sheetrock.defaults = {
 
@@ -579,7 +580,6 @@
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     labels:       [],          // Array   -- Override *returned* column labels
     rowHandler:   toHTML,      // Function
-    dataHandler:  parseData,   // Function
     errorHandler: $.noop,      // Function
     callback:     $.noop,      // Function
     headers:      0,           // Integer -- Number of header rows

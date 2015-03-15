@@ -8,7 +8,7 @@ QUnit.asyncTest("Don't provide a data handler.", function() {
   // Load legacy-format spreadsheet.
   jQuery.fn.sheetrock({
     errorHandler: function(data, msg) {
-      QUnit.ok(msg === 'No element targeted or data handler provided.', msg);
+      QUnit.ok(msg === 'No element targeted or callback provided.', msg);
       QUnit.start();
     }
   });
@@ -26,7 +26,7 @@ QUnit.asyncTest('Omit the spreadsheet URL.', function() {
       QUnit.ok(msg === 'No spreadsheet URL provided.', msg);
       QUnit.start();
     },
-    dataHandler: function() {
+    callback: function() {
       QUnit.start();
     }
   });
@@ -48,7 +48,7 @@ QUnit.asyncTest('Load a spreadsheet URL without a key.', function() {
       QUnit.ok(msg === 'Could not find a key in the provided URL.', msg);
       QUnit.start();
     },
-    dataHandler: function() {
+    callback: function() {
       QUnit.start();
     }
   });
@@ -70,7 +70,7 @@ QUnit.asyncTest('Load a spreadsheet URL without a gid.', function() {
       QUnit.ok(msg === 'Could not find a gid in the provided URL.', msg);
       QUnit.start();
     },
-    dataHandler: function() {
+    callback: function() {
       QUnit.start();
     }
   });
