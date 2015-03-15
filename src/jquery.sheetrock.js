@@ -407,8 +407,8 @@
               value = (has(cell, 'f')) ? cell.f : value.join('');
             }
 
-            // Process cell value with cell handler function.
-            value = options.cellHandler(value);
+            // Trim cell value.
+            value = trim(value);
 
             // Add the cell to the row object, using the desired column label
             // as the key.
@@ -725,6 +725,7 @@
     // -----------------
     // - sql => query
     // - *removed* server -- pass data as parameter instead
+    // - *removed* cellHandler -- use rowHandler for text formatting
 
     url:          '',          // String  -- Google spreadsheet URL
     query:        '',          // String  -- Google Visualization API query
@@ -732,7 +733,6 @@
     columns:      {},          // Object  -- Hash of column letters and labels
     labels:       [],          // Array   -- Override *returned* column labels
     rowHandler:   toHTML,      // Function
-    cellHandler:  trim,        // Function
     dataHandler:  parseData,   // Function
     errorHandler: $.noop,      // Function
     userCallback: $.noop,      // Function
