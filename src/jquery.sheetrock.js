@@ -23,35 +23,23 @@
 
   'use strict';
 
-  /* Main */
-
   var sheetrock = function (options, bootstrappedData) {
 
-    // Store reference to `this`.
     options.target = this;
-
-    // Load and validate options.
     options = validateOptions(options);
 
-    // Proceed if options are valid.
     if (options) {
-
-      // Check for bootstrapped data.
       if (isDefined(bootstrappedData) && bootstrappedData !== null) {
         processResponse(options, bootstrappedData);
       } else {
         fetchRequest(options);
       }
-
     }
 
     // Return `this` to allow jQuery object chaining.
     return this;
 
   };
-
-
-  /* Configuration */
 
   // Google Visualization API endpoints and parameter formats
   var sheetTypes = {
@@ -67,9 +55,6 @@
     }
   };
 
-
-  /* Setup */
-
   // Placeholder for request status cache
   var requestStatusCache = {
     loaded: {},
@@ -79,9 +64,6 @@
 
   // JSONP callback function index
   var jsonpCallbackIndex = 0;
-
-
-  /* Data fetchers */
 
   // Fetch the requested data using the user's options.
   var fetchRequest = function (options) {
@@ -128,9 +110,6 @@
     };
   };
 
-
-  /* Data validators */
-
   // Enumerate any messages embedded in the API response.
   var enumerateMessages = function (data, state) {
 
@@ -156,13 +135,9 @@
   // Validate API response.
   var processResponse = function (options, data) {
 
-    // Enumerate any returned warning messages.
     enumerateMessages(data, 'warnings');
-
-    // Enumerate any returned error messages.
     enumerateMessages(data, 'errors');
 
-    // Log the API response to the console, if requested.
     log(data, options.debug);
 
     // Make sure the response is populated with actual data.
@@ -220,9 +195,6 @@
     return options;
 
   };
-
-
-  /* Data parsers */
 
   // Parse data, row by row.
   var parseData = function (options, data) {
@@ -303,9 +275,6 @@
     });
 
   };
-
-
-  /* User input validator */
 
   // Validate user-passed options.
   var validateOptions = function (options) {
@@ -396,9 +365,6 @@
     return false;
 
   };
-
-
-  /* Miscellaneous functions */
 
   // Trim a string of leading and trailing spaces.
   var trim = function (str) {
