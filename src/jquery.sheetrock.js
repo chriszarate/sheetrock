@@ -199,13 +199,12 @@
   // Parse data, row by row.
   var parseData = function (options, data) {
 
-    var target = options.target;
-    var isTable = (target.prop('tagName') === 'TABLE');
+    var isTable = (options.target.prop('tagName') === 'TABLE');
 
     // Add row group tags (<thead>, <tbody>) if the target is a table.
     $.extend(options, {
-      thead: (isTable) ? $('<thead/>').appendTo(target) : target,
-      tbody: (isTable) ? $('<tbody/>').appendTo(target) : target
+      thead: (isTable) ? $('<thead/>').appendTo(options.target) : options.target,
+      tbody: (isTable) ? $('<tbody/>').appendTo(options.target) : options.target
     });
 
     // Output a header row, if needed.
