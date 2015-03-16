@@ -1,6 +1,6 @@
 /*!
  * jquery-sheetrock v0.3.0
- * Quickly connect to, query, and lazy-load data from Google Spreadsheets.
+ * Quickly connect to, query, and lazy-load data from Google Sheets.
  * http://chriszarate.github.io/sheetrock/
  * License: MIT
  */
@@ -323,7 +323,7 @@
       return handleError(options, null, 'No element targeted or callback provided.');
     }
 
-    // Require a spreadsheet key and gid.
+    // Require a Sheet key and gid.
     if (!options.key || !options.gid) {
       return handleError(options, null, 'No key/gid in the provided URL.');
     }
@@ -509,7 +509,7 @@
     // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
     // - *removed* formatting -- almost useless, impossible to support
 
-    url:          '',          // String  -- Google spreadsheet URL
+    url:          '',          // String  -- Google Sheet URL
     query:        '',          // String  -- Google Visualization API query
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     labels:       [],          // Array   -- Override *returned* column labels
