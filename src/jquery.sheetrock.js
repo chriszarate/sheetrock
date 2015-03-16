@@ -38,7 +38,7 @@
 
       // Check for bootstrapped data.
       if (isDefined(bootstrappedData) && bootstrappedData !== null) {
-        processResponse.call(options, bootstrappedData);
+        processResponse(options, bootstrappedData);
       } else {
         fetchRequest(options);
       }
@@ -96,9 +96,6 @@
         tqx: 'responseHandler:' + jsonpCallbackName
       },
 
-      // Use user options object as context (`this`) for data handler.
-      context: options,
-
       url: options.apiEndpoint,
       dataType: 'jsonp',
       cache: true,
@@ -114,13 +111,15 @@
 
     // Send the request.
     $.ajax(request)
+      .done(createClosure(processResponse, options))
+      .fail(createClosure(handleError, options));
 
-      // Validate the response data.
-      .done(processResponse)
+  };
 
-      // Handle error.
-      .fail(handleError);
-
+  var createClosure = function (func, options) {
+    return function (data) {
+      func(options, data);
+    };
   };
 
 
@@ -149,7 +148,7 @@
   };
 
   // Validate API response.
-  var processResponse = function (data) {
+  var processResponse = function (options, data) {
 
     // Enumerate any returned warning messages.
     enumerateMessages(data, 'warnings');
@@ -158,36 +157,33 @@
     enumerateMessages(data, 'errors');
 
     // Log the API response to the console, if requested.
-    log(data, this.debug);
+    log(data, options.debug);
 
     // Make sure the response is populated with actual data.
     if (has(data, 'status', 'table') && has(data.table, 'cols', 'rows')) {
 
       // Extend the options hash with useful information about the response.
-      var parsedOptions = extendOptions.call(this, data);
+      options = extendOptions(options, data);
 
       // If there is an element being targeted, parse the data into HTML.
-      if (this.target.length) {
-        parseData.call(parsedOptions, data);
+      if (options.target.length) {
+        parseData(options, data);
       }
 
       // Call the user's callback function.
-      this.callback(parsedOptions, data);
+      options.callback(options, data);
 
     } else {
 
       // The response seems empty; call the error handler.
-      handleError.call(this, data);
+      handleError(options, data);
 
     }
 
   };
 
   // Extend the options hash with useful information about the response.
-  var extendOptions = function (data) {
-
-    // Store reference to the options hash.
-    var options = this;
+  var extendOptions = function (options, data) {
 
     // Initialize a hash for parsed options.
     options.parsed = {};
@@ -223,10 +219,8 @@
   /* Data parsers */
 
   // Parse data, row by row.
-  var parseData = function (data) {
+  var parseData = function (options, data) {
 
-    // Store reference to the options hash and target.
-    var options = this;
     var target = options.target;
     var isTable = (target.prop('tagName') === 'TABLE');
 
@@ -363,27 +357,27 @@
 
     // Require `this` or a callback function. Otherwise, the data has nowhere to go.
     if (!options.target.length && options.callback === $.noop) {
-      return handleError.call(options, null, 'No element targeted or callback provided.');
+      return handleError(options, null, 'No element targeted or callback provided.');
     }
 
     // Require a spreadsheet URL.
     if (!options.url) {
-      return handleError.call(options, null, 'No spreadsheet URL provided.');
+      return handleError(options, null, 'No spreadsheet URL provided.');
     }
 
     // Require a spreadsheet key.
     if (!options.key) {
-      return handleError.call(options, null, 'Could not find a key in the provided URL.');
+      return handleError(options, null, 'Could not find a key in the provided URL.');
     }
 
     // Require a spreadsheet gid.
     if (!options.gid) {
-      return handleError.call(options, null, 'Could not find a gid in the provided URL.');
+      return handleError(options, null, 'Could not find a gid in the provided URL.');
     }
 
     // Abandon requests that have previously generated an error.
     if (requestStatusCache.failed[options.requestID]) {
-      return handleError.call(options, null, 'A previous request for this resource failed.');
+      return handleError(options, null, 'A previous request for this resource failed.');
     }
 
     // Abandon requests that have already been loaded.
@@ -399,21 +393,21 @@
   };
 
   // General error handler.
-  var handleError = function (data, msg) {
+  var handleError = function (options, data, msg) {
 
     // Set error message.
     msg = msg || 'Request failed.';
 
     // Remember that this request failed.
-    if (this && this.requestID) {
-      requestStatusCache.failed[this.requestID] = true;
+    if (options && options.requestID) {
+      requestStatusCache.failed[options.requestID] = true;
     }
 
     // Log the error to the console.
     log(msg);
 
     // Call the user's error handler.
-    this.errorHandler.call(this, data, msg);
+    options.errorHandler(options, data, msg);
 
     return false;
 
@@ -561,7 +555,6 @@
   // - remove/merge labels option?
   // - remove/merge errorHandler option?
   // - remove/merge header options?
-  // - reduce dependency on .call
 
   sheetrock.defaults = {
 
