@@ -51,19 +51,24 @@
   };
 
 
-  /* Setup */
+  /* Configuration */
 
-  // Google API endpoints and key formats
-  var spreadsheetTypes = {
+  // Google Visualization API endpoints and parameter formats
+  var sheetTypes = {
     '2014': {
-      'endpoint': 'https://docs.google.com/spreadsheets/d/%key%/gviz/tq',
-      'keyFormat': new RegExp('spreadsheets/d/([^/#]+)', 'i')
+      'apiEndpoint': 'https://docs.google.com/spreadsheets/d/%key%/gviz/tq',
+      'keyFormat': new RegExp('spreadsheets/d/([^/#]+)', 'i'),
+      'gidFormat': new RegExp('gid=([^/&#]+)', 'i')
     },
     '2010': {
-      'endpoint': 'https://spreadsheets.google.com/tq?key=%key%',
-      'keyFormat': new RegExp('key=([^&#]+)', 'i')
+      'apiEndpoint': 'https://spreadsheets.google.com/tq?key=%key%',
+      'keyFormat': new RegExp('key=([^&#]+)', 'i'),
+      'gidFormat': new RegExp('gid=([^/&#]+)', 'i')
     }
   };
+
+
+  /* Setup */
 
   // Placeholder for request status cache
   var requestStatusCache = {
@@ -116,6 +121,7 @@
 
   };
 
+  // Make user's options available to callback functions with a closure.
   var createClosure = function (func, options) {
     return function (data) {
       func(options, data);
@@ -305,26 +311,14 @@
   var validateOptions = function (options) {
 
     // Extend default options.
-    options = $.extend({}, $.fn.sheetrock.defaults, options);
+    options = $.extend({}, $.fn.sheetrock.defaults, getSheetParams(options.url), options);
 
     // Support some legacy option names.
     options.query = options.sql || options.query;
     options.callback = options.userCallback || options.callback;
 
-    // Get spreadsheet type.
-    options.type = getSpreadsheetType(options.url);
-
-    // Get spreadsheet key and gid.
-    options.key = extractKey(options.url, options.type);
-    options.gid = extractGID(options.url);
-
-    // Set API endpoint.
-    options.apiEndpoint = options.type.endpoint.replace('%key%', options.key);
-
     // Set request ID (key_gid_query).
-    if (options.key && options.gid) {
-      options.requestID = options.key + '_' + options.gid + '_' + options.query;
-    }
+    options.requestID = options.key + '_' + options.gid + '_' + options.query;
 
     // Validate chunk size.
     options.chunkSize = (options.target.length) ? stringToNaturalNumber(options.chunkSize) : 0;
@@ -360,19 +354,9 @@
       return handleError(options, null, 'No element targeted or callback provided.');
     }
 
-    // Require a spreadsheet URL.
-    if (!options.url) {
-      return handleError(options, null, 'No spreadsheet URL provided.');
-    }
-
-    // Require a spreadsheet key.
-    if (!options.key) {
-      return handleError(options, null, 'Could not find a key in the provided URL.');
-    }
-
-    // Require a spreadsheet gid.
-    if (!options.gid) {
-      return handleError(options, null, 'Could not find a gid in the provided URL.');
+    // Require a spreadsheet key and gid.
+    if (!options.key || !options.gid) {
+      return handleError(options, null, 'No key/gid in the provided URL.');
     }
 
     // Abandon requests that have previously generated an error.
@@ -461,31 +445,22 @@
     return false;
   };
 
-  // Get spreadsheet "type" from Google Spreadsheet URL (default is "2014").
-  var getSpreadsheetType = function (url) {
+  // Get API endpoint, key, and gid from a Google Sheet URL.
+  var getSheetParams = function (url) {
 
-    var returnValue;
+    var sheetParams = {};
 
-    $.each(spreadsheetTypes, function (key, spreadsheetType) {
-      if (spreadsheetType.keyFormat.test(url)) {
-        returnValue = spreadsheetType;
+    $.each(sheetTypes, function (typeKey, sheetType) {
+      if (sheetType.keyFormat.test(url) && sheetType.gidFormat.test(url)) {
+        sheetParams.key = url.match(sheetType.keyFormat)[1];
+        sheetParams.gid = url.match(sheetType.gidFormat)[1];
+        sheetParams.apiEndpoint = sheetType.apiEndpoint.replace('%key%', sheetParams.key);
         return false;
       }
     });
 
-    return returnValue || spreadsheetTypes['2014'];
+    return sheetParams;
 
-  };
-
-  // Extract the "key" from a Google spreadsheet URL.
-  var extractKey = function (url, spreadsheetType) {
-    return (spreadsheetType.keyFormat.test(url)) ? url.match(spreadsheetType.keyFormat)[1] : false;
-  };
-
-  // Extract the "gid" from a Google spreadsheet URL.
-  var extractGID = function (url) {
-    var gidRegExp = new RegExp('gid=([^/&#]+)', 'i');
-    return (gidRegExp.test(url)) ? url.match(gidRegExp)[1] : false;
   };
 
   // Extract the label, if present, from a column object, sans white space.
