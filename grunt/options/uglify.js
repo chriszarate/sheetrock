@@ -6,7 +6,7 @@ module.exports = {
   app: {
     options: {
       preserveComments: 'some',
-      sourceMap: 'dist/jquery.sheetrock.min.map'
+      sourceMap: true
     },
     files: {
       'dist/jquery.sheetrock.min.js': [
