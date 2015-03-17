@@ -147,10 +147,8 @@
 
   // Get API endpoint, key, and gid from a Google Sheet URL.
   var getRequestOptions = function (url) {
-
     var requestOptions = {};
     var sheetTypeKeys = Object.keys(sheetTypes);
-
     sheetTypeKeys.forEach(function (key) {
       var sheetType = sheetTypes[key];
       if (sheetType.keyFormat.test(url) && sheetType.gidFormat.test(url)) {
@@ -159,9 +157,7 @@
         requestOptions.apiEndpoint = sheetType.apiEndpoint.replace('%key%', requestOptions.key);
       }
     });
-
     return requestOptions;
-
   };
 
   // Extract the label, if present, from a column object, sans white space.
@@ -192,17 +188,13 @@
   // Default row handler: Output a row object as an HTML table row.
   // Use "td" for table body row, "th" for table header rows.
   var toHTML = function (row) {
-
     var tag = (row.num) ? 'td' : 'th';
     var cells = Object.keys(row.cells);
     var html = '';
-
     cells.forEach(function (key) {
       html += wrapTag(row.cells[key], tag);
     });
-
     return wrapTag(html, 'tr');
-
   };
 
   // If user requests it, reset any cached request status.
