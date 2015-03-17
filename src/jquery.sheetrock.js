@@ -29,7 +29,7 @@
     options = validateOptions(options);
 
     if (options) {
-      if (isDefined(bootstrappedData) && bootstrappedData !== null) {
+      if (bootstrappedData) {
         processResponse(options, bootstrappedData);
       } else {
         fetchRequest(options);
