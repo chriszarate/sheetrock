@@ -304,7 +304,7 @@
   // Get useful information about the response.
   var getResponseAttributes = function (options, data) {
 
-    // Initialize a hash for parsed options.
+    // Initialize a hash for the response attributes.
     var attributes = {};
 
     var chunkSize = options.user.chunkSize;
@@ -330,7 +330,7 @@
     // compared to the returned data, use the returned column labels.
     attributes.labels = (labels && labels.length === cols.length) ? labels : $.map(cols, getColumnLabelOrLetter);
 
-    // Return extended options.
+    // Return the response attributes.
     return attributes;
 
   };
@@ -452,7 +452,7 @@
     // Make sure the response is populated with actual data.
     if (has(data, 'status', 'table') && has(data.table, 'cols', 'rows')) {
 
-      // Extend the options hash with useful information about the response.
+      // Add useful information about the response to the options hash.
       options.response = getResponseAttributes(options, data);
 
       // If there is an element being targeted, parse the data into HTML.
