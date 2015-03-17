@@ -284,6 +284,7 @@
 
     // Support some legacy option names.
     options.query = options.sql || options.query;
+    options.reset = options.resetStatus || options.reset;
     options.callback = options.userCallback || options.callback;
 
     // Set request ID (key_gid_query).
@@ -296,7 +297,7 @@
     options.headers = stringToNaturalNumber(options.headers);
 
     // If requested, reset request status.
-    if (options.resetStatus && options.requestID) {
+    if (options.reset && options.requestID) {
       requestStatusCache.loaded[options.requestID] = false;
       requestStatusCache.failed[options.requestID] = false;
       requestStatusCache.offset[options.requestID] = 0;
@@ -498,6 +499,7 @@
     // Changes in 1.0.0:
     // -----------------
     // - *renamed* sql => query
+    // - *renamed* resetStatus => reset
     // - *removed* server -- pass data as parameter instead
     // - *removed* columns -- always use column letters in query
     // - *removed* cellHandler -- use rowHandler for text formatting
@@ -514,7 +516,7 @@
     callback:     $.noop,      // Function
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
-    resetStatus:  false,       // Boolean -- Reset request status
+    reset:        false,       // Boolean -- Reset request status
     debug:        false        // Boolean -- Output raw data to the console
 
   };
