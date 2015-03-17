@@ -5,13 +5,12 @@
  * License: MIT
  */
 
+/*global define, module, require */
 /*jslint vars: true, indent: 2 */
 
 (function (root, factory) {
 
   'use strict';
-
-  /*global define, module, require */
 
   if (typeof define === 'function' && define.amd) {
     define(['jquery'], factory);
@@ -24,6 +23,9 @@
 }(this, function ($) {
 
   'use strict';
+
+  // Determine if we have access to real jQuery.
+  var jQueryAvailable = $ && $.fn && $.fn.jquery;
 
   // Google Visualization API endpoints and parameter formats
   var sheetTypes = {
@@ -227,8 +229,24 @@
 
   /* Options */
 
-  // Validate processed user options.
+  // Validate the user-passed options.
   var validateUserOptions = function (options) {
+
+    // Support some legacy option names.
+    options.query = options.sql || options.query;
+    options.reset = options.resetStatus || options.reset;
+    options.callback = options.userCallback || options.callback;
+
+    // Validate integer values.
+    options.headers = stringToNaturalNumber(options.headers);
+    options.chunkSize = stringToNaturalNumber(options.chunkSize);
+
+    return options;
+
+  };
+
+  // Validate the processed options.
+  var validateOptions = function (options) {
 
     // Require `this` or a callback function. Otherwise, the data has nowhere to go.
     if (!options.target.length && !options.user.callback) {
@@ -258,27 +276,9 @@
   };
 
   // Process user-passed options.
-  var loadDefaultUserOptions = function (options) {
-
-    options = extendDefaults($.fn.sheetrock.defaults, options);
-
-    // Support some legacy option names.
-    options.query = options.sql || options.query;
-    options.reset = options.resetStatus || options.reset;
-    options.callback = options.userCallback || options.callback;
-
-    // Validate integer values.
-    options.headers = stringToNaturalNumber(options.headers);
-    options.chunkSize = stringToNaturalNumber(options.chunkSize);
-
-    return options;
-
-  };
-
-  // Process user-passed options.
   var processUserOptions = function (target, options) {
 
-    var userOptions = loadDefaultUserOptions(options);
+    var userOptions = validateUserOptions(options);
     var requestOptions = getRequestOptions(userOptions.url);
 
     // Set request query and index (key_gid_query).
@@ -305,7 +305,7 @@
 
     }
 
-    return validateUserOptions({
+    return validateOptions({
       user: userOptions,
       request: requestOptions,
       target: target
@@ -524,7 +524,7 @@
 
   /* Main */
 
-  var sheetrock = function (target, options, bootstrappedData) {
+  var main = function (target, options, bootstrappedData) {
 
     options = processUserOptions(target, options || {});
 
@@ -542,34 +542,19 @@
   // Documentation is available at:
   // https://github.com/chriszarate/sheetrock/
 
-  $.fn.sheetrock = function (options, bootstrappedData) {
-    try {
-      sheetrock(this, options, bootstrappedData);
-    } catch (err) {
-      log(err);
-    } finally {
-      return this;
-    }
-  };
-
-  $.fn.sheetrock.version = '0.3.0';
-
-  // Changes in 1.0.0:
-  // -----------------
+  // Changes to API in 1.0.0:
+  // ------------------------
   // - *renamed* .options => .defaults
   // - *removed* .promise -- requests are no longer chained
   // - *removed* .working -- use callback function
 
-  // Todo:
-  // -----
-  // - rename chunkSize
   // - remove/merge labels option?
   // - remove/merge header options?
 
-  $.fn.sheetrock.defaults = {
+  var defaults = {
 
-    // Changes in 1.0.0:
-    // -----------------
+    // Changes to defaults in 1.0.0:
+    // -----------------------------
     // - *renamed* sql => query
     // - *renamed* resetStatus => reset
     // - *removed* server -- pass data as parameter instead
@@ -593,6 +578,25 @@
 
   };
 
-  return $.fn.sheetrock;
+  var sheetrock = function (options, bootstrappedData) {
+    try {
+      options = extendDefaults(defaults, options);
+      main(this, options, bootstrappedData);
+    } catch (err) {
+      log(err);
+    } finally {
+      return this;
+    }
+  };
+
+  sheetrock.defaults = defaults;
+  sheetrock.version = '0.3.0';
+
+  // If jQuery is available, register as a plugin.
+  if (jQueryAvailable) {
+    $.fn.sheetrock = sheetrock;
+  }
+
+  return sheetrock;
 
 }));
