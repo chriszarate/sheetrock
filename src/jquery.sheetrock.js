@@ -315,7 +315,7 @@
     // and stop when we see less rows than we requested.
 
     // Calculate the last returned row.
-    attributes.last = (chunkSize) ? Math.min(rows.length, chunkSize) : rows.length;
+    attributes.last = Math.min(rows.length, chunkSize || rows.length);
 
     // Remember whether this request has been fully loaded.
     requestStatusCache.loaded[options.request.index] = !chunkSize || attributes.last < chunkSize;
