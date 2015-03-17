@@ -282,11 +282,16 @@
 
   };
 
-  // Extend the options hash with useful information about the response.
-  var extendOptions = function (options, data) {
+  // Get useful information about the response.
+  var getResponseAttributes = function (options, data) {
 
     // Initialize a hash for parsed options.
-    options.parsed = {};
+    var attributes = {};
+
+    var chunkSize = options.user.chunkSize;
+    var labels = options.user.labels;
+    var rows = data.table.rows;
+    var cols = data.table.cols;
 
     // The Google API generates an unrecoverable error when the 'offset' is
     // larger than the number of available rows, which is problematic for
@@ -294,24 +299,20 @@
     // and stop when we see less rows than we requested.
 
     // Calculate the last returned row.
-    options.parsed.last =
-      (options.chunkSize) ? Math.min(data.table.rows.length, options.chunkSize) : data.table.rows.length;
+    attributes.last = (chunkSize) ? Math.min(rows.length, chunkSize) : rows.length;
 
     // Remember whether this request has been fully loaded.
-    requestStatusCache.loaded[options.requestID] =
-      !options.chunkSize || options.parsed.last < options.chunkSize;
+    requestStatusCache.loaded[options.request.index] = !chunkSize || attributes.last < chunkSize;
 
     // Determine if Google has extracted column labels from a header row.
-    options.parsed.header =
-      ($.map(data.table.cols, getColumnLabel).length) ? 1 : 0;
+    attributes.header = ($.map(cols, getColumnLabel).length) ? 1 : 0;
 
     // If no column labels are provided or if there are too many or too few
     // compared to the returned data, use the returned column labels.
-    options.parsed.labels =
-      (options.labels && options.labels.length === data.table.cols.length) ? options.labels : $.map(data.table.cols, getColumnLabelOrLetter);
+    attributes.labels = (labels && labels.length === cols.length) ? labels : $.map(cols, getColumnLabelOrLetter);
 
     // Return extended options.
-    return options;
+    return attributes;
 
   };
 
@@ -353,10 +354,10 @@
 
     // Output a header row, if needed.
     if (!options.user.offset && !options.user.headersOff) {
-      if (options.parsed.header || !options.user.headers) {
+      if (options.response.header || !options.user.headers) {
         options.thead.append(options.user.rowHandler({
           num: 0,
-          cells: arrayToObject(options.parsed.labels)
+          cells: arrayToObject(options.response.labels)
         }));
       }
     }
@@ -369,10 +370,10 @@
 
       // Proceed if the row has cells and the row index is within the targeted
       // range. (This avoids displaying too many rows when chunking data.)
-      if (has(obj, 'c') && i < options.parsed.last) {
+      if (has(obj, 'c') && i < options.response.last) {
 
         // Get the "real" row index (not counting header rows).
-        var counter = stringToNaturalNumber(options.user.offset + i + 1 + options.parsed.header - options.user.headers);
+        var counter = stringToNaturalNumber(options.user.offset + i + 1 + options.response.header - options.user.headers);
 
         // Initialize a row object, which will be passed to the row handler.
         var rowObject = {
@@ -396,7 +397,7 @@
 
             // Add the trimmed cell value to the row object, using the desired
             // column label as the key.
-            rowObject.cells[options.parsed.labels[x]] = trim(value);
+            rowObject.cells[options.response.labels[x]] = trim(value);
 
           });
 
@@ -431,7 +432,7 @@
     if (has(data, 'status', 'table') && has(data.table, 'cols', 'rows')) {
 
       // Extend the options hash with useful information about the response.
-      options = extendOptions(options, data);
+      options.response = getResponseAttributes(options, data);
 
       // If there is an element being targeted, parse the data into HTML.
       if (options.target.length) {
