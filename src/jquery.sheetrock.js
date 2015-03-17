@@ -104,11 +104,11 @@
 
   // Log something to the browser console, if it exists. The argument "show"
   // is a Boolean (default = true) that determines whether to proceed.
-  var log = function (msg, show) {
+  var log = function (message, debug) {
+    var show = (debug === undefined) || debug;
     /* jshint devel: true */
-    show = (isDefined(show, console)) ? show : true;
-    if (show && console.log) {
-      console.log(msg);
+    if (show && console && console.log) {
+      console.log(message);
     }
     return false;
   };
@@ -513,7 +513,7 @@
     try {
       sheetrock(this, options, bootstrappedData);
     } catch (err) {
-      log(err, true);
+      log(err);
     } finally {
       return this;
     }
