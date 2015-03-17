@@ -52,7 +52,7 @@
 
   /* Polyfills */
 
-  // Radically simplified polyfilss for narrow use cases.
+  // Radically simplified polyfills for narrow use cases.
 
   if (!Array.prototype.forEach) {
     /*jshint freeze: false */
@@ -61,8 +61,20 @@
       var array = this;
       var arrayLength = array.length;
       for (i = 0; i < arrayLength; i = i + 1) {
-        func(array[i]);
+        func(array[i], i);
       }
+    };
+  }
+
+  if (!Array.prototype.map) {
+    /*jshint freeze: false */
+    Array.prototype.map = function (func) {
+      var array = this;
+      var resultArray = [];
+      array.forEach(function (value, i) {
+        resultArray[i] = func(value);
+      });
+      return resultArray;
     };
   }
 
@@ -324,11 +336,11 @@
     requestStatusCache.loaded[options.request.index] = !chunkSize || attributes.last < chunkSize;
 
     // Determine if Google has extracted column labels from a header row.
-    attributes.header = ($.map(cols, getColumnLabel).length) ? 1 : 0;
+    attributes.header = (cols.map(getColumnLabel).length) ? 1 : 0;
 
     // If no column labels are provided or if there are too many or too few
     // compared to the returned data, use the returned column labels.
-    attributes.labels = (labels && labels.length === cols.length) ? labels : $.map(cols, getColumnLabelOrLetter);
+    attributes.labels = (labels && labels.length === cols.length) ? labels : cols.map(getColumnLabelOrLetter);
 
     // Return the response attributes.
     return attributes;
