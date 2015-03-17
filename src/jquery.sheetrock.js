@@ -38,10 +38,10 @@
 
     } catch (err) {
       log(err, true);
+    } finally {
+      // Return `this` to allow jQuery object chaining.
+      return this;
     }
-
-    // Return `this` to allow jQuery object chaining.
-    return this;
 
   };
 
