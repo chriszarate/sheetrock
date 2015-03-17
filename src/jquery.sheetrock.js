@@ -5,11 +5,13 @@
  * License: MIT
  */
 
+/*jslint vars: true, indent: 2 */
+
 (function (root, factory) {
 
   'use strict';
 
-  /* global define, module, require */
+  /*global define, module, require */
 
   if (typeof define === 'function' && define.amd) {
     define(['jquery'], factory);
@@ -48,6 +50,36 @@
   var jsonpCallbackIndex = 0;
 
 
+  /* Polyfills */
+
+  // Radically simplified Array.forEach polyfill for narrow use case.
+  if (!Array.prototype.forEach) {
+    /*jshint freeze: false */
+    Array.prototype.forEach = function (func) {
+      var i;
+      var array = this;
+      var arrayLength = array.length;
+      for (i = 0; i < arrayLength; i = i + 1) {
+        func(array[i]);
+      }
+    };
+  }
+
+  // Radically simplified Object.keys polyfill for narrow use case.
+  if (!Object.keys) {
+    Object.keys = function (object) {
+      var key;
+      var array = [];
+      for (key in object) {
+        if (object.hasOwnProperty(key)) {
+          array.push(key);
+        }
+      }
+      return array;
+    };
+  }
+
+
   /* Helpers */
 
   // General error handler.
@@ -78,24 +110,12 @@
     return Math.max(0, parseInt(str, 10) || 0);
   };
 
-  // Return true if all of the passed arguments are defined.
-  var isDefined = function () {
-    var i;
-    var length = arguments.length;
-    for (i = 0; i < length; i = i + 1) {
-      if (arguments[i] === undefined) {
-        return false;
-      }
-    }
-    return true;
-  };
-
   // Return true if an object has all of the passed arguments as properties.
   var has = function (obj) {
     var i;
     var length = arguments.length;
     for (i = 1; i < length; i = i + 1) {
-      if (!isDefined(obj[arguments[i]])) {
+      if (obj[arguments[i]] === undefined) {
         return false;
       }
     }
@@ -106,7 +126,8 @@
   // is a Boolean (default = true) that determines whether to proceed.
   var log = function (message, debug) {
     var show = (debug === undefined) || debug;
-    /* jshint devel: true */
+    /*jshint devel: true */
+    /*jslint devel: true */
     if (show && console && console.log) {
       console.log(message);
     }
@@ -117,13 +138,14 @@
   var getRequestOptions = function (url) {
 
     var requestOptions = {};
+    var sheetTypeKeys = Object.keys(sheetTypes);
 
-    $.each(sheetTypes, function (typeKey, sheetType) {
+    sheetTypeKeys.forEach(function (key) {
+      var sheetType = sheetTypes[key];
       if (sheetType.keyFormat.test(url) && sheetType.gidFormat.test(url)) {
         requestOptions.key = url.match(sheetType.keyFormat)[1];
         requestOptions.gid = url.match(sheetType.gidFormat)[1];
         requestOptions.apiEndpoint = sheetType.apiEndpoint.replace('%key%', requestOptions.key);
-        return false;
       }
     });
 
@@ -142,12 +164,12 @@
   };
 
   // Convert an array to a object.
-  var arrayToObject = function (arr) {
-    var obj = {};
-    $.each(arr, function (i, str) {
-      obj[str] = str;
+  var arrayToObject = function (array) {
+    var object = {};
+    array.forEach(function (value) {
+      object[value] = value;
     });
-    return obj;
+    return object;
   };
 
   // Wrap a string in tag. The style argument, if present, is populated into
@@ -157,23 +179,17 @@
   };
 
   // Default row handler: Output a row object as an HTML table row.
+  // Use "td" for table body row, "th" for table header rows.
   var toHTML = function (row) {
 
-    var cell;
+    var tag = (row.num) ? 'td' : 'th';
+    var cells = Object.keys(row.cells);
     var html = '';
 
-    // Use "td" for table body row, "th" for table header rows.
-    var tag = (row.num) ? 'td' : 'th';
+    cells.forEach(function (key) {
+      html += wrapTag(row.cells[key], tag);
+    });
 
-    // Loop through each cell in the row.
-    for (cell in row.cells) {
-      if (row.cells.hasOwnProperty(cell)) {
-        // Wrap the cell value in the cell tag.
-        html += wrapTag(row.cells[cell], tag);
-      }
-    }
-
-    // Wrap the cells in a table row tag.
     return wrapTag(html, 'tr');
 
   };
@@ -326,12 +342,12 @@
     if (has(data, state)) {
 
       // Look for the kinds of messages we know about.
-      $.each(data[state], function (i, status) {
+      data[state].forEach(function (status) {
         if (has(status, 'detailed_message')) {
-          /* jshint camelcase: false */
-          // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+          /*jshint camelcase: false */
+          /*jscs: disable requireCamelCaseOrUpperCaseIdentifiers */
           log(status.detailed_message);
-          // jscs:enable
+          /*jscs: enable */
         } else if (has(status, 'message')) {
           log(status.message);
         }
@@ -368,7 +384,7 @@
     // formatting and 'v' contains the actual cell value.
 
     // Loop through each table row.
-    $.each(data.table.rows, function (i, obj) {
+    data.table.rows.forEach(function (obj, i) {
 
       // Proceed if the row has cells and the row index is within the targeted
       // range. (This avoids displaying too many rows when chunking data.)
@@ -387,7 +403,7 @@
         if (counter || !options.user.headersOff) {
 
           // Loop through each cell in the row.
-          $.each(obj.c, function (x, cell) {
+          obj.c.forEach(function (cell, x) {
 
             // Extract cell value.
             var value = (cell && has(cell, 'v') && cell.v) ? cell.v : '';
