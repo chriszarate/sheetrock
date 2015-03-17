@@ -345,17 +345,19 @@
   var parseData = function (options, data) {
 
     var isTable = (options.target.prop('tagName') === 'TABLE');
+    var headerTarget = options.target;
+    var bodyTarget = options.target;
 
     // Add row group tags (<thead>, <tbody>) if the target is a table.
-    $.extend(options, {
-      thead: (isTable) ? $('<thead/>').appendTo(options.target) : options.target,
-      tbody: (isTable) ? $('<tbody/>').appendTo(options.target) : options.target
-    });
+    if (isTable) {
+      headerTarget = $('<thead/>').appendTo(options.target);
+      bodyTarget = $('<tbody/>').appendTo(options.target);
+    }
 
     // Output a header row, if needed.
     if (!options.user.offset && !options.user.headersOff) {
       if (options.response.header || !options.user.headers) {
-        options.thead.append(options.user.rowHandler({
+        headerTarget.append(options.user.rowHandler({
           num: 0,
           cells: arrayToObject(options.response.labels)
         }));
@@ -406,10 +408,10 @@
 
           if (rowObject.num) {
             // Append to table body.
-            options.tbody.append(options.user.rowHandler(rowObject));
+            bodyTarget.append(options.user.rowHandler(rowObject));
           } else {
             // Append to table header.
-            options.thead.append(options.user.rowHandler(rowObject));
+            headerTarget.append(options.user.rowHandler(rowObject));
           }
 
         }
