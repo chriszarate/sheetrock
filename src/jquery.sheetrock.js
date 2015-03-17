@@ -25,15 +25,19 @@
 
   var sheetrock = function (options, bootstrappedData) {
 
-    options.target = this;
-    options = validateOptions(options);
+    try {
 
-    if (options) {
+      options.target = this;
+      options = validateOptions(options);
+
       if (bootstrappedData) {
         processResponse(options, bootstrappedData);
       } else {
         fetchRequest(options);
       }
+
+    } catch (err) {
+      log(err, true);
     }
 
     // Return `this` to allow jQuery object chaining.
@@ -155,10 +159,7 @@
       options.callback(options, data);
 
     } else {
-
-      // The response seems empty; call the error handler.
-      handleError(options, data);
-
+      handleError(options, data, 'Unexpected API response format.');
     }
 
   };
@@ -319,22 +320,22 @@
 
     // Require `this` or a callback function. Otherwise, the data has nowhere to go.
     if (!options.target.length && options.callback === $.noop) {
-      return handleError(options, null, 'No element targeted or callback provided.');
+      handleError(options, null, 'No element targeted or callback provided.');
     }
 
     // Require a Sheet key and gid.
     if (!options.key || !options.gid) {
-      return handleError(options, null, 'No key/gid in the provided URL.');
+      handleError(options, null, 'No key/gid in the provided URL.');
     }
 
     // Abandon requests that have previously generated an error.
     if (requestStatusCache.failed[options.requestID]) {
-      return handleError(options, null, 'A previous request for this resource failed.');
+      handleError(options, null, 'A previous request for this resource failed.');
     }
 
     // Abandon requests that have already been loaded.
     if (requestStatusCache.loaded[options.requestID]) {
-      return log('No more rows to load!');
+      handleError(options, null, 'No more rows to load!');
     }
 
     // Log the validated options to the console, if requested.
@@ -355,13 +356,10 @@
       requestStatusCache.failed[options.requestID] = true;
     }
 
-    // Log the error to the console.
-    log(msg);
-
     // Call the user's error handler.
     options.errorHandler(options, data, msg);
 
-    return false;
+    throw msg;
 
   };
 
@@ -493,7 +491,6 @@
   // -----
   // - rename chunkSize
   // - remove/merge labels option?
-  // - remove/merge errorHandler option?
   // - remove/merge header options?
 
   sheetrock.defaults = {
