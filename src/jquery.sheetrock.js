@@ -52,7 +52,8 @@
 
   /* Polyfills */
 
-  // Radically simplified Array.forEach polyfill for narrow use case.
+  // Radically simplified polyfilss for narrow use cases.
+
   if (!Array.prototype.forEach) {
     /*jshint freeze: false */
     Array.prototype.forEach = function (func) {
@@ -65,7 +66,6 @@
     };
   }
 
-  // Radically simplified Object.keys polyfill for narrow use case.
   if (!Object.keys) {
     Object.keys = function (object) {
       var key;
@@ -122,6 +122,15 @@
       }
     }
     return true;
+  };
+
+  var extendDefaults = function (defaults, options) {
+    var extended = {};
+    var defaultKeys = Object.keys(defaults);
+    defaultKeys.forEach(function (key) {
+      extended[key] = (options.hasOwnProperty(key)) ? options[key] : defaults[key];
+    });
+    return extended;
   };
 
   // Log something to the browser console, if it exists. The argument "show"
@@ -247,7 +256,7 @@
   // Process user-passed options.
   var loadDefaultUserOptions = function (options) {
 
-    options = $.extend({}, $.fn.sheetrock.defaults, options);
+    options = extendDefaults($.fn.sheetrock.defaults, options);
 
     // Support some legacy option names.
     options.query = options.sql || options.query;
