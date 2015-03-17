@@ -23,28 +23,6 @@
 
   'use strict';
 
-  var sheetrock = function (options, bootstrappedData) {
-
-    try {
-
-      options.target = this;
-      options = validateOptions(options);
-
-      if (bootstrappedData) {
-        processResponse(options, bootstrappedData);
-      } else {
-        fetchRequest(options);
-      }
-
-    } catch (err) {
-      log(err, true);
-    } finally {
-      // Return `this` to allow jQuery object chaining.
-      return this;
-    }
-
-  };
-
   // Google Visualization API endpoints and parameter formats
   var sheetTypes = {
     '2014': {
@@ -70,7 +48,7 @@
   var jsonpCallbackIndex = 0;
 
   // Fetch the requested data using the user's options.
-  var fetchRequest = function (options) {
+  var fetchData = function (options) {
 
     // Specify a custom callback function since Google doesn't use the
     // default implementation favored by jQuery.
@@ -475,12 +453,38 @@
   };
 
 
+  /* Main */
+
+  var sheetrock = function (options, bootstrappedData) {
+
+    options.target = this;
+    options = validateOptions(options);
+
+    if (bootstrappedData) {
+      processResponse(options, bootstrappedData);
+    } else {
+      fetchData(options);
+    }
+
+  };
+
+
   /* API */
 
   // Documentation is available at:
   // https://github.com/chriszarate/sheetrock/
 
-  sheetrock.version = '0.3.0';
+  $.fn.sheetrock = function (options, bootstrappedData) {
+    try {
+      sheetrock(options, bootstrappedData);
+    } catch (err) {
+      log(err, true);
+    } finally {
+      return this;
+    }
+  };
+
+  $.fn.sheetrock.version = '0.3.0';
 
   // Changes in 1.0.0:
   // -----------------
@@ -494,7 +498,7 @@
   // - remove/merge labels option?
   // - remove/merge header options?
 
-  sheetrock.defaults = {
+  $.fn.sheetrock.defaults = {
 
     // Changes in 1.0.0:
     // -----------------
@@ -521,7 +525,6 @@
 
   };
 
-  $.fn.sheetrock = sheetrock;
-  return sheetrock;
+  return $.fn.sheetrock;
 
 }));
