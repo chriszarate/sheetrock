@@ -94,7 +94,9 @@
     }
 
     // Call the user's error handler.
-    options.user.errorHandler(options, data, msg);
+    if (options.user.errorHandler) {
+      options.user.errorHandler(options, data, msg);
+    }
 
     throw msg;
 
@@ -216,7 +218,7 @@
   var validateUserOptions = function (options) {
 
     // Require `this` or a callback function. Otherwise, the data has nowhere to go.
-    if (!options.target.length && options.user.callback === $.noop) {
+    if (!options.target.length && !options.user.callback) {
       handleError(options, null, 'No element targeted or callback provided.');
     }
 
@@ -458,7 +460,9 @@
       }
 
       // Call the user's callback function.
-      options.user.callback(options, data);
+      if (options.user.callback) {
+        options.user.callback(options, data);
+      }
 
     } else {
       handleError(options, data, 'Unexpected API response format.');
@@ -567,8 +571,8 @@
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     labels:       [],          // Array   -- Override *returned* column labels
     rowHandler:   toHTML,      // Function
-    errorHandler: $.noop,      // Function
-    callback:     $.noop,      // Function
+    errorHandler: false,       // Function
+    callback:     false,       // Function
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
     reset:        false,       // Boolean -- Reset request status
