@@ -83,7 +83,7 @@
     var i;
     var length = arguments.length;
     for (i = 0; i < length; i = i + 1) {
-      if (typeof arguments[i] === 'undefined') {
+      if (arguments[i] === undefined) {
         return false;
       }
     }
