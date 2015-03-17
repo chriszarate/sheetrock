@@ -57,12 +57,12 @@
     msg = msg || 'Request failed.';
 
     // Remember that this request failed.
-    if (options && options.requestID) {
-      requestStatusCache.failed[options.requestID] = true;
+    if (options && options.request && options.request.index) {
+      requestStatusCache.failed[options.request.index] = true;
     }
 
     // Call the user's error handler.
-    options.errorHandler(options, data, msg);
+    options.user.errorHandler(options, data, msg);
 
     throw msg;
 
@@ -114,20 +114,20 @@
   };
 
   // Get API endpoint, key, and gid from a Google Sheet URL.
-  var getSheetParams = function (url) {
+  var getRequestOptions = function (url) {
 
-    var sheetParams = {};
+    var requestOptions = {};
 
     $.each(sheetTypes, function (typeKey, sheetType) {
       if (sheetType.keyFormat.test(url) && sheetType.gidFormat.test(url)) {
-        sheetParams.key = url.match(sheetType.keyFormat)[1];
-        sheetParams.gid = url.match(sheetType.gidFormat)[1];
-        sheetParams.apiEndpoint = sheetType.apiEndpoint.replace('%key%', sheetParams.key);
+        requestOptions.key = url.match(sheetType.keyFormat)[1];
+        requestOptions.gid = url.match(sheetType.gidFormat)[1];
+        requestOptions.apiEndpoint = sheetType.apiEndpoint.replace('%key%', requestOptions.key);
         return false;
       }
     });
 
-    return sheetParams;
+    return requestOptions;
 
   };
 
@@ -178,6 +178,14 @@
 
   };
 
+  // If user requests it, reset any cached request status.
+  var resetRequestStatus = function (index) {
+    requestStatusCache.loaded[index] = false;
+    requestStatusCache.failed[index] = false;
+    requestStatusCache.offset[index] = 0;
+    log('Resetting request status.');
+  };
+
   // Make user's options available to callback functions with a closure.
   var createClosure = function (func, options) {
     return function (data) {
@@ -188,73 +196,89 @@
 
   /* Options */
 
-  // Validate user-passed options.
-  var validateOptions = function (options) {
+  // Validate processed user options.
+  var validateUserOptions = function (options) {
 
-    // Extend default options.
-    options = $.extend({}, $.fn.sheetrock.defaults, getSheetParams(options.url), options);
+    // Require `this` or a callback function. Otherwise, the data has nowhere to go.
+    if (!options.target.length && options.user.callback === $.noop) {
+      handleError(options, null, 'No element targeted or callback provided.');
+    }
+
+    // Require a Sheet key and gid.
+    if (!(options.request.key && options.request.gid)) {
+      handleError(options, null, 'No key/gid in the provided URL.');
+    }
+
+    // Abandon requests that have previously generated an error.
+    if (requestStatusCache.failed[options.request.index]) {
+      handleError(options, null, 'A previous request for this resource failed.');
+    }
+
+    // Abandon requests that have already been loaded.
+    if (requestStatusCache.loaded[options.request.index]) {
+      handleError(options, null, 'No more rows to load!');
+    }
+
+    // Log the validated options to the console, if requested.
+    log(options, options.user.debug);
+
+    return options;
+
+  };
+
+  // Process user-passed options.
+  var loadDefaultUserOptions = function (options) {
+
+    options = $.extend({}, $.fn.sheetrock.defaults, options);
 
     // Support some legacy option names.
     options.query = options.sql || options.query;
     options.reset = options.resetStatus || options.reset;
     options.callback = options.userCallback || options.callback;
 
-    // Set request ID (key_gid_query).
-    options.requestID = options.key + '_' + options.gid + '_' + options.query;
-
-    // Validate chunk size.
-    options.chunkSize = (options.target.length) ? stringToNaturalNumber(options.chunkSize) : 0;
-
-    // Validate number of header rows.
+    // Validate integer values.
     options.headers = stringToNaturalNumber(options.headers);
+    options.chunkSize = stringToNaturalNumber(options.chunkSize);
+
+    return options;
+
+  };
+
+  // Process user-passed options.
+  var processUserOptions = function (target, options) {
+
+    var userOptions = loadDefaultUserOptions(options);
+    var requestOptions = getRequestOptions(userOptions.url);
+
+    // Set request query and index (key_gid_query).
+    requestOptions.query = userOptions.query;
+    requestOptions.index = requestOptions.key + '_' + requestOptions.gid + '_' + userOptions.query;
 
     // If requested, reset request status.
-    if (options.reset && options.requestID) {
-      requestStatusCache.loaded[options.requestID] = false;
-      requestStatusCache.failed[options.requestID] = false;
-      requestStatusCache.offset[options.requestID] = 0;
-      log('Resetting request status.');
+    if (userOptions.reset && requestOptions.index) {
+      resetRequestStatus(requestOptions.index);
     }
 
     // Retrieve current row offset.
-    options.offset = requestStatusCache.offset[options.requestID] || 0;
+    userOptions.offset = requestStatusCache.offset[requestOptions.index] || 0;
 
     // If requested, make a request for chunked data.
-    if (options.chunkSize && options.target && options.requestID) {
+    if (userOptions.chunkSize && requestOptions.index) {
 
       // Append a limit and row offest to the query to target the next chunk.
-      options.query += ' limit ' + (options.chunkSize + 1);
-      options.query += ' offset ' + options.offset;
+      requestOptions.query += ' limit ' + (userOptions.chunkSize + 1);
+      requestOptions.query += ' offset ' + userOptions.offset;
 
       // Remember the new row offset.
-      requestStatusCache.offset[options.requestID] = options.offset + options.chunkSize;
+      requestStatusCache.offset[requestOptions.index] = userOptions.offset + userOptions.chunkSize;
 
     }
 
-    // Require `this` or a callback function. Otherwise, the data has nowhere to go.
-    if (!options.target.length && options.callback === $.noop) {
-      handleError(options, null, 'No element targeted or callback provided.');
-    }
-
-    // Require a Sheet key and gid.
-    if (!options.key || !options.gid) {
-      handleError(options, null, 'No key/gid in the provided URL.');
-    }
-
-    // Abandon requests that have previously generated an error.
-    if (requestStatusCache.failed[options.requestID]) {
-      handleError(options, null, 'A previous request for this resource failed.');
-    }
-
-    // Abandon requests that have already been loaded.
-    if (requestStatusCache.loaded[options.requestID]) {
-      handleError(options, null, 'No more rows to load!');
-    }
-
-    // Log the validated options to the console, if requested.
-    log(options, options.debug);
-
-    return options;
+    return validateUserOptions({
+      user: userOptions,
+      request: requestOptions,
+      target: target
+    });
 
   };
 
@@ -328,9 +352,9 @@
     });
 
     // Output a header row, if needed.
-    if (!options.offset && !options.headersOff) {
-      if (options.parsed.header || !options.headers) {
-        options.thead.append(options.rowHandler({
+    if (!options.user.offset && !options.user.headersOff) {
+      if (options.parsed.header || !options.user.headers) {
+        options.thead.append(options.user.rowHandler({
           num: 0,
           cells: arrayToObject(options.parsed.labels)
         }));
@@ -348,7 +372,7 @@
       if (has(obj, 'c') && i < options.parsed.last) {
 
         // Get the "real" row index (not counting header rows).
-        var counter = stringToNaturalNumber(options.offset + i + 1 + options.parsed.header - options.headers);
+        var counter = stringToNaturalNumber(options.user.offset + i + 1 + options.parsed.header - options.user.headers);
 
         // Initialize a row object, which will be passed to the row handler.
         var rowObject = {
@@ -357,7 +381,7 @@
         };
 
         // Suppress header row, if requested.
-        if (counter || !options.headersOff) {
+        if (counter || !options.user.headersOff) {
 
           // Loop through each cell in the row.
           $.each(obj.c, function (x, cell) {
@@ -381,10 +405,10 @@
 
           if (rowObject.num) {
             // Append to table body.
-            options.tbody.append(options.rowHandler(rowObject));
+            options.tbody.append(options.user.rowHandler(rowObject));
           } else {
             // Append to table header.
-            options.thead.append(options.rowHandler(rowObject));
+            options.thead.append(options.user.rowHandler(rowObject));
           }
 
         }
@@ -395,13 +419,13 @@
 
   };
 
-  // Validate API response.
+  // Process API response.
   var processResponse = function (options, data) {
 
     enumerateMessages(data, 'warnings');
     enumerateMessages(data, 'errors');
 
-    log(data, options.debug);
+    log(data, options.user.debug);
 
     // Make sure the response is populated with actual data.
     if (has(data, 'status', 'table') && has(data.table, 'cols', 'rows')) {
@@ -415,7 +439,7 @@
       }
 
       // Call the user's callback function.
-      options.callback(options, data);
+      options.user.callback(options, data);
 
     } else {
       handleError(options, data, 'Unexpected API response format.');
@@ -436,12 +460,12 @@
 
       // Convert user options into AJAX request parameters.
       data: {
-        gid: options.gid,
-        tq: options.query,
+        gid: options.request.gid,
+        tq: options.request.query,
         tqx: 'responseHandler:' + jsonpCallbackName
       },
 
-      url: options.apiEndpoint,
+      url: options.request.apiEndpoint,
       dataType: 'jsonp',
       cache: true,
 
@@ -452,7 +476,7 @@
     };
 
     // If debugging is enabled, log request details to the console.
-    log(request, options.debug);
+    log(request, options.user.debug);
 
     // Send the request.
     $.ajax(request)
@@ -464,10 +488,9 @@
 
   /* Main */
 
-  var sheetrock = function (options, bootstrappedData) {
+  var sheetrock = function (target, options, bootstrappedData) {
 
-    options.target = this;
-    options = validateOptions(options);
+    options = processUserOptions(target, options || {});
 
     if (bootstrappedData) {
       processResponse(options, bootstrappedData);
@@ -485,7 +508,7 @@
 
   $.fn.sheetrock = function (options, bootstrappedData) {
     try {
-      sheetrock(options, bootstrappedData);
+      sheetrock(this, options, bootstrappedData);
     } catch (err) {
       log(err, true);
     } finally {
