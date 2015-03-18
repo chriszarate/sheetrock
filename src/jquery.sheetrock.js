@@ -15,7 +15,7 @@
   if (typeof define === 'function' && define.amd) {
     define(['jquery'], factory);
   } else if (typeof module === 'object' && module.exports) {
-    factory(require('jquery'));
+    module.exports = factory(require('jquery'));
   } else {
     factory(root.jQuery || root.$);
   }
@@ -375,12 +375,13 @@
   // Parse data, row by row.
   var parseData = function (options, data) {
 
-    var isTable = (options.target.prop('tagName') === 'TABLE');
+    var isTable = (options.target.prop('tagName') === 'TABLE'); //jQuery
     var headerTarget = options.target;
     var bodyTarget = options.target;
 
     // Add row group tags (<thead>, <tbody>) if the target is a table.
     if (isTable) {
+      //jQuery
       headerTarget = $('<thead/>').appendTo(options.target);
       bodyTarget = $('<tbody/>').appendTo(options.target);
     }
@@ -388,6 +389,7 @@
     // Output a header row, if needed.
     if (!options.user.offset && !options.user.headersOff) {
       if (options.response.header || !options.user.headers) {
+        //jQuery
         headerTarget.append(options.user.rowHandler({
           num: 0,
           cells: arrayToObject(options.response.labels)
@@ -439,6 +441,7 @@
 
           if (rowObject.num) {
             // Append to table body.
+            //jQuery
             bodyTarget.append(options.user.rowHandler(rowObject));
           } else {
             // Append to table header.
@@ -515,6 +518,7 @@
     log(request, options.user.debug);
 
     // Send the request.
+    //jQuery
     $.ajax(request)
       .done(createClosure(processResponse, options))
       .fail(createClosure(handleError, options));
