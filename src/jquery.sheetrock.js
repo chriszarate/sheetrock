@@ -16,8 +16,10 @@
     define(['jquery'], factory);
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(require('jquery'));
+  } else if (root.jQuery) {
+    factory(root.jQuery);
   } else {
-    factory(root.jQuery || root.$);
+    root.Sheetrock = factory();
   }
 
 }(this, function ($) {
