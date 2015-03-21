@@ -633,7 +633,7 @@
     try {
       options = extendDefaults(defaults, options);
       main(this, options, bootstrappedData);
-    } catch (err) {}
+    } catch (ignore) {}
 
     return this;
 
