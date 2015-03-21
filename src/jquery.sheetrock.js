@@ -99,9 +99,9 @@
   /* Helpers */
 
   // General error handler.
-  var handleError = function (options, data, msg) {
+  var handleError = function (message, options, rawData) {
 
-    var error = new Error(msg || 'Request failed.');
+    var error = new Error(message || 'Request failed.');
 
     // Remember that this request failed.
     if (options && options.request && options.request.index) {
@@ -110,7 +110,7 @@
 
     // Call the user's callback function.
     if (options.user.callback) {
-      options.user.callback(error, options, data);
+      options.user.callback(error, options, rawData || null, null, null);
     }
 
     throw error;
@@ -262,22 +262,22 @@
 
     // Require DOM element or a callback function. Otherwise, the data has nowhere to go.
     if (!options.user.target && !options.user.callback) {
-      handleError(options, null, 'No element targeted or callback provided.');
+      handleError('No element targeted or callback provided.', options);
     }
 
     // Require a Sheet key and gid.
     if (!(options.request.key && options.request.gid)) {
-      handleError(options, null, 'No key/gid in the provided URL.');
+      handleError('No key/gid in the provided URL.', options);
     }
 
     // Abandon requests that have previously generated an error.
     if (requestStatusCache.failed[options.request.index]) {
-      handleError(options, null, 'A previous request for this resource failed.');
+      handleError('A previous request for this resource failed.', options);
     }
 
     // Abandon requests that have already been loaded.
     if (requestStatusCache.loaded[options.request.index]) {
-      handleError(options, null, 'No more rows to load!');
+      handleError('No more rows to load!', options);
     }
 
     // Log the validated options to the console, if requested.
@@ -516,15 +516,15 @@
       var tableArray = parseData(options, rawData);
 
       // Parse the table array into HTML.
-      var html = generateHTML(options, tableArray);
+      var outputHTML = generateHTML(options, tableArray);
 
       // Call the user's callback function.
       if (options.user.callback) {
-        options.user.callback(null, options, rawData, tableArray, html);
+        options.user.callback(null, options, rawData, tableArray, outputHTML);
       }
 
     } else {
-      handleError(options, rawData, 'Unexpected API response format.');
+      handleError('Unexpected API response format.', options, rawData);
     }
 
   };
