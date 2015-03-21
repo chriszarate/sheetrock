@@ -12,10 +12,7 @@ QUnit.asyncTest('Load a legacy-format spreadsheet.', function() {
   jQuery.fn.sheetrock({
     url: myLegacySpreadsheet,
     query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
-    errorHandler: function() {
-      QUnit.start();
-    },
-    callback: function(options, data) {
+    callback: function (error, options, data) {
       QUnit.ok(data.status === 'ok', 'Received valid response from Google API.');
       QUnit.ok(data.table.cols.length === 6, 'Expect 6 columns.');
       QUnit.ok(data.table.rows.length === 35, 'Expect 35 columns.');
@@ -38,10 +35,7 @@ QUnit.asyncTest('Load a new-format spreadsheet.', function() {
   jQuery.fn.sheetrock({
     url: myNewSpreadsheet,
     query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
-    errorHandler: function() {
-      QUnit.start();
-    },
-    callback: function(options, data) {
+    callback: function(error, options, data) {
       QUnit.ok(data.status === 'ok', 'Received valid response from Google API.');
       QUnit.ok(data.table.cols.length === 6, 'Expect 6 columns.');
       QUnit.ok(data.table.rows.length === 35, 'Expect 35 columns.');

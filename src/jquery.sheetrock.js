@@ -101,20 +101,19 @@
   // General error handler.
   var handleError = function (options, data, msg) {
 
-    // Set error message.
-    msg = msg || 'Request failed.';
+    var error = new Error(msg || 'Request failed.');
 
     // Remember that this request failed.
     if (options && options.request && options.request.index) {
       requestStatusCache.failed[options.request.index] = true;
     }
 
-    // Call the user's error handler.
-    if (options.user.errorHandler) {
-      options.user.errorHandler(options, data, msg);
+    // Call the user's callback function.
+    if (options.user.callback) {
+      options.user.callback(error, options, data);
     }
 
-    throw msg;
+    throw error;
 
   };
 
@@ -246,7 +245,6 @@
     // Support some legacy option names.
     options.query = options.sql || options.query;
     options.reset = options.resetStatus || options.reset;
-    options.callback = options.userCallback || options.callback;
 
     // Validate DOM element target.
     options.target = extractElement(options.target) || extractElement(target);
@@ -494,7 +492,7 @@
 
       // Call the user's callback function.
       if (options.user.callback) {
-        options.user.callback(options, data);
+        options.user.callback(null, options, data);
       }
 
     } else {
@@ -571,7 +569,6 @@
 
   // - remove/merge labels option?
   // - remove/merge header options?
-  // - merge errorHandler into callback?
 
   var defaults = {
 
@@ -583,6 +580,7 @@
     // - *removed* server -- pass data as parameter instead
     // - *removed* columns -- always use column letters in query
     // - *removed* cellHandler -- use rowHandler for text formatting
+    // - *removed* errorHandler -- errors are passed to callback function
     // - *removed* loading -- use callback function
     // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
     // - *removed* formatting -- almost useless, impossible to support
@@ -593,7 +591,6 @@
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     labels:       [],          // Array   -- Override *returned* column labels
     rowHandler:   toHTML,      // Function
-    errorHandler: false,       // Function
     callback:     false,       // Function
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
@@ -603,14 +600,14 @@
   };
 
   var sheetrock = function (options, bootstrappedData) {
+
     try {
       options = extendDefaults(defaults, options);
       main(this, options, bootstrappedData);
-    } catch (err) {
-      log(err);
-    } finally {
-      return this;
-    }
+    } catch (err) {}
+
+    return this;
+
   };
 
   sheetrock.defaults = defaults;
