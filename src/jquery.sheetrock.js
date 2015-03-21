@@ -209,8 +209,8 @@
     return '<' + tag + '>' + str + '</' + tag + '>';
   };
 
-  // Default row handler: Output a row object as an HTML table row.
-  // Use "td" for table body row, "th" for table header rows.
+  // Default row template: Output a row object as an HTML table row. Use "td"
+  // for table body row, "th" for table header rows.
   var toHTML = function (row) {
     var tag = (row.num) ? 'td' : 'th';
     var cells = Object.keys(row.cells);
@@ -388,13 +388,15 @@
 
     // Use row group tags (<thead>, <tbody>) if the target is a table.
     var isTable = (options.user.target.tagName === 'TABLE');
+
+    var template = options.user.rowTemplate || toHTML;
     var headerHTML = '';
     var bodyHTML = '';
 
     // Output a header row, if needed.
     if (!options.user.offset && !options.user.headersOff) {
       if (options.response.header || !options.user.headers) {
-        headerHTML += options.user.rowHandler({
+        headerHTML += template({
           num: 0,
           cells: arrayToObject(options.response.labels)
         });
@@ -414,7 +416,7 @@
         // Get the "real" row index (not counting header rows).
         var counter = stringToNaturalNumber(options.user.offset + i + 1 + options.response.header - options.user.headers);
 
-        // Initialize a row object, which will be passed to the row handler.
+        // Initialize a row object, which will be passed to the row template.
         var rowObject = {
           num: counter,
           cells: {}
@@ -440,15 +442,15 @@
 
           });
 
-          // Pass the row object to the row handler and append the output to
+          // Pass the row object to the row template and append the output to
           // the target element.
 
           if (rowObject.num) {
             // Append to body section.
-            bodyHTML += options.user.rowHandler(rowObject);
+            bodyHTML += template(rowObject);
           } else {
             // Append to header section.
-            headerHTML += options.user.rowHandler(rowObject);
+            headerHTML += template(rowObject);
           }
 
         }
@@ -577,9 +579,10 @@
     // - *added* target
     // - *renamed* sql => query
     // - *renamed* resetStatus => reset
+    // - *renamed* rowHandler => rowTemplate
     // - *removed* server -- pass data as parameter instead
     // - *removed* columns -- always use column letters in query
-    // - *removed* cellHandler -- use rowHandler for text formatting
+    // - *removed* cellHandler -- use rowTemplate for text formatting
     // - *removed* errorHandler -- errors are passed to callback function
     // - *removed* loading -- use callback function
     // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
@@ -590,7 +593,7 @@
     target:       null,        // DOM Element -- An element to append output to
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     labels:       [],          // Array   -- Override *returned* column labels
-    rowHandler:   toHTML,      // Function
+    rowTemplate:  false,       // Function / Template
     callback:     false,       // Function
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
