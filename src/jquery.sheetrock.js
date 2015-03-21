@@ -13,20 +13,20 @@
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(['jquery'], factory);
+    define(['jquery'], function (jquery) {
+      factory(jquery, root.document);
+    });
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('jquery'));
-  } else if (root.jQuery) {
-    factory(root.jQuery);
+    module.exports = factory(require('jquery'), root.document);
   } else {
-    root.Sheetrock = factory();
+    root.Sheetrock = factory(root.jQuery, root.document);
   }
 
-}(this, function ($) {
+}(this, function ($, document) {
 
   'use strict';
 
-  // Determine if we have access to real jQuery.
+  // Determine if we have access to jQuery.
   var jQueryAvailable = $ && $.fn && $.fn.jquery;
 
   // Google Visualization API endpoints and parameter formats
@@ -140,6 +140,15 @@
     return true;
   };
 
+  // Extract a DOM element from a possible jQuery blob.
+  var extractElement = function (blob) {
+    blob = blob || {};
+    if (blob.jquery && blob.length) {
+      blob = blob[0];
+    }
+    return (blob.nodeType && blob.nodeType === 1) ? blob : false;
+  };
+
   var extendDefaults = function (defaults, options) {
     var extended = {};
     var defaultKeys = Object.keys(defaults);
@@ -232,12 +241,15 @@
   /* Options */
 
   // Validate the user-passed options.
-  var validateUserOptions = function (options) {
+  var validateUserOptions = function (target, options) {
 
     // Support some legacy option names.
     options.query = options.sql || options.query;
     options.reset = options.resetStatus || options.reset;
     options.callback = options.userCallback || options.callback;
+
+    // Validate DOM element target.
+    options.target = extractElement(options.target) || extractElement(target);
 
     // Validate integer values.
     options.headers = stringToNaturalNumber(options.headers);
@@ -250,8 +262,8 @@
   // Validate the processed options.
   var validateOptions = function (options) {
 
-    // Require `this` or a callback function. Otherwise, the data has nowhere to go.
-    if (!options.target.length && !options.user.callback) {
+    // Require DOM element or a callback function. Otherwise, the data has nowhere to go.
+    if (!options.user.target && !options.user.callback) {
       handleError(options, null, 'No element targeted or callback provided.');
     }
 
@@ -280,7 +292,7 @@
   // Process user-passed options.
   var processUserOptions = function (target, options) {
 
-    var userOptions = validateUserOptions(options);
+    var userOptions = validateUserOptions(target, options);
     var requestOptions = getRequestOptions(userOptions.url);
 
     // Set request query and index (key_gid_query).
@@ -309,8 +321,7 @@
 
     return validateOptions({
       user: userOptions,
-      request: requestOptions,
-      target: target
+      request: requestOptions
     });
 
   };
@@ -377,25 +388,18 @@
   // Parse data, row by row.
   var parseData = function (options, data) {
 
-    var isTable = (options.target.prop('tagName') === 'TABLE'); //jQuery
-    var headerTarget = options.target;
-    var bodyTarget = options.target;
-
-    // Add row group tags (<thead>, <tbody>) if the target is a table.
-    if (isTable) {
-      //jQuery
-      headerTarget = $('<thead/>').appendTo(options.target);
-      bodyTarget = $('<tbody/>').appendTo(options.target);
-    }
+    // Use row group tags (<thead>, <tbody>) if the target is a table.
+    var isTable = (options.user.target.tagName === 'TABLE');
+    var headerHTML = '';
+    var bodyHTML = '';
 
     // Output a header row, if needed.
     if (!options.user.offset && !options.user.headersOff) {
       if (options.response.header || !options.user.headers) {
-        //jQuery
-        headerTarget.append(options.user.rowHandler({
+        headerHTML += options.user.rowHandler({
           num: 0,
           cells: arrayToObject(options.response.labels)
-        }));
+        });
       }
     }
 
@@ -442,12 +446,11 @@
           // the target element.
 
           if (rowObject.num) {
-            // Append to table body.
-            //jQuery
-            bodyTarget.append(options.user.rowHandler(rowObject));
+            // Append to body section.
+            bodyHTML += options.user.rowHandler(rowObject);
           } else {
-            // Append to table header.
-            headerTarget.append(options.user.rowHandler(rowObject));
+            // Append to header section.
+            headerHTML += options.user.rowHandler(rowObject);
           }
 
         }
@@ -455,6 +458,18 @@
       }
 
     });
+
+    // Append to DOM.
+    if (isTable) {
+      var headerElement = document.createElement('thead');
+      var bodyElement = document.createElement('tbody');
+      headerElement.innerHTML = headerHTML;
+      bodyElement.innerHTML = bodyHTML;
+      options.user.target.appendChild(headerElement);
+      options.user.target.appendChild(bodyElement);
+    } else {
+      options.user.target.insertAdjacentHTML('beforeEnd', headerHTML + bodyHTML);
+    }
 
   };
 
@@ -473,7 +488,7 @@
       options.response = getResponseAttributes(options, data);
 
       // If there is an element being targeted, parse the data into HTML.
-      if (options.target.length) {
+      if (options.user.target) {
         parseData(options, data);
       }
 
@@ -556,11 +571,13 @@
 
   // - remove/merge labels option?
   // - remove/merge header options?
+  // - merge errorHandler into callback?
 
   var defaults = {
 
     // Changes to defaults in 1.0.0:
     // -----------------------------
+    // - *added* target
     // - *renamed* sql => query
     // - *renamed* resetStatus => reset
     // - *removed* server -- pass data as parameter instead
@@ -572,6 +589,7 @@
 
     url:          '',          // String  -- Google Sheet URL
     query:        '',          // String  -- Google Visualization API query
+    target:       null,        // DOM Element -- An element to append output to
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     labels:       [],          // Array   -- Override *returned* column labels
     rowHandler:   toHTML,      // Function
