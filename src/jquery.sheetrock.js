@@ -383,40 +383,25 @@
 
   };
 
-  // Parse data, row by row.
-  var parseData = function (options, data) {
+  // Parse data, row by row, and generate a simpler output array.
+  var parseData = function (options, rawData) {
 
-    // Use row group tags (<thead>, <tbody>) if the target is a table.
-    var isTable = (options.user.target.tagName === 'TABLE');
-
-    var template = options.user.rowTemplate || toHTML;
-    var headerHTML = '';
-    var bodyHTML = '';
-
-    // Output a header row, if needed.
-    if (!options.user.offset && !options.user.headersOff) {
-      if (options.response.header || !options.user.headers) {
-        headerHTML += template({
-          num: 0,
-          cells: arrayToObject(options.response.labels)
-        });
-      }
-    }
+    var output = [];
 
     // Each table cell ('c') can contain two properties: 'p' contains
     // formatting and 'v' contains the actual cell value.
 
     // Loop through each table row.
-    data.table.rows.forEach(function (obj, i) {
+    rawData.table.rows.forEach(function (row, i) {
 
       // Proceed if the row has cells and the row index is within the targeted
       // range. (This avoids displaying too many rows when chunking data.)
-      if (has(obj, 'c') && i < options.response.last) {
+      if (has(row, 'c') && i < options.response.last) {
 
         // Get the "real" row index (not counting header rows).
         var counter = stringToNaturalNumber(options.user.offset + i + 1 + options.response.header - options.user.headers);
 
-        // Initialize a row object, which will be passed to the row template.
+        // Initialize a row object, which will be added to the output array.
         var rowObject = {
           num: counter,
           cells: {}
@@ -426,7 +411,7 @@
         if (counter || !options.user.headersOff) {
 
           // Loop through each cell in the row.
-          obj.c.forEach(function (cell, x) {
+          row.c.forEach(function (cell, x) {
 
             // Extract cell value.
             var value = (cell && has(cell, 'v') && cell.v) ? cell.v : '';
@@ -442,63 +427,104 @@
 
           });
 
-          // Pass the row object to the row template and append the output to
-          // the target element.
-
-          if (rowObject.num) {
-            // Append to body section.
-            bodyHTML += template(rowObject);
-          } else {
-            // Append to header section.
-            headerHTML += template(rowObject);
-          }
-
         }
+
+        // Add to the output array.
+        output.push(rowObject);
 
       }
 
     });
 
-    // Append to DOM.
-    if (isTable) {
-      var headerElement = document.createElement('thead');
-      var bodyElement = document.createElement('tbody');
-      headerElement.innerHTML = headerHTML;
-      bodyElement.innerHTML = bodyHTML;
-      options.user.target.appendChild(headerElement);
-      options.user.target.appendChild(bodyElement);
-    } else {
-      options.user.target.insertAdjacentHTML('beforeEnd', headerHTML + bodyHTML);
+    return output;
+
+  };
+
+  // Generate final HTML and append to DOM, if requested.
+  var combineAndAppendToDOM = function (target, headerHTML, bodyHTML) {
+
+    var finalHTML = headerHTML + bodyHTML;
+
+    if (target) {
+      // Use row group tags (<thead>, <tbody>) if the target is a table.
+      if (target && target.tagName === 'TABLE') {
+        var headerElement = document.createElement('thead');
+        var bodyElement = document.createElement('tbody');
+        headerElement.innerHTML = headerHTML;
+        bodyElement.innerHTML = bodyHTML;
+        target.appendChild(headerElement);
+        target.appendChild(bodyElement);
+        finalHTML = wrapTag(headerHTML, 'thead') + wrapTag(bodyHTML, 'tbody');
+      } else {
+        target.insertAdjacentHTML('beforeEnd', finalHTML);
+      }
     }
+
+    return finalHTML;
+
+  };
+
+  // Generate HTML using a template.
+  var generateHTML = function (options, tableArray) {
+
+    var template = options.user.rowTemplate || toHTML;
+    var headerHTML = '';
+    var bodyHTML = '';
+
+    tableArray.forEach(function (row) {
+
+      // Output a header row, if needed.
+      if (!options.user.offset && !options.user.headersOff) {
+        if (options.response.header || !options.user.headers) {
+          headerHTML += template({
+            num: 0,
+            cells: arrayToObject(options.response.labels)
+          });
+        }
+      }
+
+      // Pass the row to the row template and append the output to either the
+      // header or body section.
+
+      if (row.num) {
+        bodyHTML += template(row);
+      } else {
+        headerHTML += template(row);
+      }
+
+    });
+
+    return combineAndAppendToDOM(options.user.target, headerHTML, bodyHTML);
 
   };
 
   // Process API response.
-  var processResponse = function (options, data) {
+  var processResponse = function (options, rawData) {
 
-    enumerateMessages(data, 'warnings');
-    enumerateMessages(data, 'errors');
+    enumerateMessages(rawData, 'warnings');
+    enumerateMessages(rawData, 'errors');
 
-    log(data, options.user.debug);
+    log(rawData, options.user.debug);
 
     // Make sure the response is populated with actual data.
-    if (has(data, 'status', 'table') && has(data.table, 'cols', 'rows')) {
+    if (has(rawData, 'status', 'table') && has(rawData.table, 'cols', 'rows')) {
 
       // Add useful information about the response to the options hash.
-      options.response = getResponseAttributes(options, data);
+      options.response = getResponseAttributes(options, rawData);
 
-      // If there is an element being targeted, parse the data into HTML.
-      if (options.user.target) {
-        parseData(options, data);
-      }
+      // Parse the raw response data into a simple array of table rows.
+      var tableArray = parseData(options, rawData);
+
+      // Parse the table array into HTML.
+      var html = generateHTML(options, tableArray);
 
       // Call the user's callback function.
       if (options.user.callback) {
-        options.user.callback(null, options, data);
+        options.user.callback(null, options, rawData, tableArray, html);
       }
 
     } else {
-      handleError(options, data, 'Unexpected API response format.');
+      handleError(options, rawData, 'Unexpected API response format.');
     }
 
   };
