@@ -99,9 +99,11 @@
   /* Helpers */
 
   // General error handler.
-  var handleError = function (message, options, rawData) {
+  var handleError = function (error, options, rawData) {
 
-    var error = new Error(message);
+    if (!(error instanceof Error)) {
+      error = new Error(error);
+    }
 
     // Remember that this request failed.
     if (options && options.request && options.request.index) {
@@ -112,8 +114,6 @@
     if (options.user.callback) {
       options.user.callback(error, options, rawData || null, null, null);
     }
-
-    throw error;
 
   };
 
@@ -219,46 +219,19 @@
 
   /* Options */
 
-  // Validate the user-passed options.
-  var validateUserOptions = function (target, options) {
+  // Check the user-passed options for correctable problems.
+  var checkUserOptions = function (target, options) {
 
     // Support some legacy option names.
     options.query = options.sql || options.query;
     options.reset = options.resetStatus || options.reset;
 
-    // Validate DOM element target.
+    // Look for valid DOM element target.
     options.target = extractElement(options.target) || extractElement(target);
 
-    // Validate integer values.
+    // Correct bad integer values.
     options.headers = stringToNaturalNumber(options.headers);
     options.chunkSize = stringToNaturalNumber(options.chunkSize);
-
-    return options;
-
-  };
-
-  // Validate the processed options.
-  var validateOptions = function (options) {
-
-    // Require DOM element or a callback function. Otherwise, the data has nowhere to go.
-    if (!options.user.target && !options.user.callback) {
-      handleError('No element targeted or callback provided.', options);
-    }
-
-    // Require a Sheet key and gid.
-    if (!(options.request.key && options.request.gid)) {
-      handleError('No key/gid in the provided URL.', options);
-    }
-
-    // Abandon requests that have previously generated an error.
-    if (requestStatusCache.failed[options.request.index]) {
-      handleError('A previous request for this resource failed.', options);
-    }
-
-    // Abandon requests that have already been loaded.
-    if (requestStatusCache.loaded[options.request.index]) {
-      handleError('No more rows to load!', options);
-    }
 
     return options;
 
@@ -267,7 +240,7 @@
   // Process user-passed options.
   var processUserOptions = function (target, options) {
 
-    var userOptions = validateUserOptions(target, options);
+    var userOptions = checkUserOptions(target, options);
     var requestOptions = getRequestOptions(userOptions.url);
     var debugMessages = [];
 
@@ -296,13 +269,43 @@
 
     }
 
-    return validateOptions({
+    return {
       user: userOptions,
       request: requestOptions,
       debug: debugMessages
-    });
+    };
 
   };
+
+  // Validate the processed options hash.
+  var validateOptions = function (options) {
+
+    // Require DOM element or a callback function. Otherwise, the data has nowhere to go.
+    if (!options.user.target && !options.user.callback) {
+      throw 'No element targeted or callback provided.';
+    }
+
+    // Require a Sheet key and gid.
+    if (!(options.request.key && options.request.gid)) {
+      throw 'No key/gid in the provided URL.';
+    }
+
+    // Abandon requests that have previously generated an error.
+    if (requestStatusCache.failed[options.request.index]) {
+      throw 'A previous request for this resource failed.';
+    }
+
+    // Abandon requests that have already been loaded.
+    if (requestStatusCache.loaded[options.request.index]) {
+      throw 'No more rows to load!';
+    }
+
+    return options;
+
+  };
+
+
+  /* Data */
 
   // Get useful information about the response.
   var getResponseAttributes = function (options, data) {
@@ -337,9 +340,6 @@
     return attributes;
 
   };
-
-
-  /* Data */
 
   // Enumerate any messages embedded in the API response.
   var enumerateMessages = function (options, data, state) {
@@ -499,7 +499,7 @@
       }
 
     } else {
-      handleError('Unexpected API response format.', options, rawData);
+      throw 'Unexpected API response format.';
     }
 
   };
@@ -517,12 +517,17 @@
     };
 
     var success = function (data) {
-      callback(options, data);
-      always();
+      try {
+        callback(options, data);
+      } catch (error) {
+        handleError(error, options, data);
+      } finally {
+        always();
+      }
     };
 
-    var error = function (data) {
-      handleError('Request failed.', options, data);
+    var error = function () {
+      handleError('Request failed.', options);
       always();
     };
 
@@ -554,21 +559,6 @@
     var url = options.request.apiEndpoint + query.join('&');
 
     requestJSONP(url, processResponse, options);
-
-  };
-
-
-  /* Main */
-
-  var main = function (target, options, bootstrappedData) {
-
-    options = processUserOptions(target, options || {});
-
-    if (bootstrappedData) {
-      processResponse(options, bootstrappedData);
-    } else {
-      fetchData(options);
-    }
 
   };
 
@@ -620,9 +610,20 @@
   var sheetrock = function (options, bootstrappedData) {
 
     try {
+
       options = extendDefaults(defaults, options);
-      main(this, options, bootstrappedData);
-    } catch (ignore) {}
+      options = processUserOptions(this, options);
+      options = validateOptions(options);
+
+      if (bootstrappedData) {
+        processResponse(options, bootstrappedData);
+      } else {
+        fetchData(options);
+      }
+
+    } catch (error) {
+      handleError(error, options);
+    }
 
     return this;
 
