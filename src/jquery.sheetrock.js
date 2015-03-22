@@ -157,18 +157,6 @@
     return extended;
   };
 
-  // Log something to the browser console, if it exists. The argument "show"
-  // is a Boolean (default = true) that determines whether to proceed.
-  var log = function (message, debug) {
-    var show = (debug === undefined) || debug;
-    /*jshint devel: true */
-    /*jslint devel: true */
-    if (show && console && console.log) {
-      console.log(message);
-    }
-    return false;
-  };
-
   // Get API endpoint, key, and gid from a Google Sheet URL.
   var getRequestOptions = function (url) {
     var requestOptions = {};
@@ -226,7 +214,6 @@
     requestStatusCache.loaded[index] = false;
     requestStatusCache.failed[index] = false;
     requestStatusCache.offset[index] = 0;
-    log('Resetting request status.');
   };
 
   // Make user's options available to callback functions with a closure.
@@ -280,9 +267,6 @@
       handleError('No more rows to load!', options);
     }
 
-    // Log the validated options to the console, if requested.
-    log(options, options.user.debug);
-
     return options;
 
   };
@@ -292,6 +276,7 @@
 
     var userOptions = validateUserOptions(target, options);
     var requestOptions = getRequestOptions(userOptions.url);
+    var debugMessages = [];
 
     // Set request query and index (key_gid_query).
     requestOptions.query = userOptions.query;
@@ -300,6 +285,7 @@
     // If requested, reset request status.
     if (userOptions.reset && requestOptions.index) {
       resetRequestStatus(requestOptions.index);
+      debugMessages.push('Request status has been reset.');
     }
 
     // Retrieve current row offset.
@@ -319,7 +305,8 @@
 
     return validateOptions({
       user: userOptions,
-      request: requestOptions
+      request: requestOptions,
+      debug: debugMessages
     });
 
   };
@@ -362,23 +349,20 @@
   /* Data */
 
   // Enumerate any messages embedded in the API response.
-  var enumerateMessages = function (data, state) {
+  var enumerateMessages = function (options, data, state) {
 
     // Look for the specified property at the root of the response object.
     if (has(data, state)) {
-
-      // Look for the kinds of messages we know about.
       data[state].forEach(function (status) {
         if (has(status, 'detailed_message')) {
           /*jshint camelcase: false */
           /*jscs: disable requireCamelCaseOrUpperCaseIdentifiers */
-          log(status.detailed_message);
+          options.debug.push(status.detailed_message);
           /*jscs: enable */
         } else if (has(status, 'message')) {
-          log(status.message);
+          options.debug.push(status.message);
         }
       });
-
     }
 
   };
@@ -501,10 +485,8 @@
   // Process API response.
   var processResponse = function (options, rawData) {
 
-    enumerateMessages(rawData, 'warnings');
-    enumerateMessages(rawData, 'errors');
-
-    log(rawData, options.user.debug);
+    enumerateMessages(options, rawData, 'warnings');
+    enumerateMessages(options, rawData, 'errors');
 
     // Make sure the response is populated with actual data.
     if (has(rawData, 'status', 'table') && has(rawData.table, 'cols', 'rows')) {
@@ -556,9 +538,6 @@
       jsonpCallback: jsonpCallbackName
 
     };
-
-    // If debugging is enabled, log request details to the console.
-    log(request, options.user.debug);
 
     // Send the request.
     //jQuery
@@ -613,6 +592,7 @@
     // - *removed* loading -- use callback function
     // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
     // - *removed* formatting -- almost useless, impossible to support
+    // - *removed* debug -- compiled messages are passed to callback function
 
     url:          '',          // String  -- Google Sheet URL
     query:        '',          // String  -- Google Visualization API query
@@ -623,8 +603,7 @@
     callback:     false,       // Function
     headers:      0,           // Integer -- Number of header rows
     headersOff:   false,       // Boolean -- Suppress header row output
-    reset:        false,       // Boolean -- Reset request status
-    debug:        false        // Boolean -- Output raw data to the console
+    reset:        false        // Boolean -- Reset request status
 
   };
 
