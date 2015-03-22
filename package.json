@@ -17,23 +17,22 @@
     "request": "^2.53.0"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^3.5.0",
-    "grunt-contrib-cssmin": "^0.12.2",
-    "grunt-contrib-jshint": "^0.11.0",
-    "grunt-contrib-qunit": "^0.5.2",
-    "grunt-contrib-uglify": "^0.8.0",
-    "grunt-jscs": "^1.5.0",
-    "grunt-load-options": "~0.2.1",
-    "load-grunt-tasks": "^3.1.0",
-    "nodeunit": "^0.9.1"
+    "browserify": "^9.0.3",
+    "jscs": "^1.11.3",
+    "jshint": "^2.6.3",
+    "node-qunit-phantomjs": "^1.2.0",
+    "nodeunit": "^0.9.1",
+    "uglify-js": "^2.4.17"
   },
   "browser": {
     "request": false
   },
   "main": "./src/sheetrock.js",
   "scripts": {
-    "test": "grunt test"
+    "dist": "uglifyjs src/sheetrock.js --comments '/^!/' --source-map dist/sheetrock.min.js.map --prefix relative --output dist/sheetrock.min.js",
+    "lint": "jshint src/*.js && jscs src/*.js",
+    "test": "npm run lint && nodeunit test/nodeunit && node-qunit-phantomjs test/qunit/*.html",
+    "pretest": "browserify test/qunit/main.js > test/qunit/build/browserify.bundle.js"
   },
   "repository": {
     "type": "git",
