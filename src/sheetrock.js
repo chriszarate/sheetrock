@@ -13,7 +13,9 @@
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(factory(root));
+    define(function () {
+      factory(root);
+    });
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(global);
   } else {
