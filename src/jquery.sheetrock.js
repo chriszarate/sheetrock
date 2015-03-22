@@ -5,7 +5,7 @@
  * License: MIT
  */
 
-/*global define, module, require */
+/*global define, module, require, window */
 /*jslint vars: true, indent: 2 */
 
 (function (root, factory) {
@@ -14,15 +14,15 @@
 
   if (typeof define === 'function' && define.amd) {
     define(['jquery'], function (jquery) {
-      factory(jquery, root.document);
+      factory(jquery, root);
     });
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('jquery'), root.document);
+    module.exports = factory(require('jquery'));
   } else {
-    root.Sheetrock = factory(root.jQuery, root.document);
+    root.Sheetrock = factory(root.jQuery);
   }
 
-}(this, function ($, document) {
+}(this, function ($) {
 
   'use strict';
 
@@ -32,12 +32,12 @@
   // Google Visualization API endpoints and parameter formats
   var sheetTypes = {
     '2014': {
-      'apiEndpoint': 'https://docs.google.com/spreadsheets/d/%key%/gviz/tq',
+      'apiEndpoint': 'https://docs.google.com/spreadsheets/d/%key%/gviz/tq?',
       'keyFormat': new RegExp('spreadsheets/d/([^/#]+)', 'i'),
       'gidFormat': new RegExp('gid=([^/&#]+)', 'i')
     },
     '2010': {
-      'apiEndpoint': 'https://spreadsheets.google.com/tq?key=%key%',
+      'apiEndpoint': 'https://spreadsheets.google.com/tq?key=%key%&',
       'keyFormat': new RegExp('key=([^&#]+)', 'i'),
       'gidFormat': new RegExp('gid=([^/&#]+)', 'i')
     }
@@ -101,7 +101,7 @@
   // General error handler.
   var handleError = function (message, options, rawData) {
 
-    var error = new Error(message || 'Request failed.');
+    var error = new Error(message);
 
     // Remember that this request failed.
     if (options && options.request && options.request.index) {
@@ -214,13 +214,6 @@
     requestStatusCache.loaded[index] = false;
     requestStatusCache.failed[index] = false;
     requestStatusCache.offset[index] = 0;
-  };
-
-  // Make user's options available to callback functions with a closure.
-  var createClosure = function (func, options) {
-    return function (data) {
-      func(options, data);
-    };
   };
 
 
@@ -429,11 +422,11 @@
 
     var finalHTML = headerHTML + bodyHTML;
 
-    if (target) {
+    if (window.document && target) {
       // Use row group tags (<thead>, <tbody>) if the target is a table.
       if (target && target.tagName === 'TABLE') {
-        var headerElement = document.createElement('thead');
-        var bodyElement = document.createElement('tbody');
+        var headerElement = window.document.createElement('thead');
+        var bodyElement = window.document.createElement('tbody');
         headerElement.innerHTML = headerHTML;
         bodyElement.innerHTML = bodyHTML;
         target.appendChild(headerElement);
@@ -511,39 +504,56 @@
 
   };
 
+  // Send a JSONP requent.
+  var requestJSONP = function (url, callback, options) {
+
+    var headElement = window.document.getElementsByTagName('head')[0];
+    var scriptElement = window.document.createElement('script');
+    var callbackName = '_sheetrock_callback_' + jsonpCallbackIndex;
+
+    var always = function () {
+      headElement.removeChild(scriptElement);
+      delete window[callbackName];
+    };
+
+    var success = function (data) {
+      callback(options, data);
+      always();
+    };
+
+    var error = function (data) {
+      handleError('Request failed.', options, data);
+      always();
+    };
+
+    url = url.replace('%callback%', callbackName);
+
+    window[callbackName] = success;
+
+    scriptElement.type = 'text/javascript';
+    scriptElement.src = url;
+
+    scriptElement.addEventListener('error', error);
+    scriptElement.addEventListener('abort', error);
+
+    headElement.appendChild(scriptElement);
+
+    jsonpCallbackIndex = jsonpCallbackIndex + 1;
+
+  };
+
   // Fetch the requested data using the user's options.
   var fetchData = function (options) {
 
-    // Specify a custom callback function since Google doesn't use the
-    // default implementation favored by jQuery.
-    var jsonpCallbackName = 'sheetrock_callback_' + jsonpCallbackIndex;
-    jsonpCallbackIndex = jsonpCallbackIndex + 1;
+    var query = [
+      'gid=' + encodeURIComponent(options.request.gid),
+      'tq=' + encodeURIComponent(options.request.query),
+      'tqx=responseHandler:%callback%'
+    ];
 
-    // AJAX request options
-    var request = {
+    var url = options.request.apiEndpoint + query.join('&');
 
-      // Convert user options into AJAX request parameters.
-      data: {
-        gid: options.request.gid,
-        tq: options.request.query,
-        tqx: 'responseHandler:' + jsonpCallbackName
-      },
-
-      url: options.request.apiEndpoint,
-      dataType: 'jsonp',
-      cache: true,
-
-      // Use custom callback function (see above).
-      jsonp: false,
-      jsonpCallback: jsonpCallbackName
-
-    };
-
-    // Send the request.
-    //jQuery
-    $.ajax(request)
-      .done(createClosure(processResponse, options))
-      .fail(createClosure(handleError, options));
+    requestJSONP(url, processResponse, options);
 
   };
 
