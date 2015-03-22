@@ -32,7 +32,7 @@
     "dist": "uglifyjs src/sheetrock.js --comments '/^!/' --source-map dist/sheetrock.min.js.map --prefix relative --output dist/sheetrock.min.js",
     "lint": "jshint src/*.js && jscs src/*.js",
     "test": "npm run lint && nodeunit test/nodeunit && node-qunit-phantomjs test/qunit/*.html",
-    "pretest": "browserify test/qunit/main.js > test/qunit/build/browserify.bundle.js"
+    "pretest": "browserify test/qunit/src/browserify.js > test/qunit/build/browserify.bundle.js"
   },
   "repository": {
     "type": "git",

@@ -1,2 +1,0 @@
-require('./basic');
-require('./failures');
