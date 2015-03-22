@@ -14,17 +14,12 @@
 
   if (typeof define === 'function' && define.amd) {
     define(function () {
-      factory(root);
+      return factory(root);
     });
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(global);
+    module.exports = factory(global || root);
   } else {
-    var widget = factory(root);
-    if (root.jQuery && root.jQuery.fn) {
-      root.jQuery.fn[name] = widget;
-    } else {
-      root[name] = widget;
-    }
+    root[name] = factory(root);
   }
 
 }('sheetrock', this, function (window) {
@@ -633,6 +628,11 @@
 
   sheetrock.defaults = defaults;
   sheetrock.version = '0.3.0';
+
+  // If jQuery is available as a global, register as a plugin.
+  if (window.jQuery && window.jQuery.fn && window.jQuery.fn.jquery) {
+    window.jQuery.fn.sheetrock = sheetrock;
+  }
 
   return sheetrock;
 
