@@ -13,12 +13,5 @@ module.exports = {
         'src/sheetrock.js'
       ]
     }
-  },
-  bundle: {
-    files: {
-      'build/sheetrock.bundle.min.js': [
-        'build/sheetrock.bundle.js'
-      ]
-    }
   }
 };

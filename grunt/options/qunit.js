@@ -3,5 +3,5 @@
 'use strict';
 
 module.exports = {
-  app: ['test/*.html']
+  app: ['test/qunit/*.html']
 };

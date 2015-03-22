@@ -5,7 +5,7 @@
  * License: MIT
  */
 
-/*global define, module, global */
+/*global define, module, require, global */
 /*jslint vars: true, indent: 2 */
 
 (function (name, root, factory) {
@@ -14,15 +14,15 @@
 
   if (typeof define === 'function' && define.amd) {
     define(function () {
-      return factory(root);
+      return factory(null, root);
     });
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(global || root);
+    module.exports = factory(require('request'), global || root);
   } else {
-    root[name] = factory(root);
+    root[name] = factory(null, root);
   }
 
-}('sheetrock', this, function (window) {
+}('sheetrock', this, function (requestModule, window) {
 
   'use strict';
 
@@ -49,6 +49,10 @@
 
   // JSONP callback function index
   var jsonpCallbackIndex = 0;
+
+  // DOM and transport settings
+  var document = window.document;
+  var useJSONPTransport = typeof requestModule !== 'function';
 
 
   /* Polyfills */
@@ -419,11 +423,11 @@
 
     var finalHTML = headerHTML + bodyHTML;
 
-    if (window && window.document && target) {
+    if (document && document.createElement && target) {
       // Use row group tags (<thead>, <tbody>) if the target is a table.
       if (target && target.tagName === 'TABLE') {
-        var headerElement = window.document.createElement('thead');
-        var bodyElement = window.document.createElement('tbody');
+        var headerElement = document.createElement('thead');
+        var bodyElement = document.createElement('tbody');
         headerElement.innerHTML = headerHTML;
         bodyElement.innerHTML = bodyHTML;
         target.appendChild(headerElement);
@@ -501,11 +505,38 @@
 
   };
 
-  // Send a JSONP requent.
-  var requestJSONP = function (url, callback, options) {
+  // Send a JSON requent.
+  var requestJSON = function (options, callback) {
 
-    var headElement = window.document.getElementsByTagName('head')[0];
-    var scriptElement = window.document.createElement('script');
+    var requestOptions = {
+      headers: {
+        'X-DataSource-Auth': 'true'
+      },
+      json: true,
+      url: options.request.url
+    };
+
+    var responseCallback = function (responseError, response, body) {
+      if (!responseError && response.statusCode === 200) {
+        try {
+          callback(options, body);
+        } catch (error) {
+          handleError(error, options, body);
+        }
+      } else {
+        handleError(responseError || 'Request failed.', options);
+      }
+    };
+
+    requestModule(requestOptions, responseCallback);
+
+  };
+
+  // Send a JSONP requent.
+  var requestJSONP = function (options, callback) {
+
+    var headElement = document.getElementsByTagName('head')[0];
+    var scriptElement = document.createElement('script');
     var callbackName = '_sheetrock_callback_' + jsonpCallbackIndex;
 
     var always = function () {
@@ -528,12 +559,12 @@
       always();
     };
 
-    url = url.replace('%callback%', callbackName);
-
     window[callbackName] = success;
 
+    options.request.url = options.request.url.replace('%callback%', callbackName);
+
     scriptElement.type = 'text/javascript';
-    scriptElement.src = url;
+    scriptElement.src = options.request.url;
 
     scriptElement.addEventListener('error', error);
     scriptElement.addEventListener('abort', error);
@@ -544,21 +575,34 @@
 
   };
 
-  // Fetch the requested data using the user's options.
-  var fetchData = function (options) {
+  // Build a request URL using the user's options.
+  var buildRequestURL = function (options) {
 
     var query = [
       'gid=' + encodeURIComponent(options.request.gid),
-      'tq=' + encodeURIComponent(options.request.query),
-      'tqx=responseHandler:%callback%'
+      'tq=' + encodeURIComponent(options.request.query)
     ];
 
-    var url = options.request.apiEndpoint + query.join('&');
+    if (useJSONPTransport) {
+      query.push('tqx=responseHandler:%callback%');
+    }
 
-    requestJSONP(url, processResponse, options);
+    return options.request.apiEndpoint + query.join('&');
 
   };
 
+  // Fetch data using the appropriate transport.
+  var fetchData = function (options, callback) {
+
+    options.request.url = buildRequestURL(options);
+
+    if (useJSONPTransport) {
+      requestJSONP(options, callback);
+    } else {
+      requestJSON(options, callback);
+    }
+
+  };
 
   /* API */
 
@@ -615,7 +659,7 @@
       if (bootstrappedData) {
         processResponse(options, bootstrappedData);
       } else {
-        fetchData(options);
+        fetchData(options, processResponse);
       }
 
     } catch (error) {

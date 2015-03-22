@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     'default',
     [
       'test',
-      'uglify:app'
+      'uglify'
     ]
   );
 
@@ -17,7 +17,7 @@ module.exports = function (grunt) {
     [
       'jshint',
       'jscs',
-      'uglify:app',
+      'uglify',
       'cssmin'
     ]
   );
@@ -28,7 +28,6 @@ module.exports = function (grunt) {
       'jshint',
       'jscs',
       'browserify',
-      'uglify:bundle',
       'qunit'
     ]
   );

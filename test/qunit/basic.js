@@ -1,4 +1,4 @@
-var sheetrock = require('../src/sheetrock');
+var sheetrock = require('../../src/sheetrock');
 
 QUnit.module('Test legacy and new formats of Google spreadsheets.');
 
