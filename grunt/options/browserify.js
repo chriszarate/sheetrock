@@ -5,7 +5,7 @@
 module.exports = {
   dist: {
     files: {
-      'build/jquery.sheetrock.bundle.js': ['test/main.js']
+      'build/sheetrock.bundle.js': ['test/main.js']
     }
   }
 };

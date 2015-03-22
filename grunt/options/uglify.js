@@ -9,15 +9,15 @@ module.exports = {
       sourceMap: true
     },
     files: {
-      'dist/jquery.sheetrock.min.js': [
-        'src/jquery.sheetrock.js'
+      'dist/sheetrock.min.js': [
+        'src/sheetrock.js'
       ]
     }
   },
   bundle: {
     files: {
-      'build/jquery.sheetrock.bundle.min.js': [
-        'build/jquery.sheetrock.bundle.js'
+      'build/sheetrock.bundle.min.js': [
+        'build/sheetrock.bundle.js'
       ]
     }
   }
