@@ -24,7 +24,7 @@
   "strict"        : true,
   "maxparams"     : 3,
   "maxdepth"      : 3,
-  "maxstatements" : 30,
+  "maxstatements" : 50,
   "maxcomplexity" : 5,
   "maxlen"        : 140,
 
