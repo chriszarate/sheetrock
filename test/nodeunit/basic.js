@@ -3,7 +3,7 @@
 var sheetrock = require('../../src/sheetrock');
 
 var legacySheetURL = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0';
-//var newSheetURL = 'https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/edit?usp=sharing#gid=0';
+var newSheetURL = 'https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/edit?usp=sharing#gid=0';
 var basicSheetQuery = 'select A,B,C,D,E,L where E = \'Both\' order by L desc';
 
 var generateTest = function (sheetURL, sheetQuery) {
@@ -32,4 +32,4 @@ var generateTest = function (sheetURL, sheetQuery) {
 };
 
 exports.testLegacyFormat = generateTest(legacySheetURL, basicSheetQuery);
-//exports.testNewFormat = generateTest(newSheetURL, basicSheetQuery);
+exports.testNewFormat = generateTest(newSheetURL, basicSheetQuery);

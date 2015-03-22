@@ -508,17 +508,26 @@
   // Send a JSON requent.
   var requestJSON = function (options, callback) {
 
+    // There is an issue with new Sheets causing the string ")]}'" to be
+    // prepended to the JSON output when the X-DataSource-Auth is added.
+
+    // https://code.google.com/p/google-visualization-api-issues/issues/detail?id=1928
+
+    // Until this is fixed, load as text and manually strip with regex. :(
+
     var requestOptions = {
       headers: {
         'X-DataSource-Auth': 'true'
       },
-      json: true,
+      //json: true, <= temporary fix
       url: options.request.url
     };
 
     var responseCallback = function (responseError, response, body) {
       if (!responseError && response.statusCode === 200) {
         try {
+          // Next line is a temporary fix.
+          body = JSON.parse(body.replace(/^\)\]\}\'\n/, ''));
           callback(options, body);
         } catch (error) {
           handleError(error, options, body);
