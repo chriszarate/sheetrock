@@ -1,3 +1,5 @@
+var sheetrock = require('../src/jquery.sheetrock');
+
 QUnit.module('Test legacy and new formats of Google spreadsheets.');
 
 // Load a legacy-format spreadsheet.
@@ -9,7 +11,7 @@ QUnit.asyncTest('Load a legacy-format spreadsheet.', function() {
   var myLegacySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0';
 
   // Load legacy-format spreadsheet.
-  jQuery.fn.sheetrock({
+  sheetrock({
     url: myLegacySpreadsheet,
     query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
     callback: function (error, options, data) {
@@ -32,7 +34,7 @@ QUnit.asyncTest('Load a new-format spreadsheet.', function() {
   var myNewSpreadsheet = 'https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/edit?usp=sharing#gid=0';
 
   // Load new-format spreadsheet.
-  jQuery.fn.sheetrock({
+  sheetrock({
     url: myNewSpreadsheet,
     query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
     callback: function(error, options, data) {

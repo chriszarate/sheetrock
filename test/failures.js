@@ -1,3 +1,5 @@
+var sheetrock = require('../src/jquery.sheetrock');
+
 QUnit.module('Test invalid user inputs.');
 
 // Omit the spreadsheet URL.
@@ -6,7 +8,7 @@ QUnit.asyncTest('Omit the spreadsheet URL.', function() {
   QUnit.expect(1);
 
   // Load legacy-format spreadsheet.
-  jQuery.fn.sheetrock({
+  sheetrock({
     callback: function (error, options, data) {
       QUnit.ok(error.message === 'No key/gid in the provided URL.', error.message);
       QUnit.start();
@@ -24,7 +26,7 @@ QUnit.asyncTest('Load a spreadsheet URL without a key.', function() {
   var mySpreadsheet = 'https://docs.google.com/spreadsheet/';
 
   // Load legacy-format spreadsheet.
-  jQuery.fn.sheetrock({
+  sheetrock({
     url: mySpreadsheet,
     callback: function (error, options, data) {
       QUnit.ok(error.message === 'No key/gid in the provided URL.', error.message);
@@ -43,7 +45,7 @@ QUnit.asyncTest('Load a spreadsheet URL without a gid.', function() {
   var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=test';
 
   // Load legacy-format spreadsheet.
-  jQuery.fn.sheetrock({
+  sheetrock({
     url: mySpreadsheet,
     callback: function (error, options, data) {
       QUnit.ok(error.message === 'No key/gid in the provided URL.', error.message);

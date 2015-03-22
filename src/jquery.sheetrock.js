@@ -5,29 +5,29 @@
  * License: MIT
  */
 
-/*global define, module, require, window */
+/*global define, module, global */
 /*jslint vars: true, indent: 2 */
 
-(function (root, factory) {
+(function (name, root, factory) {
 
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(['jquery'], function (jquery) {
-      factory(jquery, root);
-    });
+    define(factory(root));
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('jquery'));
+    module.exports = factory(global);
   } else {
-    root.Sheetrock = factory(root.jQuery);
+    var widget = factory(root);
+    if (root.jQuery && root.jQuery.fn) {
+      root.jQuery.fn[name] = widget;
+    } else {
+      root[name] = widget;
+    }
   }
 
-}(this, function ($) {
+}('sheetrock', this, function (window) {
 
   'use strict';
-
-  // Determine if we have access to jQuery.
-  var jQueryAvailable = $ && $.fn && $.fn.jquery;
 
   // Google Visualization API endpoints and parameter formats
   var sheetTypes = {
@@ -422,7 +422,7 @@
 
     var finalHTML = headerHTML + bodyHTML;
 
-    if (window.document && target) {
+    if (window && window.document && target) {
       // Use row group tags (<thead>, <tbody>) if the target is a table.
       if (target && target.tagName === 'TABLE') {
         var headerElement = window.document.createElement('thead');
@@ -631,11 +631,6 @@
 
   sheetrock.defaults = defaults;
   sheetrock.version = '0.3.0';
-
-  // If jQuery is available, register as a plugin.
-  if (jQueryAvailable) {
-    $.fn.sheetrock = sheetrock;
-  }
 
   return sheetrock;
 
