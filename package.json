@@ -23,6 +23,7 @@
     "jshint": "^2.6.3",
     "node-qunit-phantomjs": "^1.2.0",
     "nodeunit": "^0.9.1",
+    "qunitjs": "^1.17.1",
     "uglify-js": "^2.4.17"
   },
   "browser": {
