@@ -422,27 +422,20 @@
 
   };
 
-  // Generate final HTML and append to DOM, if requested.
-  var combineAndAppendToDOM = function (target, headerHTML, bodyHTML) {
+  // Append HTML output to DOM.
+  var appendHTMLToDOM = function (target, headerHTML, bodyHTML) {
 
-    var finalHTML = headerHTML + bodyHTML;
-
-    if (document && document.createElement && target) {
-      // Use row group tags (<thead>, <tbody>) if the target is a table.
-      if (target && target.tagName === 'TABLE') {
-        var headerElement = document.createElement('thead');
-        var bodyElement = document.createElement('tbody');
-        headerElement.innerHTML = headerHTML;
-        bodyElement.innerHTML = bodyHTML;
-        target.appendChild(headerElement);
-        target.appendChild(bodyElement);
-        finalHTML = wrapTag(headerHTML, 'thead') + wrapTag(bodyHTML, 'tbody');
-      } else {
-        target.insertAdjacentHTML('beforeEnd', finalHTML);
-      }
+    // Use row group tags (<thead>, <tbody>) if the target is a table.
+    if (target.tagName === 'TABLE') {
+      var headerElement = document.createElement('thead');
+      var bodyElement = document.createElement('tbody');
+      headerElement.innerHTML = headerHTML;
+      bodyElement.innerHTML = bodyHTML;
+      target.appendChild(headerElement);
+      target.appendChild(bodyElement);
+    } else {
+      target.insertAdjacentHTML('beforeEnd', headerHTML + bodyHTML);
     }
-
-    return finalHTML;
 
   };
 
@@ -450,6 +443,9 @@
   var generateHTML = function (options, tableArray) {
 
     var template = options.user.rowTemplate || toHTML;
+    var hasDOMTarget = document && document.createElement && options.user.target;
+    var isTable = hasDOMTarget && options.user.target.tagName === 'TABLE';
+
     var headerHTML = '';
     var bodyHTML = '';
 
@@ -463,7 +459,11 @@
       }
     });
 
-    return combineAndAppendToDOM(options.user.target, headerHTML, bodyHTML);
+    if (hasDOMTarget) {
+      appendHTMLToDOM(options.user.target, headerHTML, bodyHTML);
+    }
+
+    return (isTable) ? wrapTag(headerHTML, 'thead') + wrapTag(bodyHTML, 'tbody') : headerHTML + bodyHTML;
 
   };
 
