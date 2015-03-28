@@ -226,6 +226,7 @@
     // Support some legacy option names.
     options.query = options.sql || options.query;
     options.reset = options.resetStatus || options.reset;
+    options.rowHandler = options.rowTemplate || options.rowHandler;
 
     // Look for valid DOM element target.
     options.target = extractElement(options.target) || extractElement(target);
