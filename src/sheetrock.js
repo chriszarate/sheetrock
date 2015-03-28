@@ -367,6 +367,14 @@
 
     var output = [];
 
+    // Add a header row constructed from the column labels, if appropriate.
+    if (!options.user.offset) {
+      output.push({
+        num: 0,
+        cells: arrayToObject(options.response.labels)
+      });
+    }
+
     // Each table cell ('c') can contain two properties: 'p' contains
     // formatting and 'v' contains the actual cell value.
 
@@ -386,27 +394,22 @@
           cells: {}
         };
 
-        // Suppress header row, if requested.
-        if (counter || !options.user.headersOff) {
+        // Loop through each cell in the row.
+        row.c.forEach(function (cell, x) {
 
-          // Loop through each cell in the row.
-          row.c.forEach(function (cell, x) {
+          // Extract cell value.
+          var value = (cell && has(cell, 'v') && cell.v) ? cell.v : '';
 
-            // Extract cell value.
-            var value = (cell && has(cell, 'v') && cell.v) ? cell.v : '';
+          // Avoid array cell values.
+          if (value instanceof Array) {
+            value = (has(cell, 'f')) ? cell.f : value.join('');
+          }
 
-            // Avoid array cell values.
-            if (value instanceof Array) {
-              value = (has(cell, 'f')) ? cell.f : value.join('');
-            }
+          // Add the trimmed cell value to the row object, using the desired
+          // column label as the key.
+          rowObject.cells[options.response.labels[x]] = trim(value);
 
-            // Add the trimmed cell value to the row object, using the desired
-            // column label as the key.
-            rowObject.cells[options.response.labels[x]] = trim(value);
-
-          });
-
-        }
+        });
 
         // Add to the output array.
         output.push(rowObject);
@@ -450,27 +453,14 @@
     var headerHTML = '';
     var bodyHTML = '';
 
+    // Pass each row to the row template and append the output to either the
+    // header or body section.
     tableArray.forEach(function (row) {
-
-      // Output a header row, if needed.
-      if (!options.user.offset && !options.user.headersOff) {
-        if (options.response.header || !options.user.headers) {
-          headerHTML += template({
-            num: 0,
-            cells: arrayToObject(options.response.labels)
-          });
-        }
-      }
-
-      // Pass the row to the row template and append the output to either the
-      // header or body section.
-
       if (row.num) {
         bodyHTML += template(row);
       } else {
         headerHTML += template(row);
       }
-
     });
 
     return combineAndAppendToDOM(options.user.target, headerHTML, bodyHTML);
@@ -643,6 +633,7 @@
     // - *removed* loading -- use callback function
     // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
     // - *removed* formatting -- almost useless, impossible to support
+    // - *removed* headersOff -- use rowTemplate to show or hide rows
     // - *removed* debug -- compiled messages are passed to callback function
 
     url:          '',          // String  -- Google Sheet URL
@@ -653,7 +644,6 @@
     rowTemplate:  false,       // Function / Template
     callback:     false,       // Function
     headers:      0,           // Integer -- Number of header rows
-    headersOff:   false,       // Boolean -- Suppress header row output
     reset:        false        // Boolean -- Reset request status
 
   };
