@@ -604,35 +604,13 @@
 
   };
 
+
   /* API */
 
   // Documentation is available at:
   // https://github.com/chriszarate/sheetrock/
 
-  // Changes to API in 1.0.0:
-  // ------------------------
-  // - *renamed* .options => .defaults
-  // - *removed* .promise -- requests are no longer chained
-  // - *removed* .working -- use callback function
-
   var defaults = {
-
-    // Changes to defaults in 1.0.0:
-    // -----------------------------
-    // - *added* target
-    // - *renamed* sql => query
-    // - *renamed* resetStatus => reset
-    // - *renamed* rowHandler => rowTemplate
-    // - *removed* server -- pass data as parameter instead
-    // - *removed* columns -- always use column letters in query
-    // - *removed* cellHandler -- use rowTemplate for text formatting
-    // - *removed* errorHandler -- errors are passed to callback function
-    // - *removed* loading -- use callback function
-    // - *removed* rowGroups -- <thead>, <tbody> added when target is <table>
-    // - *removed* formatting -- almost useless, impossible to support
-    // - *removed* headersOff -- use rowTemplate to show or hide rows
-    // - *removed* debug -- compiled messages are passed to callback function
-
     url:          '',          // String  -- Google Sheet URL
     query:        '',          // String  -- Google Visualization API query
     target:       null,        // DOM Element -- An element to append output to
@@ -642,7 +620,6 @@
     callback:     null,        // Function
     headers:      0,           // Integer -- Number of header rows
     reset:        false        // Boolean -- Reset request status
-
   };
 
   var sheetrock = function (options, bootstrappedData) {

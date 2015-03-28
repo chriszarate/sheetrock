@@ -1,8 +1,33 @@
 ## Change Log
 
+### v1.0.0
+
+* No longer depends on jQuery
+* Use in browser or on server (with or without virtual DOM)
+* Module renamed from jquery-sheetrock to sheetrock
+* Changes to API:
+  - renamed `.options` to `.defaults`
+  - removed `.promise` (requests are no longer chained)
+  - removed `.working` (use callback function to determine request status)
+* Changes to defaults:
+  - added `target` as alternative to jQuery's `this`
+  - renamed `sql` to `query`
+  - renamed `resetStatus` to `reset`
+  - renamed `rowHandler` to `rowTemplate`
+  - removed `server` (pass bootstrapped data instead)
+  - removed `columns` (always use column letters in query)
+  - removed `cellHandler` (use rowTemplate for text formatting)
+  - removed `errorHandler` (errors are passed to callback function)
+  - removed `loading` (use callback function to manipulate UI)
+  - removed `rowGroups` (`&lt;thead&gt;` and `&lt;tbody&gt;` are added when
+    `target` is a `&lt;table&gt;`)
+  - removed `formatting` (almost useless, impossible to support)
+  - removed `headersOff` (use rowTemplate to show or hide rows)
+  - removed `debug` (compiled messages are passed to callback function)
+
+
 ### v0.3.0
 
-*
 * Published as NPM module (can be required and Browserified).
 * Better loading default prevents option being set to empty string.
 
