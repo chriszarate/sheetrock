@@ -226,7 +226,7 @@
     // Support some legacy option names.
     options.query = options.sql || options.query;
     options.reset = options.resetStatus || options.reset;
-    options.rowHandler = options.rowTemplate || options.rowHandler;
+    options.rowHandler = options.rowHandler || options.rowTemplate;
 
     // Look for valid DOM element target.
     options.target = extractElement(options.target) || extractElement(target);
@@ -641,8 +641,8 @@
     target:       null,        // DOM Element -- An element to append output to
     chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     labels:       [],          // Array   -- Override *returned* column labels
-    rowTemplate:  false,       // Function / Template
-    callback:     false,       // Function
+    rowTemplate:  null,        // Function / Template
+    callback:     null,        // Function
     headers:      0,           // Integer -- Number of header rows
     reset:        false        // Boolean -- Reset request status
 
