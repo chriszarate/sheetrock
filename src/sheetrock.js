@@ -615,9 +615,6 @@
   // - *removed* .promise -- requests are no longer chained
   // - *removed* .working -- use callback function
 
-  // - remove/merge labels option?
-  // - remove/merge header options?
-
   var defaults = {
 
     // Changes to defaults in 1.0.0:
