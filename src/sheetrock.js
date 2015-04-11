@@ -220,20 +220,26 @@
 
   /* Options */
 
+  // Support some legacy option names.
+  var supportLegacyOptions = function (options) {
+    options.query = options.sql || options.query;
+    options.reset = options.resetStatus || options.reset;
+    options.fetchSize = options.chunkSize || options.fetchSize;
+    options.rowHandler = options.rowHandler || options.rowTemplate;
+    return options;
+  };
+
   // Check the user-passed options for correctable problems.
   var checkUserOptions = function (target, options) {
 
-    // Support some legacy option names.
-    options.query = options.sql || options.query;
-    options.reset = options.resetStatus || options.reset;
-    options.rowHandler = options.rowHandler || options.rowTemplate;
+    options = supportLegacyOptions(options);
 
     // Look for valid DOM element target.
     options.target = extractElement(options.target) || extractElement(target);
 
     // Correct bad integer values.
     options.headers = stringToNaturalNumber(options.headers);
-    options.chunkSize = stringToNaturalNumber(options.chunkSize);
+    options.fetchSize = stringToNaturalNumber(options.fetchSize);
 
     return options;
 
@@ -259,15 +265,15 @@
     // Retrieve current row offset.
     userOptions.offset = requestStatusCache.offset[requestOptions.index] || 0;
 
-    // If requested, make a request for chunked data.
-    if (userOptions.chunkSize && requestOptions.index) {
+    // If requested, make a request for paged data.
+    if (userOptions.fetchSize && requestOptions.index) {
 
-      // Append a limit and row offest to the query to target the next chunk.
-      requestOptions.query += ' limit ' + (userOptions.chunkSize + 1);
+      // Append a limit and row offest to the query to target the next page.
+      requestOptions.query += ' limit ' + (userOptions.fetchSize + 1);
       requestOptions.query += ' offset ' + userOptions.offset;
 
       // Remember the new row offset.
-      requestStatusCache.offset[requestOptions.index] = userOptions.offset + userOptions.chunkSize;
+      requestStatusCache.offset[requestOptions.index] = userOptions.offset + userOptions.fetchSize;
 
     }
 
@@ -315,21 +321,21 @@
     // Initialize a hash for the response attributes.
     var attributes = {};
 
-    var chunkSize = options.user.chunkSize;
+    var fetchSize = options.user.fetchSize;
     var labels = options.user.labels;
     var rows = data.table.rows;
     var cols = data.table.cols;
 
     // The Google API generates an unrecoverable error when the 'offset' is
     // larger than the number of available rows, which is problematic for
-    // chunked requests. As a workaround, we request one more row than we need
+    // paged requests. As a workaround, we request one more row than we need
     // and stop when we see less rows than we requested.
 
     // Calculate the last returned row.
-    attributes.last = Math.min(rows.length, chunkSize || rows.length);
+    attributes.last = Math.min(rows.length, fetchSize || rows.length);
 
     // Remember whether this request has been fully loaded.
-    requestStatusCache.loaded[options.request.index] = !chunkSize || attributes.last < chunkSize;
+    requestStatusCache.loaded[options.request.index] = !fetchSize || attributes.last < fetchSize;
 
     // Determine if Google has extracted column labels from a header row.
     attributes.header = (cols.map(getColumnLabel).length) ? 1 : 0;
@@ -382,7 +388,7 @@
     rawData.table.rows.forEach(function (row, i) {
 
       // Proceed if the row has cells and the row index is within the targeted
-      // range. (This avoids displaying too many rows when chunking data.)
+      // range. (This avoids displaying too many rows when paging data.)
       if (has(row, 'c') && i < options.response.last) {
 
         // Get the "real" row index (not counting header rows).
@@ -614,7 +620,7 @@
     url:          '',          // String  -- Google Sheet URL
     query:        '',          // String  -- Google Visualization API query
     target:       null,        // DOM Element -- An element to append output to
-    chunkSize:    0,           // Integer -- Number of rows to fetch (0 = all)
+    fetchSize:    0,           // Integer -- Number of rows to fetch (0 = all)
     labels:       [],          // Array   -- Override *returned* column labels
     rowTemplate:  null,        // Function / Template
     callback:     null,        // Function

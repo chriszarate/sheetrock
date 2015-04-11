@@ -12,6 +12,7 @@
 * Changes to defaults:
   - added `target` as alternative to jQuery's `this`
   - renamed `sql` to `query`
+  - renamed `chunkSize` to `fetchSize`
   - renamed `resetStatus` to `reset`
   - renamed `rowHandler` to `rowTemplate`
   - removed `server` (pass bootstrapped data instead)
