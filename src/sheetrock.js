@@ -149,15 +149,6 @@
     return (blob.nodeType && blob.nodeType === 1) ? blob : false;
   };
 
-  var extendDefaults = function (defaults, options) {
-    var extended = {};
-    var defaultKeys = Object.keys(defaults);
-    defaultKeys.forEach(function (key) {
-      extended[key] = (options.hasOwnProperty(key)) ? options[key] : defaults[key];
-    });
-    return extended;
-  };
-
   // Get API endpoint, key, and gid from a Google Sheet URL.
   var getRequestOptions = function (url) {
     var requestOptions = {};
@@ -220,19 +211,28 @@
 
   /* Options */
 
-  // Support some legacy option names.
-  var supportLegacyOptions = function (options) {
+  // Extend default options.
+  var extendDefaults = function (defaults, options) {
+
+    var extended = {};
+    var defaultKeys = Object.keys(defaults);
+
+    // Support some legacy option names.
     options.query = options.sql || options.query;
     options.reset = options.resetStatus || options.reset;
     options.fetchSize = options.chunkSize || options.fetchSize;
-    options.rowHandler = options.rowHandler || options.rowTemplate;
-    return options;
+    options.rowTemplate = options.rowHandler || options.rowTemplate;
+
+    defaultKeys.forEach(function (key) {
+      extended[key] = (options.hasOwnProperty(key)) ? options[key] : defaults[key];
+    });
+
+    return extended;
+
   };
 
   // Check the user-passed options for correctable problems.
   var checkUserOptions = function (target, options) {
-
-    options = supportLegacyOptions(options);
 
     // Look for valid DOM element target.
     options.target = extractElement(options.target) || extractElement(target);
