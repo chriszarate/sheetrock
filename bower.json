@@ -1,5 +1,5 @@
 {
-  "name": "jquery-sheetrock",
+  "name": "sheetrock",
   "version": "0.3.0",
   "description": "Quickly connect to, query, and lazy-load data from Google Spreadsheets.",
   "keywords": [
@@ -12,10 +12,8 @@
     "ajax",
     "nodb"
   ],
-  "main": "./src/jquery.sheetrock.js",
-  "dependencies": {
-    "jquery": ">=1.6"
-  },
+  "main": "./src/sheetrock.js",
+  "dependencies": {},
   "license": "MIT",
   "homepage": "http://chriszarate.github.io/sheetrock/",
   "repository": {
