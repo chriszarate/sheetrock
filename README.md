@@ -1,51 +1,63 @@
-# jQuery Sheetrock
+# Sheetrock
 
 [![Build Status][build-status]][travis-ci]
 
-Sheetrock is a jQuery plugin for querying, retrieving, and displaying data
-from Google Spreadsheets. Use it to load entire sheets or leverage SQL-like
-queries to treat Google Spreadsheets as a quick-and-dirty JSON datastore. All
-you need is the URL of a [public Google Spreadsheet][public]. It requires no
-backend code whatsoever—everything is done in the browser.
+Sheetrock is a JavaScript library for querying, retrieving, and displaying data
+from Google Sheets. In other words, use a Google spreadsheet as your database!
+Load entire worksheets or leverage SQL-like queries to sort, group, and filter
+data. All you need is the URL of a public Google Sheet.
+
+Sheetrock can be used in the browser or on the server (Node.js). It has no
+dependencies—but if jQuery is available, it will register as a plugin.
 
 Basic retrieval is a snap but you can also:
 
 * Query sheets using the SQL-like [Google Visualization query language][query]
   (filters, pivots, sorting, grouping, and more)
+
 * Lazy-load large data sets (infinite scroll with ease)
-* Mix in your favorite templating system ([Handlebars][handlebars],
+
+* Easily mix in your favorite templating system ([Handlebars][handlebars],
   [Underscore][underscore], etc.)
-* Customize to your heart’s content with your own handlers and callbacks
 
+* Customize to your heart’s content with your own callbacks
 
-## Examples
+Here’s an example (using jQuery) of how easy it is:
 
-Visit **[chriszarate.github.io/sheetrock][gh-pages]** for examples and
-jsFiddles.
-
-
-## Usage
-
-Using [Bower][bower]?
-
-```sh
-bower install jquery-sheetrock
+```javascript
+$("#my-table").sheetrock({
+  url: "https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0",
+  query: "select A,B,C,D,E,L where E = 'Both' order by L desc"
+});
 ```
 
-Otherwise, grab [the latest version][latest] ([unminified][unminified]) and
-stash it in your project. Sheetrock requires jQuery >= 1.6.
+For many more examples and accompanying jsFiddles, visit
+**[chriszarate.github.io/sheetrock][gh-pages]**.
+
+
+## Installation
+
+Install Sheetrock with `npm install sheetrock` or `bower install sheetrock`. Or
+just grab [the latest version][latest] and stash it in your project:
 
 ```html
-<script src="jquery.min.js"></script>
-<script src="jquery.sheetrock.min.js"></script>
+<script src="sheetrock.min.js"></script>
 ```
 
-Shreetrock is also available on CloudFlare’s CDN:
+Shreetrock is also available on [CDNJS][cdnjs]:
 
 ```html
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/0.2.4/dist/jquery.sheetrock.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/sheetrock/1.0.0/dist/sheetrock.min.js"></script>
 ```
+
+
+## Version 1.0
+
+In version 1.0, Sheetrock has introduced a few backwards-incompatible changes,
+although most basic requests will still work. Most changes make it simpler to
+use; read the options below or the [CHANGELOG][changelog] for more details.
+
+The previous `0.3.x` branch is [still available][0.3.x] and maintained.
 
 
 ## Options
@@ -53,169 +65,124 @@ Shreetrock is also available on CloudFlare’s CDN:
 Sheetrock expects a hash map of options as a parameter, e.g.:
 
 ```javascript
-$('#table').sheetrock({
-  url: '[...]',
-  sql: '[...]'
+sheetrock({
+  url: "https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0",
+  query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
+  callback: function () {/* callback code */}
 });
 ```
 
-Your options override Sheetrock’s defaults on a per-request basis. You can
-also globally override defaults like this:
+Your options override Sheetrock’s defaults on a per-request basis. You can also
+globally override defaults like this:
 
 ```javascript
-$.fn.sheetrock.options.url = '[...]';
+sheetrock.defaults.url = "https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0";
 ```
 
+
 ### url
-* Default `''`
+
 * Expects string
 
 The URL of a public Google spreadsheet. This is the only required option.
 (*See* [How do I make a spreadsheet public?][public])
 
 
-### sql
-* Default `''`
+### query
+
 * Expects string
 
-A [Google Visualization API query][query] string. By default, Google only
-allows column letters (e.g., `A`, `B`) in queries. If you prefer, you can use
-the column labels of your spreadsheet in your query and they will be swapped
-out with the corresponding column letters. To do this, wrap column labels in
-percent signs, e.g., `select %name%,%age% where %age% > 21`.
+A [Google Visualization API query][query] string. Use column letters in your
+queries (e.g., `select A,B,D`).
 
 
-### chunkSize
-* Default `0`
+### target
+
+* Expects DOM element
+
+A DOM element that Sheetrock should append HTML output to. In a browser, for
+example, you can use `document.getElementById` to reference a single element.
+If you are using Sheetrock with jQuery, you can use the jQuery plugin syntax
+(e.g., `$('#my-table').sheetrock({/* options */})`) and ignore this option.
+
+
+### fetchSize
+
 * Expects non-negative integer
 
-Use this option to enable lazy-loading or chunking of the data. When set to
-`0`, Sheetrock will fetch all available rows. When set to `10`, for example,
-it will fetch ten rows and keep track of how many rows have been requested. On
-the next request with the same query, it will pick up where it left off.
-
-
-### columns
-* Default `{}`
-* Expects hash map of column letters to strings
-
-If you use column labels instead of column letters in your `sql` query (e.g.,
-`select %name%`), they must *exactly* match the ones used in your spreadsheet.
-If you don’t want to bother with that, you can supply your own column labels,
-e.g., `{A: 'ID', B: 'FullName', C: 'Age'}`. Then you can use your supplied
-column labels in your `sql` query (e.g., `select %FullName%`). This also
-avoids the overhead (additional AJAX request) of prefetching the column
-labels. **Note:** This option only applies to your `sql` query and has no
-effect on the column labels *returned* by Google’s API (see `labels`, below).
+Use this option to load a portion of the available rows. When set to `0` (the
+default), Sheetrock will fetch all available rows. When set to `10`, it will
+fetch ten rows and keep track of how many rows have been requested. On the next
+request with the same query, it will pick up where it left off.
 
 
 ### labels
-* Default `[]`
+
 * Expects array of strings
 
-Override the *returned* column labels with an array of strings. If you use
-your own row handler or template, you must reference column labels exactly as
-they are returned by Google’s API. Further, if your `sql` query uses `group`,
+Override the returned column labels with an array of strings. Without this
+option, if you use your own `rowTemplate`, you must reference column labels
+exactly as they are returned by Google’s API. If your `sql` query uses `group`,
 `pivot`, or any of the [manipulation functions][manip], you will notice that
 Google’s returned column labels can be hard to predict. In those cases, this
 option can prove essential. The length of this array must match the number of
 columns in the returned data.
 
 
-### rowHandler
-* Default `_toHTML` (internal function; provides HTML table row output)
+### rowTemplate
+
 * Expects function
 
-Providing your own row handler is the recommended way to override the default
-table row formatting. Your function should accept a row object. A row object
-has two properties: `num`, which contains a row number (header = `0`, first
-data row = `1`, and so on); and `cells`, which is itself an object. The
-properties of `cells` will be named after the column labels of the returned
-data (e.g., `Team`, `RBI`). Your function should return content (a DOM/jQuery
-object or an HTML string) that is ready to be appended to your target element.
-A very easy way to do this is to provide a compiled [Handlebars][handlebars] or
-[Underscore][underscore] template (which is itself a function).
+By default, Sheetrock will output your data in simple HTML. Providing your own
+row template is an easy way to customize the formatting. Your function should
+accept a row object. A row object has two properties: `num`, which contains a
+row number (headers = `0`, first data row = `1`, and so on); and `cells`, which
+is itself an object. The properties of `cells` will be named after the column
+labels as Google interprets them (e.g., `A`, `B`)—or you can use the `labels`
+the define them yourself. Your function should return a DOM object or an HTML
+string that is ready to be appended to your target element. A very easy way to
+do this is to provide a compiled [Handlebars][handlebars] or [Underscore][underscore]
+template (which is itself a function).
 
 
-### cellHandler
-* Default `_trim` (internal function; trims white space)
-* Expects function
+### callback
 
-The cell handler is used to process every cell value. It should return a
-string.
-
-
-### dataHandler
-* Default `_parseData` (internal function; creates HTML table)
-* Expects function
-
-Providing your own data handler means you don’t want any data processing to
-take place except for basic validation and inspection. The returned data, if
-valid, is passed to your data handler (with the options hash as `this`) and it
-will be completely up to you to do something with it. The cell handler and row
-handler will not be called.
-
-
-### errorHandler
-* Default `$.noop`
-* Expects function
-
-If you provide your own error handler, it will be called if Sheetrock
-encounters any AJAX errors (e.g., no network connection). The returned data, if
-any, is passed to your error handler (with the options hash as `this`).
-
-
-### userCallback
-* Default `$.noop`
 * Expects function
 
 You can provide a function to be called when all processing is complete. The
-options hash is passed to this function.
+function will be passed the following parameters, in this order:
 
+* Error (object): If the request failed, this parameter will be a JavaScript
+  error; otherwise, it will be `null`. Always test for an error before using
+  the other parameters.
 
-### loading
-* Default `$()`
-* Expects jQuery object or selector
+* Options (object): An object representing the options of the request. The
+  `user` property will contain the options you originally provided (useful for
+  identifying which request the callback is for) and a `request` property with
+  information about the request to Google’s API.
 
-If you have a loading indicator on your page, provide a jQuery object or
-selector here. It will be shown when the request starts and hidden when it
-ends.
+* Raw data (object): This is the raw response data from Google’s API.
+
+* Table rows (array): An array of row objects (which are also passed
+  individually to the `rowTemplate`, if one is provided).
+
+* Output HTML (string): A string of HTML representing the final presentational
+  output of the request (which is also appended to the `target` or jQuery
+  reference, if one was provided).
 
 
 ### headers
-* Default `0`
+
 * Expects non-negative integer
 
-The number of header rows in your spreadsheet. Sheetrock tries to identify this
-automatically but Google’s response format makes it difficult.
+The number of header rows in your spreadsheet. The default value is `0`, but
+this doesn’t necessarily correspond to zero header rows. Google tries to
+auto-detect header rows, with unpredictable results. Try omitting this option
+if at all possible.
 
 
-### headersOff
-* Default `false`
-* Expects Boolean
+### reset
 
-Set to `true` to suppress output of header row(s) to the row handler.
-
-
-### rowGroups
-* Default `true`
-* Expects Boolean
-
-Set to `false` to disable use of row group tags (`<thead>` and `<tbody>`).
-
-
-### formatting
-* Default `false`
-* Expects Boolean
-
-Google passes along HTML formatting intended to replicate any formatting you
-applied in the spreadsheet. When set to `true`, the default cell handler will
-wrap the cell value in a `span` with a `style` attribute. The formatting is
-usually a bit wacky, so take care when enabling this option.
-
-
-### resetStatus
-* Default `false`
 * Expects Boolean
 
 Reset request status. By default, Sheetrock remembers the row offset of a
@@ -224,51 +191,21 @@ previously failed. Set to `true` to reset these indicators. This is useful if
 you want to reload data or load it in another context.
 
 
-### debug
-* Default `false`
-* Expects Boolean
-
-Output raw request and response data to the browser console. Useful for
-debugging, especially when you are using your own handlers.
-
-
 ## Caching
 
 On large spreadsheets (~5,000 rows), the performance of Google’s API when using
-`sql` queries can be sluggish and, in some cases, can severely affect the
+the `query` option can be sluggish and, in some cases, can severely affect the
 responsiveness of your application. At this point, consider caching the
-responses for reuse.
-
-* If you need to change the Google API endpoint—maybe because you want to use
-  a caching proxy like Amazon CloudFront—use the (undocumented) `server`
-  option.
-
-* Sheetrock provides a way to reuse manually cached data. It accepts a second
-  parameter of response data to be used instead of making an API request (e.g.,
-  `$('#table').sheetrock(options, cachedResponse);`). Make sure you pass a
-  JavaScript object and not a JSON string.
+responses for reuse via a `callback` function.
 
 
 ## Tips and troubleshooting
 
-* Sheetrock sometimes outputs useful information to the browser console,
-  including options validation problems and warnings and errors reported by
-  Google’s API.
-
-* When there is an outstanding AJAX request, `$.fn.sheetrock.working` will be
-  set to `true`. This can be useful for infinite scroll bindings, for example.
-
-* You can also latch onto the most recent jQuery promise via
-  `$.fn.sheetrock.promise`. Make sure you return a another promise so that
-  Sheetrock can continue to chain off of it.
 
 
 ## Projects using Sheetrock
 
-* [TAGS Viewer][tags]
-* [Equity][equity]
-* [Kuppi][kuppi]
-* Tell me about your project on the [Wiki][wiki]!
+Tell me about your project on the [Wiki][wiki]!
 
 
 ## Change log
@@ -279,9 +216,8 @@ responses for reuse.
 ## Credits and license
 
 Sheetrock was written by [Chris Zarate][me]. It was inspired in part by
-[Tabletop.js][tabletop] (which will teach you jazz piano).
-[John Brecht][brecht] came up with the name. Sheetrock is released under the
-[MIT license][license].
+[Tabletop.js][tabletop] (which will teach you jazz piano). [John Brecht][brecht]
+came up with the name. Sheetrock is released under the [MIT license][license].
 
 
 [build-status]: https://travis-ci.org/chriszarate/sheetrock.svg?branch=master
@@ -291,12 +227,10 @@ Sheetrock was written by [Chris Zarate][me]. It was inspired in part by
 [underscore]: http://underscorejs.org
 [handlebars]: http://handlebarsjs.com
 [gh-pages]: http://chriszarate.github.io/sheetrock/
-[bower]: http://bower.io
-[latest]: http://chriszarate.github.io/sheetrock/src/jquery.sheetrock.min.js
-[unminified]: http://chriszarate.github.io/sheetrock/src/jquery.sheetrock.js
-[tags]: https://github.com/mlaa/tags-viewer
-[equity]: https://play.google.com/store/apps/details?id=com.leosoftwares.equity
-[kuppi]: https://play.google.com/store/apps/details?id=com.leosoftwares.kuppi
+[latest]: http://chriszarate.github.io/sheetrock/dist/sheetrock.min.js
+[unminified]: http://chriszarate.github.io/sheetrock/src/sheetrock.js
+[cdnjs]: https://cdnjs.com
+[0.3.x]: https://github.com/chriszarate/sheetrock/tree/0.3.0
 [wiki]: https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock
 [changelog]: https://github.com/chriszarate/sheetrock/blob/master/CHANGELOG.md
 [me]: http://chris.zarate.org
