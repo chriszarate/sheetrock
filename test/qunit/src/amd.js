@@ -1,16 +1,17 @@
-/*global define, window, QUnit */
+/*global define, window */
 
 'use strict';
 
-define(['../../../src/sheetrock', './common'], function (sheetrock, commonTests) {
+define(['../../../src/sheetrock', '../lib/qunit.min', './common'], function (sheetrock, qunit, commonTests) {
 
-  QUnit.module('Load Sheetrock with AMD.');
+  qunit.module('Load Sheetrock with AMD.');
 
-  QUnit.test('Test global', function (assert) {
+  qunit.test('Test global', function (assert) {
     assert.expect(1);
     assert.ok(window.sheetrock === undefined, 'Sheetrock global is undefined.');
   });
 
-  commonTests(QUnit, sheetrock);
+  commonTests(qunit, sheetrock);
+  qunit.start();
 
 });
