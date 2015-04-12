@@ -34,8 +34,8 @@
           assert.ok(data.table.cols.length === 6, 'Response contains 6 columns.');
           assert.ok(data.table.rows.length === 35, 'Response contains 35 rows.');
           assert.ok(data.table.rows[2].c[3].v === 'Bass', 'Row 3, column 4 contains "Bass".');
-          done();
         }
+        done();
       }
     });
 
