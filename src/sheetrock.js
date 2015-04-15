@@ -140,6 +140,12 @@
     return true;
   };
 
+  // Return true if the DOM element has the specified class.
+  var hasClass = function (el, className) {
+    var classes = ' ' + el.className + ' ';
+    return classes.indexOf(' ' + className + ' ') !== -1;
+  };
+
   // Extract a DOM element from a possible jQuery blob.
   var extractElement = function (blob) {
     blob = blob || {};
@@ -451,16 +457,16 @@
     var template = options.user.rowTemplate || toHTML;
     var hasDOMTarget = document && document.createElement && options.user.target;
     var isTable = hasDOMTarget && options.user.target.tagName === 'TABLE';
-
+    var needsHeader = hasDOMTarget && hasClass(options.user.target, 'sheetrock-header');
     var headerHTML = '';
     var bodyHTML = '';
 
-    // Pass each row to the row template and append the output to either the
-    // header or body section.
+    // Pass each row to the row template. Only parse header rows if the target
+    // is a table or indicates via className that it wants the header.
     tableArray.forEach(function (row) {
       if (row.num) {
         bodyHTML += template(row);
-      } else {
+      } else if (isTable || needsHeader) {
         headerHTML += template(row);
       }
     });
