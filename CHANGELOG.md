@@ -15,6 +15,7 @@
   - renamed `chunkSize` to `fetchSize`
   - renamed `resetStatus` to `reset`
   - renamed `rowHandler` to `rowTemplate`
+  - renamed `userCallback` to `callback` (but passes different paramaters)
   - removed `server` (pass bootstrapped data instead)
   - removed `columns` (always use column letters in query)
   - removed `cellHandler` (use rowTemplate for text formatting)

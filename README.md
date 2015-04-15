@@ -22,7 +22,17 @@ Basic retrieval is a snap but you can also:
 
 * Customize to your heart’s content with your own callbacks
 
-Here’s an example (using jQuery) of how easy it is:
+
+## Browser
+
+Grab the [latest version of Sheetrock][latest] for your project. Here’s an
+example request (using jQuery):
+
+```html
+<table id="#my-table"></table>
+<script src="jquery.min.js"></script>
+<script src="sheetrock.min.js"></script>
+```
 
 ```javascript
 $("#my-table").sheetrock({
@@ -35,26 +45,35 @@ For many more examples and accompanying jsFiddles, visit
 **[chriszarate.github.io/sheetrock][gh-pages]**.
 
 
-## Installation
+## Server
 
-Install Sheetrock with `npm install sheetrock` or `bower install sheetrock`. Or
-just grab [the latest version][latest] and stash it in your project:
+Sheetrock can also be used with Node.js:
 
-```html
-<script src="sheetrock.min.js"></script>
+```bash
+npm install sheetrock
 ```
 
-Shreetrock is also available on [CDNJS][cdnjs]:
+```javascript
+var sheetrock = require('sheetrock');
 
-```html
-<script src="//cdnjs.cloudflare.com/ajax/libs/sheetrock/1.0.0/dist/sheetrock.min.js"></script>
+var myCallback = function (error, options, rawData, tableRows, outputHTML) {
+  if (!error) {
+    /* Parse rawData, loop through tableRows, or do something with outputHTML. */
+  }
+};
+
+sheetrock({
+  url: "https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0",
+  query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
+  callback: myCallback
+});
 ```
 
 
 ## Version 1.0
 
 In version 1.0, Sheetrock has introduced a few backwards-incompatible changes,
-although most basic requests will still work. Most changes make it simpler to
+although most basic requests will still work. These changes make it simpler to
 use; read the options below or the [CHANGELOG][changelog] for more details.
 
 The previous `0.3.x` branch is [still available][0.3.x] and maintained.
@@ -84,13 +103,16 @@ sheetrock.defaults.url = "https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7
 
 * Expects string
 
-The URL of a public Google spreadsheet. This is the only required option.
-(*See* [How do I make a spreadsheet public?][public])
+The URL of a public Google Sheet. ([How do I make a spreadsheet public?][public])
+Make sure you include the `#gid=X` portion of the URL; it identifies the
+specific worksheet you want to use. If you want to access data from multiple
+worksheets, you will need to make multiple Sheetrock requests.
 
 
 ### query
 
 * Expects string
+* Renamed from `sql` in 1.0.0
 
 A [Google Visualization API query][query] string. Use column letters in your
 queries (e.g., `select A,B,D`).
@@ -109,6 +131,7 @@ If you are using Sheetrock with jQuery, you can use the jQuery plugin syntax
 ### fetchSize
 
 * Expects non-negative integer
+* Renamed from `chunkSize` in 1.0.0
 
 Use this option to load a portion of the available rows. When set to `0` (the
 default), Sheetrock will fetch all available rows. When set to `10`, it will
@@ -132,6 +155,7 @@ columns in the returned data.
 ### rowTemplate
 
 * Expects function
+* Renamed from `rowHandler` in 1.0.0
 
 By default, Sheetrock will output your data in simple HTML. Providing your own
 row template is an easy way to customize the formatting. Your function should
@@ -148,6 +172,7 @@ template (which is itself a function).
 ### callback
 
 * Expects function
+* Renamed from `userCallback` in 1.0.0
 
 You can provide a function to be called when all processing is complete. The
 function will be passed the following parameters, in this order:
@@ -228,7 +253,6 @@ came up with the name. Sheetrock is released under the [MIT license][license].
 [handlebars]: http://handlebarsjs.com
 [gh-pages]: http://chriszarate.github.io/sheetrock/
 [latest]: http://chriszarate.github.io/sheetrock/dist/sheetrock.min.js
-[unminified]: http://chriszarate.github.io/sheetrock/src/sheetrock.js
 [cdnjs]: https://cdnjs.com
 [0.3.x]: https://github.com/chriszarate/sheetrock/tree/0.3.0
 [wiki]: https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock
