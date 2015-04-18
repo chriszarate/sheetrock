@@ -24,6 +24,7 @@
   - removed `rowGroups` (`&lt;thead&gt;` and `&lt;tbody&gt;` are added when
     `target` is a `&lt;table&gt;`)
   - removed `formatting` (almost useless, impossible to support)
+  - removed `headers` (multiple header rows cause myriad problems)
   - removed `headersOff` (use rowTemplate to show or hide rows)
   - removed `debug` (compiled messages are passed to callback function)
 

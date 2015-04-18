@@ -244,7 +244,6 @@
     options.target = extractElement(options.target) || extractElement(target);
 
     // Correct bad integer values.
-    options.headers = stringToNaturalNumber(options.headers);
     options.fetchSize = stringToNaturalNumber(options.fetchSize);
 
     return options;
@@ -398,7 +397,7 @@
       if (has(row, 'c') && i < options.response.last) {
 
         // Get the "real" row index (not counting header rows).
-        var counter = stringToNaturalNumber(options.user.offset + i + 1 + options.response.header - options.user.headers);
+        var counter = stringToNaturalNumber(options.user.offset + i + 1 + options.response.header);
 
         // Initialize a row object, which will be added to the output array.
         var rowObject = {
@@ -630,7 +629,6 @@
     labels:       [],          // Array   -- Override *returned* column labels
     rowTemplate:  null,        // Function / Template
     callback:     null,        // Function
-    headers:      0,           // Integer -- Number of header rows
     reset:        false        // Boolean -- Reset request status
   };
 

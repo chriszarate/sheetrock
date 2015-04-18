@@ -196,16 +196,6 @@ function will be passed the following parameters, in this order:
   reference, if one was provided).
 
 
-### headers
-
-* Expects non-negative integer
-
-The number of header rows in your spreadsheet. The default value is `0`, but
-this doesn’t necessarily correspond to zero header rows. Google tries to
-auto-detect header rows, with unpredictable results. Try omitting this option
-if at all possible.
-
-
 ### reset
 
 * Expects Boolean
