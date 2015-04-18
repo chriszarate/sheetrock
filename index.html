@@ -6,204 +6,253 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
 
-    <link href="./css/sheetrock.css" rel="stylesheet" type="text/css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.css" rel="stylesheet" type="text/css">
+    <link href="./css/sheetrock.css" rel="stylesheet" type="text/css">
 
     <title>Sheetrock</title>
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
 
-    <h1>Sheetrock</h1>
+    <div class="container">
 
-    <noscript><p class="error">This page requires JavaScript.</p></noscript>
+      <div class="row">
 
-    <p><strong>Sheetrock</strong> is a JavaScript library for querying, retrieving, and displaying data from Google Sheets. In other words, use a Google spreadsheet as your database! Load entire worksheets or leverage SQL-like queries to sort, group, and filter data. All you need is the URL of a public Google Sheet.</p>
+        <div class="col-md-3 hidden-xs hidden-sm">
 
-    <p>Sheetrock can be used in the browser or on the server (Node.js). It has no dependencies—but if jQuery is available, it will register as a plugin.</p>
+          <nav id="toc" class="affix">
+            <ul class="nav">
+              <li><a href="#about">About</a></li>
+              <li><a href="#documentation">Documentation</a></li>
+              <li><a href="#usage">Usage</a></li>
+              <li><a href="#examples">Examples</a></li>
+              <li class="nested"><a href="#hello-world">Hello, world!</a></li>
+              <li class="nested"><a href="#basic">Basic example</a></li>
+              <li class="nested"><a href="#templating">Templating</a></li>
+              <li class="nested"><a href="#grouping">Grouping</a></li>
+              <li><a href="#credits">Credits</a></li>
+            </ul>
+          </nav>
 
-    <p>Basic retrieval is a snap but you can also:</p>
+        </div>
 
-    <ul>
-      <li>Query sheets using the SQL-like <a href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization query language</a>—grouping, sorting, filters, pivots, and more</li>
-      <li>Lazy-load large data sets (infinite scroll with ease)</li>
-      <li>Easily mix in your favorite templating system (<a href="http://handlebarsjs.com">Handlebars</a>, <a href="http://underscorejs.org">Underscore</a>, etc.)</li>
-      <li>Customize to your heart’s content with your own callbacks</li>
-    </ul>
+        <div class="col-md-9">
+
+          <h1 id="about">Sheetrock.js</h1>
+
+          <noscript><p class="error">This page requires JavaScript.</p></noscript>
+
+          <p><strong>Sheetrock</strong> is a JavaScript library for querying, retrieving, and displaying data from Google Sheets. In other words, use a Google spreadsheet as your database! Load entire worksheets or leverage SQL-like queries to sort, group, and filter data. All you need is the URL of a public Google Sheet.</p>
+
+          <p>Sheetrock can be used in the browser or on the server (Node.js). It has no dependencies—but if jQuery is available, it will register as a plugin.</p>
+
+          <p>Basic retrieval is a snap but you can also:</p>
+
+          <ul>
+            <li>Query sheets using the SQL-like <a href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization query language</a>—grouping, sorting, filters, pivots, and more</li>
+            <li>Lazy-load large data sets (infinite scroll with ease)</li>
+            <li>Easily mix in your favorite templating system (<a href="http://handlebarsjs.com">Handlebars</a>, <a href="http://underscorejs.org">Underscore</a>, etc.)</li>
+            <li>Customize to your heart’s content with your own callbacks</li>
+          </ul>
 
 
-    <h2>Documentation and development</h2>
+          <h2 id="documentation">Documentation and development</h2>
 
-    <p>Please see the <a href="https://github.com/chriszarate/sheetrock">GitHub repository</a> for detailed documentation of the available options or to contribute, explore, or raise an issue.</p>
+          <p>Please see the <a href="https://github.com/chriszarate/sheetrock">GitHub repository</a> for detailed documentation of the available options or to contribute, explore, or raise an issue.</p>
 
 
-    <h2>Usage</h2>
+          <h2 id="usage">Usage</h2>
 
-    <p>Grab the <a href="http://chriszarate.github.io/sheetrock/dist/sheetrock.min.js">latest version of Sheetrock</a> for your project. The examples on this page use jQuery, but Sheetrock doesn’t require it.</p>
+          <p>Grab the <a href="http://chriszarate.github.io/sheetrock/dist/sheetrock.min.js">latest version of Sheetrock</a> for your project. The examples on this page use jQuery, but Sheetrock doesn’t require it.</p>
 
-    <div class="prism-render language-markup src">
-      <!-- Load jQuery and Sheetrock -->
-      <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-      <script src="./dist/sheetrock.min.js"></script>
+          <div class="example-render" data-language="markup">
+            <!-- Load jQuery and Sheetrock -->
+            <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+            <script src="./dist/sheetrock.min.js"></script>
+          </div>
+
+          <p>Sheetrock can also be used with Node.js; <a href="https://github.com/chriszarate/sheetrock">see the documentation</a> for details.</p>
+
+
+          <h2 id="examples">Examples</h2>
+
+          <p>These are real, live examples. View source! Extend and adapt them!</p>
+
+          <h3>Specify a spreadsheet.</h3>
+
+          <p>Sheetrock’s only required option is the URL of a <a href="https://support.google.com/drive/answer/2494822">public Google Spreadsheet</a>. (Click “Share” and set visibility to “Anyone with the link” or “Public on the web.”) As an example, let’s use <a href="https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0">this spreadsheet</a>, which contains 1986 National League batting statistics.</p>
+
+          <p>Make sure you include the <code class="inline">#gid=X</code> portion of the URL; it identifies the specific worksheet you want to use.</p>
+
+          <script class="example-render" data-language="javascript">
+            // Define spreadsheet URL.
+            var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0';
+          </script>
+
+
+          <h3 id="hello-world">Hello, world!</h3>
+
+          <p>The most basic use case of Sheetrock simply fetches the an entire worksheet and loads it into a <code class="inline">&lt;table&gt;</code>.</p>
+
+          <!-- We’re not actually running this code, so it’s mocked up. -->
+          <div class="operator-plus">
+            <pre class="language-markup"><code class="mockup">
+              <table id="statistics" class="table table-condensed table-striped"></table>
+            </code></pre>
+          </div>
+
+          <pre class="language-javascript"><code class="mockup">
+            // Load an entire worksheet.
+            $('#statistics').sheetrock({
+              url: mySpreadsheet
+            });
+          </code></pre>
+
+          <p class="fiddle">
+            <a href="http://jsfiddle.net/m04ddeu2/">Show a jsFiddle for this example.</a>
+          </p>
+
+          <p>However, that’s not very exciting, so we won’t show the result inline here—especially since the spreadsheet has a couple hundred rows.</p>
+
+
+          <h3 id="basic">Basic example</h3>
+
+          <p>Let’s move on to something slightly more interesting. Using Sheetrock, we can limit our scope and analyze the data using SQL-like queries. We can also provide a <code class="inline">fetchSize</code> to load just a portion of the data. We can always grab more data later—Sheetrock <strong>keeps track of how many rows you’ve requested</strong> and the next request will pick up where you left off.</p>
+
+          <p>Let’s look at switch hitters and rank them by batting average. We’ll only grab the columns we care about and fetch just the top ten to help focus the reader’s attention.</p>
+
+          <div class="example-render-group">
+
+            <div class="example-render output" data-language="markup" data-example-class="operator-plus">
+              <table id="switch-hitters" class="table table-condensed table-striped"></table>
+            </div>
+
+            <script class="example-render" data-language="javascript" data-example-class="operator-equals">
+              // Load top ten switch hitters.
+              $('#switch-hitters').sheetrock({
+                url: mySpreadsheet,
+                query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
+                fetchSize: 10
+              });
+            </script>
+
+          </div>
+
+          <p class="fiddle">
+            <a href="http://jsfiddle.net/2zk7sd0n/">Show a jsFiddle for this example.</a>
+          </p>
+
+
+          <h3 id="templating">Templating</h3>
+
+          <p>Tables are nice, but we might want to represent the data in different ways. Let’s generate an ordered list by passing in a Handlebars template. This time we’ll rank the top five players by home runs.</p>
+
+          <p>Note that the header row doesn’t show up here; Sheetrock only passes header rows to your template if the target element is a <code class="inline">&lt;table&gt;</code>.</p>
+
+          <div class="example-render-group">
+
+            <div class="example-render" data-language="markup" data-example-class="operator-plus">
+              <!-- Load Handlebars.js from CloudFlare’s CDN. -->
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.1.2/handlebars.min.js"></script>
+            </div>
+
+            <div class="example-render output" data-language="markup" data-example-class="operator-plus">
+              <h4>NL Home Run Leaders</h4>
+              <ol id="hr">
+                <script id="hr-template" type="text/x-handlebars-template">
+                  <li>
+                    <strong>{{cells.First}} {{cells.Last}}</strong>,
+                    {{cells.Team}}, {{cells.HR}}
+                  </li>
+                </script>
+              </ol>
+            </div>
+
+            <script class="example-render" data-language="javascript" data-example-class="operator-equals">
+              // Compile the Handlebars template for HR leaders.
+              var HRTemplate = Handlebars.compile($('#hr-template').html());
+
+              // Load top five HR leaders.
+              $('#hr').sheetrock({
+                url: mySpreadsheet,
+                query: "select A,C,D,I order by I desc",
+                fetchSize: 5,
+                rowTemplate: HRTemplate
+              });
+            </script>
+
+          </div>
+
+          <p class="fiddle">
+            <a href="http://jsfiddle.net/3u8ozbg7/">Show a jsFiddle for this example.</a>
+          </p>
+
+
+          <h3 id="grouping">Grouping</h3>
+
+          <p>Next, let’s group some data. For a more straightforward template, we’ll specify the labels we want Sheetrock to use when it returns the data using the <code class="inline">labels</code> option.</p>
+
+          <div class="example-render-group">
+
+            <div class="example-render output" data-language="markup" data-example-class="operator-plus">
+              <h4>Team RBI</h4>
+              <ol id="team-rbi">
+              <script id="team-rbi-template" type="text/x-handlebars-template">
+                <li><strong>{{cells.TeamName}}</strong>, {{cells.TeamRBI}}</li>
+              </script>
+              </ol>
+            </div>
+
+            <script class="example-render" data-language="javascript" data-example-class="operator-equals">
+              // Compile Handlebars template for team RBI leaders.
+              var RBITemplate = Handlebars.compile($('#team-rbi-template').html());
+
+              // Load top five team RBI leaders.
+              $('#team-rbi').sheetrock({
+                url: mySpreadsheet,
+                query: "select A,sum(J) group by A order by sum(J) desc",
+                fetchSize: 5,
+                labels: ['TeamName', 'TeamRBI'],
+                rowTemplate: RBITemplate
+              });
+            </script>
+
+          </div>
+
+          <p class="fiddle">
+            <a href="http://jsfiddle.net/xhmavwxf/">Show a jsFiddle for this example.</a>
+          </p>
+
+
+          <h2>More?</h2>
+
+          <p>Detailed documentation is available at the <a href="https://github.com/chriszarate/sheetrock">GitHub repository</a>. Please feel free to <a href="https://github.com/chriszarate/sheetrock/issues">raise an issue</a> if you are having a problem with Sheetrock.</p>
+
+
+          <h2 id="credits">Credits and license</h2>
+
+          <p>Sheetrock was written by <a href="http://chris.zarate.org">Chris Zarate</a> and is released under the <a href="http://opensource.org/licenses/MIT">MIT license</a>.</p>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <p>Sheetrock can also be used with Node.js; <a href="https://github.com/chriszarate/sheetrock">see the documentation</a> for details.</p>
 
+    <!-- Load Prism.js from CloudFlare’s CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.js"></script>
 
-    <h2>Examples</h2>
-
-    <p>These are real, live examples. View source! Extend and adapt them!</p>
-
-    <ul>
-      <li><a href="#hello-world">Hello, world!</a></li>
-      <li><a href="#basic">Basic example</a></li>
-      <li><a href="#templating">Templating</a></li>
-      <li><a href="#grouping">Grouping</a></li>
-    </ul>
-
-    <h3>Specify a spreadsheet.</h3>
-
-    <p>Sheetrock’s only required option is the URL of a <a href="https://support.google.com/drive/answer/2494822">public Google Spreadsheet</a>. (Click “Share” and set visibility to “Anyone with the link” or “Public on the web.”) As an example, let’s use <a href="https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0">this spreadsheet</a>, which contains 1986 National League batting statistics.</p>
-
-    <script class="prism-render language-javascript">
-      // Define spreadsheet URL.
-      var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0';
-    </script>
-
-    <h3 id="hello-world">Hello, world!</h3>
-
-    <p>The most basic use case of Sheetrock simply fetches the an entire worksheet and loads it into a <code class="inline">&lt;table&gt;</code>.</p>
-
-    <!-- We’re not actually running this code, so it’s mocked up. -->
-    <pre><code class="language-markup clean-margins">
-      <table id="statistics"></table>
-    </code></pre>
-
-    <pre><code class="language-javascript clean-margins">
-      // Load an entire worksheet.
-      $('#statistics').sheetrock({
-        url: mySpreadsheet
-      });
-    </code></pre>
-
-    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-table-1" class="fiddle-link" href="http://jsfiddle.net/m04ddeu2/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-table-1-iframe" width="100%" height="400" data-src="http://jsfiddle.net/m04ddeu2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-    <p>However, that’s not very exciting, so we won’t show the result inline here—especially since the spreadsheet has a couple hundred rows.</p>
-
-    <h3 id="basic">Basic example</h3>
-
-    <p>Let’s move on to something slightly more interesting. Using Sheetrock, we can limit our scope and analyze the data using SQL-like queries. We can also provide a <code class="inline">fetchSize</code> to load just a portion of the data. We can always grab more data later—Sheetrock <strong>keeps track of how many rows you’ve requested</strong> and the next request will pick up where you left off.</p>
-
-    <p>Let’s look at switch hitters and rank them by batting average. We’ll only grab the columns we care about and fetch just the top ten to help focus the reader’s attention.</p>
-
-    <div class="prism-render language-markup output">
-      <table id="switch-hitters"></table>
-    </div>
-
-    <script class="prism-render paired language-javascript">
-      // Load top ten switch hitters.
-      $('#switch-hitters').sheetrock({
-        url: mySpreadsheet,
-        query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
-        fetchSize: 10
-      });
-    </script>
-
-    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-table-2" class="fiddle-link" href="http://jsfiddle.net/2zk7sd0n/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-table-2-iframe" width="100%" height="400" data-src="http://jsfiddle.net/2zk7sd0n/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-    <h3 id="templating">Templating</h3>
-
-    <p>Tables are nice, but we might want to represent the data in different ways. Let’s generate an ordered list by passing in a Handlebars template. This time we’ll rank the top five players by home runs.</p>
-
-    <p>Note that the header row doesn’t show up here; Sheetrock only passes header rows to your template if the target element is a <code class="inline">&lt;table&gt;</code>.</p>
-
-    <div class="prism-render language-markup src">
-      <!-- Load Handlebars.js from CloudFlare’s CDN. -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.1.2/handlebars.min.js"></script>
-    </div>
-
-    <div class="prism-render language-markup output">
-      <h4>NL Home Run Leaders</h4>
-      <ol id="hr">
-        <script id="hr-template" type="text/x-handlebars-template">
-          <li>
-            <strong>{{cells.First}} {{cells.Last}}</strong>,
-            {{cells.Team}}, {{cells.HR}}
-          </li>
-        </script>
-      </ol>
-    </div>
-
-    <script class="prism-render language-javascript paired">
-      // Compile the Handlebars template for HR leaders.
-      var HRTemplate = Handlebars.compile($('#hr-template').html());
-
-      // Load top five HR leaders.
-      $('#hr').sheetrock({
-        url: mySpreadsheet,
-        query: "select A,C,D,I order by I desc",
-        fetchSize: 5,
-        rowTemplate: HRTemplate
-      });
-    </script>
-
-    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-1" class="fiddle-link" href="http://jsfiddle.net/3u8ozbg7/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-template-1-iframe" width="100%" height="300" data-src="http://jsfiddle.net/3u8ozbg7/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-    <h3 id="grouping">Grouping</h3>
-
-    <p>Next, let’s group some data. For a more straightforward template, we’ll specify the labels we want Sheetrock to use when it returns the data using the <code class="inline">labels</code> option.</p>
-
-    <div class="prism-render language-markup output">
-      <h4>Team RBI</h4>
-      <ol id="team-rbi">
-      <script id="team-rbi-template" type="text/x-handlebars-template">
-        <li><strong>{{cells.TeamName}}</strong>, {{cells.TeamRBI}}</li>
-      </script>
-      </ol>
-    </div>
-
-    <script class="prism-render language-javascript paired">
-      // Compile Handlebars template for team RBI leaders.
-      var RBITemplate = Handlebars.compile($('#team-rbi-template').html());
-
-      // Load top five team RBI leaders.
-      $('#team-rbi').sheetrock({
-        url: mySpreadsheet,
-        query: "select A,sum(J) group by A order by sum(J) desc",
-        fetchSize: 5,
-        labels: ['TeamName', 'TeamRBI'],
-        rowTemplate: RBITemplate
-      });
-    </script>
-
-    <p class="fiddle"><code class="inline">∞</code> <a id="fiddle-template-2" class="fiddle-link" href="http://jsfiddle.net/xhmavwxf/"><span>Show</span> a jsFiddle for this example.</a></p>
-    <iframe id="fiddle-template-2-iframe" width="100%" height="300" data-src="http://jsfiddle.net/xhmavwxf/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-    <h2>More?</h2>
-
-    <p>Detailed documentation is available at the <a href="https://github.com/chriszarate/sheetrock">GitHub repository</a>. Please feel free to <a href="https://github.com/chriszarate/sheetrock/issues">raise an issue</a> if you are having a problem with Sheetrock.</p>
-
-
-    <h2>Credits and license</h2>
-
-    <p>Sheetrock was written by <a href="http://chris.zarate.org">Chris Zarate</a> and is released under the <a href="http://opensource.org/licenses/MIT">MIT license</a>.</p>
-
+    <!-- Load Bootstrap.js (for ScrollSpy) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
     <!--
       This has nothing to do with Sheetrock, but if you’re interested, here’s
       how the examples on this page were generated. There’s no mockup code:
       everything is generated from the actual code that runs on this page.
     -->
-
-    <!-- Load Prism.js from CloudFlare’s CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.js"></script>
 
     <!-- Local helper code -->
     <script>
@@ -214,70 +263,64 @@
        */
 
       // Mirror the "source" of a content block in its own <pre><code> block.
-      var addCodeBlock = function() {
+      var addCodeBlock = function () {
 
-        // Get language class(es).
-        var codeLanguages = $.map(this.className.split(/\s+/), function(val) {
-          return (val.indexOf('language-') === 0) ? val : null;
-        }).join(' ');
+        // Get attributes to be copied to container elements.
+        var language = $(this).data('language');
+        var classes = $(this).data('example-class');
 
-        // Create <code> tag.
-        codeTag = $('<code></code>')
-          .addClass(codeLanguages)
-          .text(cleanMargins($(this).html())),
+        // Create container tags.
+        var codeTag = $('<code></code>').text(cleanMargins($(this).html()));
+        var preTag = $('<pre></pre>').addClass('language-' + language).append(codeTag);
+        var containerTag = $('<div></div>').addClass(classes).append(preTag);
 
-        // Create wrapping <pre> tag.
-        preTag = $('<pre></pre>').append(codeTag);
+        // Append.
+        var $parent = $(this).parent('.example-render-group');
 
-        // If this code block is paired with another previous block, then
-        // append in a special order and add some fun operators.
-        if($(this).hasClass('paired')) {
-          $(this).prev('.prism-render').before('<p class="operator">+</p>', preTag, '<p class="operator">=</p>');
+        if ($parent.length) {
+          $parent.before(containerTag);
         } else {
-          // Otherwise, just add it normally.
-          $(this).before(preTag);
+          $(this).before(containerTag);
         }
 
-      },
+      };
 
       // Clean up the margins and leading/trailing newlines.
-      cleanMargins = function(str) {
-        return trimString(str).split(/\n {6}/).join('\n');
-      },
+      var cleanMargins = function (str) {
+        var lines = str.replace(/^\n+/, '').replace(/[\n\t ]+$/, '').split(/\n/);
+        var firstLineIndent = lines[0].match(/^[\t ]+/);
+        if (firstLineIndent) {
+          firstLineIndent = new RegExp(firstLineIndent[0], 'g');
+          lines = $.map(lines, function (line) {
+            return line.replace(firstLineIndent, '');
+          });
+        }
+        return lines.join('\n');
+      };
 
       // Show a jsFiddle when clicked.
-      showFiddle = function() {
-        if(!$(this).data('loaded')) {
-          $('#' + this.id + '-iframe').show().attr('src', function() {
-            return $(this).data('src');
-          });
-          $(this).data('loaded', true);
-        }
+      var showFiddle = function () {
+        var $this = $(this);
+        var attributes = ' width="100%" height="400" allowfullscreen="allowfullscreen" frameborder="0"';
+        $this.before($('<iframe src="' + $this.attr('href') + 'embedded/"' + attributes + '></iframe>'));
+        $this.remove();
         return false;
-      },
-
-      // Trim. A string.
-      trimString = function(str) {
-        return str.replace(/^\s+/, '').replace(/\s+$/, '');
       };
 
       // Trim margins of specified content blocks.
-      $('.clean-margins').each(function() {
+      $('.mockup').each(function () {
         $(this).text(cleanMargins($(this).html()));
       });
 
       // Mirror "source" for specified tags.
-      $('.prism-render').each(addCodeBlock);
+      $('.example-render').each(addCodeBlock);
 
       // Show jsFiddles inline.
-      $('.fiddle-link').on('click', showFiddle);
-
-      // Add Bootstrap CSS classes to tables.
-      $('table').addClass('table table-condensed table-striped');
+      $('.fiddle a').on('click', showFiddle);
 
     </script>
 
-    <div id="github">
+    <div class="github">
       <a href="https://github.com/chriszarate/sheetrock"><img src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
     </div>
 
