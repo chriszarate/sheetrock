@@ -112,7 +112,7 @@
     }
 
     // Call the user's callback function.
-    if (options.user.callback) {
+    if (options && options.user && options.user.callback) {
       options.user.callback(error, options, rawData || null, null, null);
     }
 
