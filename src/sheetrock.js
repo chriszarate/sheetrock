@@ -230,7 +230,7 @@
     options.rowTemplate = options.rowHandler || options.rowTemplate;
 
     defaultKeys.forEach(function (key) {
-      extended[key] = (options.hasOwnProperty(key)) ? options[key] : defaults[key];
+      extended[key] = options[key] || defaults[key];
     });
 
     return extended;
@@ -636,7 +636,7 @@
 
     try {
 
-      options = extendDefaults(defaults, options);
+      options = extendDefaults(defaults, options || {});
       options = processUserOptions(this, options);
       options = validateOptions(options);
 
