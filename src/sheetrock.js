@@ -13,7 +13,7 @@
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(function () {
+    define('sheetrock', function () {
       return factory(null, root);
     });
   } else if (typeof module === 'object' && module.exports) {
