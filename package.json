@@ -17,13 +17,14 @@
     "request": "^2.55.0"
   },
   "devDependencies": {
-    "browserify": "^9.0.8",
-    "glob": "^5.0.5",
+    "jasmine": "^2.2.1",
     "jscs": "^1.12.0",
     "jshint": "^2.7.0",
-    "nodeunit": "^0.9.1",
-    "phantomjs": "<1.9.8",
-    "qunitjs": "^1.18.0",
+    "karma": "^0.12.31",
+    "karma-browserify": "^4.1.2",
+    "karma-jasmine": "^0.3.5",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-requirejs": "^0.2.2",
     "uglify-js": "^2.4.19"
   },
   "browser": {
@@ -33,8 +34,9 @@
   "scripts": {
     "dist": "uglifyjs src/sheetrock.js --comments '/^!/' --source-map dist/sheetrock.min.js.map --prefix relative --output dist/sheetrock.min.js",
     "lint": "jshint src/*.js && jscs src/*.js",
-    "test": "npm run lint && nodeunit test/nodeunit && node test/qunit/src/main",
-    "pretest": "browserify test/qunit/src/browserify.js > test/qunit/build/browserify.bundle.js"
+    "jasmine": "jasmine JASMINE_CONFIG_PATH=test/jasmine.json",
+    "karma": "node_modules/karma/bin/karma start test/karma-vanilla.conf.js --single-run && node_modules/karma/bin/karma start test/karma-browserify.conf.js --single-run && node_modules/karma/bin/karma start test/karma-requirejs.conf.js --single-run && node_modules/karma/bin/karma start test/karma-jquery.conf.js --single-run",
+    "test": "npm run lint && npm run karma && npm run jasmine"
   },
   "repository": {
     "type": "git",
