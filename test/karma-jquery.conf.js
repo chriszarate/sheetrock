@@ -15,7 +15,7 @@ module.exports = function (config) {
       'spec/coverage/**/*-spec.js',
       'spec/jquery/**/*-spec.js'
     ],
-    reporters: ['progress', 'coverage'],
+    reporters: ['coverage', 'dots'],
     preprocessors: {
       '../src/sheetrock.js': ['coverage']
     }
