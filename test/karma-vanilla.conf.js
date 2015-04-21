@@ -10,11 +10,7 @@ module.exports = function (config) {
     files: [
       '../src/sheetrock.js',
       'spec/common/**/*-spec.js'
-    ],
-    reporters: ['progress', 'coverage'],
-    preprocessors: {
-      '../src/sheetrock.js': ['coverage']
-    }
+    ]
   });
 
 };

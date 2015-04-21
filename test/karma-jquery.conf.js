@@ -9,9 +9,16 @@ module.exports = function (config) {
   config.set({
     files: [
       'lib/jquery.min.js',
+      'lib/unset-prototypes.js',
       '../src/sheetrock.js',
+      'spec/common/**/*-spec.js',
+      'spec/coverage/**/*-spec.js',
       'spec/jquery/**/*-spec.js'
-    ]
+    ],
+    reporters: ['progress', 'coverage'],
+    preprocessors: {
+      '../src/sheetrock.js': ['coverage']
+    }
   });
 
 };
