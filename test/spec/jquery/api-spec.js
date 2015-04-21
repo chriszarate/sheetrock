@@ -1,13 +1,13 @@
 'use strict';
 
-/*global window*/
+/*global jQuery*/
 /*jshint jasmine: true*/
 
-describe('Sheetrock with jQuery', function () {
+describe('Sheetrock API with jQuery', function () {
 
   it('registers as a jQuery plugin when possible', function () {
-    if (window.jQuery && window.jQuery.fn && window.jQuery.fn.jquery) {
-      expect(window.jQuery.fn.sheetrock).toBeDefined();
+    if (jQuery && jQuery.fn && jQuery.fn.jquery) {
+      expect(jQuery.fn.sheetrock).toBeDefined();
     }
   });
 

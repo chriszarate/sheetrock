@@ -159,7 +159,8 @@
           done();
         };
 
-        testOptions.fetchSize = 5;
+        testOptions.fetchSize = 50;
+        testOptions.rowTemplate = null;
         testOptions.callback = jasmine.createSpy('testCallback').and.callFake(asyncCallback);
 
         sheetrock(testOptions);
@@ -178,6 +179,47 @@
           expect(tableArray[4].num).toEqual(16);
           expect(tableArray[4].cells).toEqual(testData.row15);
         });
+
+      });
+
+      describe('returns output HTML', function () {
+
+        it('with expected properties', function () {
+          var outputHTML = responseArgs[4];
+          expect(outputHTML).toBeDefined();
+          expect(outputHTML).not.toBe(null);
+          expect(typeof outputHTML).toEqual('string');
+          expect(outputHTML.indexOf('<tr><td>')).not.toEqual(-1);
+        });
+
+      });
+
+      it('fails to retrieve more data from a Google Sheet', function (done) {
+
+        var asyncCallback = function (error) {
+          expect(error).not.toBe(null);
+          expect(error.message).toEqual('No more rows to load!');
+          done();
+        };
+
+        testOptions.callback = jasmine.createSpy('testCallback').and.callFake(asyncCallback);
+        sheetrock(testOptions);
+
+      });
+
+      it('retrieves data after resetting the request', function (done) {
+
+        var asyncCallback = function (error, options, rawData) {
+          expect(error).toBe(null);
+          expect(rawData).not.toBe(null);
+          expect(rawData.table.rows.length).toEqual(testOptions.fetchSize + options.response.header);
+          done();
+        };
+
+        testOptions.fetchSize = 20;
+        testOptions.reset = true;
+        testOptions.callback = jasmine.createSpy('testCallback').and.callFake(asyncCallback);
+        sheetrock(testOptions);
 
       });
 
