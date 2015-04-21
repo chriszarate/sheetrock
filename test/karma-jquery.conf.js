@@ -10,7 +10,7 @@ module.exports = function (config) {
     files: [
       'lib/jquery.min.js',
       '../src/sheetrock.js',
-      'spec/jquery/jquery-spec.js'
+      'spec/jquery/**/*-spec.js'
     ]
   });
 
