@@ -34,7 +34,7 @@
         };
 
         testOptions = {
-          url: 'http://example.com/spreadsheets/d/12345#gid=1',
+          url: 'http://example.com/spreadsheets/d/12345#gid=error',
           callback: jasmine.createSpy('testCallback').and.callFake(asyncCallback)
         };
 
