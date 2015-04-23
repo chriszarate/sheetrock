@@ -55,20 +55,19 @@ var browsers = {
     platform: 'Windows 7',
     version: '20.0'
   },
-  */
   sl_ie_11: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
     platform: 'Windows 8.1',
     version: '11'
   },
-  /*
   sl_ie_10: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
     platform: 'Windows 7',
     version: '10'
   },
+  */
   sl_ie_9: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
@@ -93,7 +92,6 @@ var browsers = {
     platform: 'Windows XP',
     version: '6'
   },
-  */
   sl_ios_safari_8: {
     base: 'SauceLabs',
     browserName: 'iphone',
@@ -101,7 +99,6 @@ var browsers = {
     platform: 'OS X 10.10',
     version: '8.2'
   },
-  /*
   sl_ios_safari_7: {
     base: 'SauceLabs',
     browserName: 'iphone',
@@ -116,7 +113,6 @@ var browsers = {
     platform: 'OS X 10.10',
     version: '6.1'
   },
-  */
   sl_safari_8: {
     base: 'SauceLabs',
     browserName: 'safari',
