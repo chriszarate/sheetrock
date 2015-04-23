@@ -173,6 +173,11 @@
     return requestOptions;
   };
 
+  // Generate a request ID that can be used as an object key.
+  var generateRequestID = function (requestOptions) {
+    return (requestOptions.key && requestOptions.gid) ? requestOptions.key + '_' + requestOptions.gid + '_' + requestOptions.query : null;
+  };
+
   // Extract the label, if present, from a column object, sans white space.
   var getColumnLabel = function (col) {
     return (has(col, 'label')) ? col.label.replace(/\s/g, '') : null;
@@ -262,7 +267,7 @@
 
     // Set request query and index (key_gid_query).
     requestOptions.query = userOptions.query;
-    requestOptions.index = requestOptions.key + '_' + requestOptions.gid + '_' + userOptions.query;
+    requestOptions.index = generateRequestID(requestOptions);
 
     // If requested, reset request status.
     if (userOptions.reset && requestOptions.index) {
