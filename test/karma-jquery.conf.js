@@ -7,6 +7,9 @@ module.exports = function (config) {
   sharedConfig(config);
 
   config.set({
+    coverageReporter: {
+      type: 'lcov',
+    },
     files: [
       'lib/jquery.min.js',
       'lib/unset-prototypes.js',

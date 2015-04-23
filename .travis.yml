@@ -2,10 +2,17 @@ language: node_js
 node_js:
   - "0.12"
 
+before_script:
+  - npm install -g codeclimate-test-reporter
+
+after_script:
+  - codeclimate < test/coverage/**/lcov.info
+
 addons:
   sauce_connect: true
 
 env:
   global:
+    - CODECLIMATE_REPO_TOKEN=afbbeafec69f823068e0896c7ed2c60ccd85452fba293755077edd4554c774a7
     - secure: CdijnSdqo9ullIVPmckWA/BRVRYczDDSDuMyvVXERRiktBAcqqcnHY7/xkPearisnZMU1xPGkQ4Bm1NT66W5pSRKLWmiTDeVZnwJRf2fWlZrN1Vw6yOAIMmZ+F2Ie+Ng09YkSUnotnGOkNbyg+ypMto84GX96cZTVLF0OgYDhgY=
     - secure: aCT4TPwPb/TzruOKp1e5hmY5puqg99DJ+o2XuMFibT6hX29nYVxpWS3HY9D4zjtyaCq0HLk+/ST7vZKgeQbYOc/Wk6l7HC+tyo+euMayvGyOUFrgqp4B1Vr1YGj3bKFAx1i/vMtjfCV5irHgvdrZEC4Wzg+zMo6TDWp6fDYLxm8=
