@@ -65,6 +65,24 @@
 
       });
 
+      it('requires a callback or DOM target', function (done) {
+
+        var errorHandler = function (error) {
+          expect(error).not.toBe(null);
+          expect(error.message).toEqual('No element targeted or callback provided.');
+          done();
+        };
+
+        this.testCallback = jasmine.createSpy('testCallback').and.callFake(errorHandler);
+
+        try {
+          sheetrock();
+        } catch (error) {
+          this.testCallback(error);
+        }
+
+      });
+
     });
 
     afterEach(function () {
