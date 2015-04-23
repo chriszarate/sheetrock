@@ -12,7 +12,7 @@
 
   'use strict';
 
-  /* istanbul ignore next */
+  /* istanbul ignore next: UMD */
   if (typeof define === 'function' && define.amd) {
     define('sheetrock', function () {
       return factory(null, root);
