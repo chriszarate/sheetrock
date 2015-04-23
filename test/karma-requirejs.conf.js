@@ -21,6 +21,10 @@ module.exports = function (config) {
         pattern: 'spec/common/**/*-spec.js',
         included: false
       },
+      {
+        pattern: 'spec/browser/**/*-spec.js',
+        included: false
+      },
       'loaders/requirejs.js'
     ]
   });

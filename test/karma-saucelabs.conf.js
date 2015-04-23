@@ -152,7 +152,8 @@ module.exports = function (config) {
     browsers: Object.keys(browsers),
     files: [
       '../src/sheetrock.js',
-      'spec/common/**/*-spec.js'
+      'spec/common/**/*-spec.js',
+      'spec/browser/**/*-spec.js'
     ],
     reporters: ['dots', 'saucelabs'],
     sauceLabs: {

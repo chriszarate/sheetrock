@@ -1,4 +1,4 @@
-/*global define, document */
+/*global define */
 /*jshint jasmine: true*/
 
 (function (root, tests) {
@@ -165,12 +165,8 @@
             done();
           };
 
-          var testDiv = document.createElement('div');
-          document.body.appendChild(testDiv);
-
           testOptions.fetchSize = 50;
           testOptions.rowTemplate = null;
-          testOptions.target = testDiv;
           testOptions.callback = jasmine.createSpy('testCallback').and.callFake(asyncCallback);
 
           sheetrock(testOptions);
@@ -200,14 +196,6 @@
             expect(outputHTML).not.toBe(null);
             expect(typeof outputHTML).toEqual('string');
             expect(outputHTML.indexOf('<tr><td>')).not.toEqual(-1);
-          });
-
-        });
-
-        describe('appends HTML to the target element', function () {
-
-          it('with table cells', function () {
-            expect(testOptions.target.innerHTML.length).not.toEqual(0);
           });
 
         });

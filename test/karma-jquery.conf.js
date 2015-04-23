@@ -12,6 +12,7 @@ module.exports = function (config) {
       'lib/unset-prototypes.js',
       '../src/sheetrock.js',
       'spec/common/**/*-spec.js',
+      'spec/browser/**/*-spec.js',
       'spec/coverage/**/*-spec.js',
       'spec/jquery/**/*-spec.js'
     ],
