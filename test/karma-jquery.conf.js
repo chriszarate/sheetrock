@@ -8,7 +8,7 @@ module.exports = function (config) {
 
   config.set({
     coverageReporter: {
-      type: 'lcov',
+      type: 'lcov'
     },
     files: [
       'lib/jquery.min.js',
