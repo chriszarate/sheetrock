@@ -584,10 +584,7 @@
 
     scriptElement.type = 'text/javascript';
     scriptElement.src = options.request.url;
-
-    scriptElement.addEventListener('error', error);
-    scriptElement.addEventListener('abort', error);
-
+    scriptElement.onerror = error;
     headElement.appendChild(scriptElement);
 
     jsonpCallbackIndex = jsonpCallbackIndex + 1;
