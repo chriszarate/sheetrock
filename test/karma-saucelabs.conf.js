@@ -19,13 +19,6 @@ var browsers = {
     platform: 'Linux',
     version: '4.4'
   },
-  sl_android_4_3: {
-    base: 'SauceLabs',
-    browserName: 'android',
-    deviceName: 'Android Emulator',
-    platform: 'Linux',
-    version: '4.3'
-  },
   sl_chrome_40: {
     base: 'SauceLabs',
     browserName: 'chrome',
@@ -55,12 +48,6 @@ var browsers = {
     browserName: 'internet explorer',
     platform: 'Windows 7',
     version: '10'
-  },
-  sl_ie_9: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows 7',
-    version: '9'
   },
   sl_ios_safari_8: {
     base: 'SauceLabs',
