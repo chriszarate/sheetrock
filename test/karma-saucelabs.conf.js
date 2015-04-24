@@ -12,7 +12,6 @@ var browsers = {
     platform: 'Linux',
     version: '5.1'
   },
-  /*
   sl_android_4_4: {
     base: 'SauceLabs',
     browserName: 'android',
@@ -27,28 +26,18 @@ var browsers = {
     platform: 'Linux',
     version: '4.3'
   },
-  */
   sl_chrome_40: {
     base: 'SauceLabs',
     browserName: 'chrome',
     platform: 'Windows 8.1',
     version: '40.0'
   },
-  /*
-  sl_chrome_30: {
-    base: 'SauceLabs',
-    browserName: 'chrome',
-    platform: 'Windows 7',
-    version: '30.0'
-  },
-  */
   sl_firefox_30: {
     base: 'SauceLabs',
     browserName: 'firefox',
     platform: 'Windows 7',
     version: '30.0'
   },
-  /*
   sl_firefox_20: {
     base: 'SauceLabs',
     browserName: 'firefox',
@@ -67,30 +56,11 @@ var browsers = {
     platform: 'Windows 7',
     version: '10'
   },
-  */
   sl_ie_9: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
     platform: 'Windows 7',
     version: '9'
-  },
-  sl_ie_8: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows XP',
-    version: '8'
-  },
-  sl_ie_7: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows XP',
-    version: '7'
-  },
-  sl_ie_6: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows XP',
-    version: '6'
   },
   sl_ios_safari_8: {
     base: 'SauceLabs',
@@ -119,20 +89,6 @@ var browsers = {
     platform: 'OS X 10.10',
     version: '8.0'
   }
-  /*
-  sl_safari_7: {
-    base: 'SauceLabs',
-    browserName: 'safari',
-    platform: 'OS X 10.9',
-    version: '7.0'
-  },
-  sl_safari_6: {
-    base: 'SauceLabs',
-    browserName: 'safari',
-    platform: 'OS X 10.8',
-    version: '6.0'
-  }
-  */
 };
 
 module.exports = function (config) {
