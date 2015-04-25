@@ -43,14 +43,18 @@
       });
 
       it('calls the callback', function () {
-        expect(testOptions.callback).toHaveBeenCalled();
-        expect(testOptions.callback.calls.count()).toEqual(1);
+        if (sheetrock.environment.callbackOn404) {
+          expect(testOptions.callback).toHaveBeenCalled();
+          expect(testOptions.callback.calls.count()).toEqual(1);
+        }
       });
 
       it('returns an error', function () {
-        var error = responseArgs[0];
-        expect(error).toBeDefined();
-        expect(error.message).toEqual('Request failed.');
+        if (sheetrock.environment.callbackOn404) {
+          var error = responseArgs[0];
+          expect(error).toBeDefined();
+          expect(error.message).toEqual('Request failed.');
+        }
       });
 
     });

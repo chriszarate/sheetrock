@@ -29,6 +29,10 @@
       expect(sheetrock.defaults).toBeDefined();
     });
 
+    it('exposes environment', function () {
+      expect(sheetrock.environment).toBeDefined();
+    });
+
     it('exposes a version number', function () {
       expect(sheetrock.version).toBeDefined();
     });

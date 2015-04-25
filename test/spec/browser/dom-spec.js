@@ -337,6 +337,14 @@
 
   describe('Sheetrock', function () {
 
+    describe('API', function () {
+
+      it('exposes a dom environment flag', function () {
+        expect(sheetrock.environment.dom).toBe(true);
+      });
+
+    });
+
     describe('DOM interaction', function () {
 
       it('passes a DOM element as target', function (done) {

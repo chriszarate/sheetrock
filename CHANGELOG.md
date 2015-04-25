@@ -6,6 +6,7 @@
 * Use in browser or on server (with or without virtual DOM)
 * Module renamed from jquery-sheetrock to sheetrock
 * Changes to API:
+  - added `.environment` to expose detected features to user
   - renamed `.options` to `.defaults`
   - removed `.promise` (requests are no longer chained)
   - removed `.working` (use callback function to determine request status)

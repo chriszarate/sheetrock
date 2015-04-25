@@ -54,6 +54,8 @@
   // DOM and transport settings
   var document = window.document;
   var useJSONPTransport = typeof requestModule !== 'function';
+  var hasJquery = window.jQuery && window.jQuery.fn && window.jQuery.fn.jquery;
+  var hasListeners = false;  // until proven otherwise
 
 
   /* Polyfills */
@@ -156,6 +158,21 @@
       blob = blob[0];
     }
     return (blob.nodeType && blob.nodeType === 1) ? blob : false;
+  };
+
+  // Get environment matrix.
+  var getEnvironmentMatrix = function () {
+    // Detect event listener support
+    if (document && useJSONPTransport) {
+      var scriptElement = document.createElement('script');
+      hasListeners = scriptElement.addEventListener && scriptElement.removeEventListener;
+    }
+    return {
+      dom: !!document,
+      jquery: (hasJquery) ? hasJquery : false,
+      callbackOn404: useJSONPTransport === 'request' || hasListeners,
+      transport: (useJSONPTransport) ? 'jsonp' : 'request'
+    };
   };
 
   // Get API endpoint, key, and gid from a Google Sheet URL.
@@ -559,6 +576,10 @@
     var callbackName = '_sheetrock_callback_' + jsonpCallbackIndex;
 
     var always = function () {
+      if (hasListeners) {
+        scriptElement.removeEventListener('error', error, false);
+        scriptElement.removeEventListener('abort', error, false);
+      }
       headElement.removeChild(scriptElement);
       delete window[callbackName];
     };
@@ -582,9 +603,13 @@
 
     options.request.url = options.request.url.replace('%callback%', callbackName);
 
+    if (hasListeners) {
+      scriptElement.addEventListener('error', error, false);
+      scriptElement.addEventListener('abort', error, false);
+    }
+
     scriptElement.type = 'text/javascript';
     scriptElement.src = options.request.url;
-    scriptElement.onerror = error;
     headElement.appendChild(scriptElement);
 
     jsonpCallbackIndex = jsonpCallbackIndex + 1;
@@ -661,9 +686,10 @@
 
   sheetrock.defaults = defaults;
   sheetrock.version = '0.3.0';
+  sheetrock.environment = getEnvironmentMatrix();
 
   // If jQuery is available as a global, register as a plugin.
-  if (window.jQuery && window.jQuery.fn && window.jQuery.fn.jquery) {
+  if (hasJquery) {
     window.jQuery.fn.sheetrock = sheetrock;
   }
 
