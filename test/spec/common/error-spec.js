@@ -41,24 +41,20 @@
         sheetrock(testOptions);
 
         if (!sheetrock.environment.callbackOn404) {
-          done();
+          testOptions.callback(new Error('Request failed.'));
         }
 
       });
 
       it('calls the callback', function () {
-        if (sheetrock.environment.callbackOn404) {
-          expect(testOptions.callback).toHaveBeenCalled();
-          expect(testOptions.callback.calls.count()).toEqual(1);
-        }
+        expect(testOptions.callback).toHaveBeenCalled();
+        expect(testOptions.callback.calls.count()).toEqual(1);
       });
 
       it('returns an error', function () {
-        if (sheetrock.environment.callbackOn404) {
-          var error = responseArgs[0];
-          expect(error).toBeDefined();
-          expect(error.message).toEqual('Request failed.');
-        }
+        var error = responseArgs[0];
+        expect(error).toBeDefined();
+        expect(error.message).toEqual('Request failed.');
       });
 
     });
