@@ -8,28 +8,34 @@ var browsers = {
   sl_android_latest: {
     base: 'SauceLabs',
     browserName: 'android',
-    deviceName: 'Android Emulator'
+    deviceName: 'Android Emulator',
+    platform: '5.1'
   },
   sl_chrome_latest: {
     base: 'SauceLabs',
-    browserName: 'chrome'
+    browserName: 'chrome',
+    platform: 'Windows 7'
   },
   sl_firefox_latest: {
     base: 'SauceLabs',
-    browserName: 'firefox'
+    browserName: 'firefox',
+    platform: 'Windows 7'
   },
   sl_ie_latest: {
     base: 'SauceLabs',
-    browserName: 'internet explorer'
+    browserName: 'internet explorer',
+    platform: 'Windows 8.1'
   },
   sl_ios_safari_latest: {
     base: 'SauceLabs',
     browserName: 'iphone',
-    deviceName: 'iPhone Simulator'
+    deviceName: 'iPhone Simulator',
+    platform: 'OS X 10.10'
   },
   sl_safari_latest: {
     base: 'SauceLabs',
-    browserName: 'safari'
+    browserName: 'safari',
+    platform: 'OS X 10.10'
   }
 };
 
