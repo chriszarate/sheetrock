@@ -26,11 +26,12 @@ var browsers = {
     browserName: 'internet explorer',
     platform: 'Windows 8.1'
   },
-  sl_ios_safari_latest: {
+  sl_ios_safari_8: {
     base: 'SauceLabs',
     browserName: 'iphone',
     deviceName: 'iPhone Simulator',
-    platform: 'OS X 10.10'
+    platform: 'OS X 10.10',
+    version: '8.2'
   },
   sl_safari_latest: {
     base: 'SauceLabs',
