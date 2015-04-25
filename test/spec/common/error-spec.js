@@ -40,6 +40,10 @@
 
         sheetrock(testOptions);
 
+        if (!sheetrock.environment.callbackOn404) {
+          done();
+        }
+
       });
 
       it('calls the callback', function () {
