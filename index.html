@@ -27,6 +27,7 @@
               <li><a href="#about">About</a></li>
               <li><a href="#documentation">Documentation</a></li>
               <li><a href="#usage">Usage</a></li>
+              <li class="nested"><a href="#expectations">Expectations</a></li>
               <li><a href="#examples">Examples</a></li>
               <li class="nested"><a href="#hello-world">Hello, world!</a></li>
               <li class="nested"><a href="#basic">Basic example</a></li>
@@ -74,6 +75,14 @@
           </div>
 
           <p>Sheetrock can also be used with Node.js; <a href="https://github.com/chriszarate/sheetrock">see the documentation</a> for details.</p>
+
+          <h3 id="expectations">Expectations</h3>
+
+          <p>Sheetrock is designed to work with any Google Sheet, but makes some assumptions about the format and availability.</p>
+          <ul>
+            <li><strong>Public.</strong> In order for others to access the data in your Sheet with Sheetrock, the Sheet must be public. (<a href="https://support.google.com/drive/answer/2494822">How do I make a spreadsheet public?</a>)</li>
+            <li><strong>One header row.</strong> Sheetrock expects a single header row of column labels in the first row of the Sheet.</li>
+          </ul>
 
 
           <h2 id="examples">Examples</h2>

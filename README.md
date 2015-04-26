@@ -79,6 +79,23 @@ use; read the options below or the [CHANGELOG][changelog] for more details.
 The previous `0.3.x` branch is [still available][0.3.x] and maintained.
 
 
+## Expectations
+
+Sheetrock is designed to work with any Google Sheet, but makes some assumptions
+about the format and availability.
+
+* **Public.** In order for others to access the data in your Sheet with
+  Sheetrock, the Sheet must be public. ([How do I make a spreadsheet public?][public])
+  It is possible to use Sheetrock to access a private Sheet for your own use if
+  you are logged in to your Google account in the same browser session, but
+  this is not a supported use case.
+
+* **One header row.** Sheetrock expects a single header row of column labels in
+  the first row of the Sheet. Any other configuration (e.g., no header row,
+  multiple or offset header rows) can cause problems with the request and
+  complicates templating.
+
+
 ## Options
 
 Sheetrock expects a hash map of options as a parameter, e.g.:
