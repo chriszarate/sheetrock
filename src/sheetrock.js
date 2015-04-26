@@ -346,6 +346,11 @@
 
   };
 
+  // Validate user-provided labels against returned data.
+  var validateUserLabels = function (userLabels, columnLabels) {
+    return (userLabels && userLabels.length === columnLabels.length) ? userLabels : columnLabels;
+  };
+
 
   /* Data */
 
@@ -354,7 +359,6 @@
 
     var requestIndex = options.request.index;
     var columnLabels = requestStatusCache.labels[requestIndex];
-    var userLabels = options.user.labels;
     var fetchSize = options.user.fetchSize;
 
     var rows = data.table.rows;
@@ -396,7 +400,7 @@
     }
 
     // If column labels are provided and have the expected length, use them.
-    attributes.labels = (userLabels && userLabels.length === cols.length) ? userLabels : columnLabels;
+    attributes.labels = validateUserLabels(options.user.labels, columnLabels);
 
     // Return the response attributes.
     return attributes;
