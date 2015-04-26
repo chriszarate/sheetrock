@@ -5,6 +5,8 @@
 * No longer depends on jQuery
 * Use in browser or on server (with or without virtual DOM)
 * Module renamed from jquery-sheetrock to sheetrock
+* Now expects a single header row in row 1
+* Passes consistent row numbers to the row template, starting at `1`
 * Changes to API:
   - added `.environment` to expose detected features to user
   - renamed `.options` to `.defaults`

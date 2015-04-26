@@ -115,7 +115,7 @@
             var options = responseArgs[1];
             var rawData = responseArgs[2];
             expect(rawData.table.cols.length).toEqual(testOptions.labels.length);
-            expect(rawData.table.rows.length).toEqual(testOptions.fetchSize + options.response.header);
+            expect(rawData.table.rows.length).toEqual(testOptions.fetchSize + 1);
           });
 
         });
@@ -132,12 +132,12 @@
           it('with the expected dimensions', function () {
             var options = responseArgs[1];
             var tableArray = responseArgs[3];
-            expect(tableArray.length).toEqual(testOptions.fetchSize + options.response.header);
+            expect(tableArray.length).toEqual(testOptions.fetchSize + 1);
           });
 
           it('containing the expected row 10', function () {
             var tableArray = responseArgs[3];
-            expect(tableArray[10].num).toEqual(11);
+            expect(tableArray[10].num).toEqual(10);
             expect(tableArray[10].cells).toEqual(testData.row10);
           });
 
@@ -182,7 +182,7 @@
 
           it('containing the expected row 15', function () {
             var tableArray = responseArgs[3];
-            expect(tableArray[4].num).toEqual(16);
+            expect(tableArray[4].num).toEqual(15);
             expect(tableArray[4].cells).toEqual(testData.row15);
           });
 
@@ -243,7 +243,7 @@
           var asyncCallback = function (error, options, rawData) {
             expect(error).toBe(null);
             expect(rawData).not.toBe(null);
-            expect(rawData.table.rows.length).toEqual(testOptions.fetchSize + options.response.header);
+            expect(rawData.table.rows.length).toEqual(testOptions.fetchSize + 1);
             done();
           };
 

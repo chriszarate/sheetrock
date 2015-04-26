@@ -45,6 +45,8 @@
   var requestStatusCache = {
     loaded: {},
     failed: {},
+    labels: {},
+    header: {},
     offset: {}
   };
 
@@ -195,14 +197,14 @@
     return (requestOptions.key && requestOptions.gid) ? requestOptions.key + '_' + requestOptions.gid + '_' + requestOptions.query : null;
   };
 
-  // Extract the label, if present, from a column object, sans white space.
-  var getColumnLabel = function (col) {
-    return (has(col, 'label')) ? col.label.replace(/\s/g, '') : null;
-  };
-
-  // Map function: Return the label or letter of a column object.
-  var getColumnLabelOrLetter = function (col) {
-    return getColumnLabel(col) || col.id;
+  // Get the trimmed value of a cell object.
+  var getCellValue = function (cell) {
+    var value = (cell && has(cell, 'v') && cell.v) ? cell.v : '';
+    // Avoid array cell values.
+    if (value instanceof Array) {
+      value = (has(cell, 'f')) ? cell.f : value.join('');
+    }
+    return trim(value);
   };
 
   // Convert an array to a object.
@@ -236,6 +238,8 @@
   var resetRequestStatus = function (index) {
     requestStatusCache.loaded[index] = false;
     requestStatusCache.failed[index] = false;
+    requestStatusCache.labels[index] = false;
+    requestStatusCache.header[index] = 0;
     requestStatusCache.offset[index] = 0;
   };
 
@@ -348,31 +352,51 @@
   // Get useful information about the response.
   var getResponseAttributes = function (options, data) {
 
-    // Initialize a hash for the response attributes.
-    var attributes = {};
-
+    var requestIndex = options.request.index;
+    var columnLabels = requestStatusCache.labels[requestIndex];
+    var userLabels = options.user.labels;
     var fetchSize = options.user.fetchSize;
-    var labels = options.user.labels;
+
     var rows = data.table.rows;
     var cols = data.table.cols;
+
+    // Initialize a hash for the response attributes.
+    var attributes = {
+      last: rows.length - 1,
+      rowNumberOffset: requestStatusCache.header[requestIndex] || 0
+    };
+
+    // Determine if Google has extracted column labels from a header row.
+    if (!options.user.offset) {
+      // Use extracted column labels, the first row, or column letter.
+      columnLabels = cols.map(function (col, i) {
+        if (col.label) {
+          return col.label.replace(/\s/g, '');
+        } else {
+          // Get column labels from the first row of the response.
+          attributes.last = attributes.last + 1;
+          attributes.rowNumberOffset = 1;
+          return getCellValue(rows[0].c[i]) || col.id;
+        }
+      });
+      requestStatusCache.offset[requestIndex] = requestStatusCache.offset[requestIndex] + attributes.rowNumberOffset;
+      requestStatusCache.header[requestIndex] = attributes.rowNumberOffset;
+      requestStatusCache.labels[requestIndex] = columnLabels;
+    }
 
     // The Google API generates an unrecoverable error when the 'offset' is
     // larger than the number of available rows, which is problematic for
     // paged requests. As a workaround, we request one more row than we need
     // and stop when we see less rows than we requested.
 
-    // Calculate the last returned row.
-    attributes.last = Math.min(rows.length, fetchSize || rows.length);
-
     // Remember whether this request has been fully loaded.
-    requestStatusCache.loaded[options.request.index] = !fetchSize || attributes.last < fetchSize;
+    if (!fetchSize || (rows.length - attributes.rowNumberOffset) < fetchSize) {
+      attributes.last = attributes.last + 1;
+      requestStatusCache.loaded[requestIndex] = true;
+    }
 
-    // Determine if Google has extracted column labels from a header row.
-    attributes.header = (cols.map(getColumnLabel).length) ? 1 : 0;
-
-    // If no column labels are provided or if there are too many or too few
-    // compared to the returned data, use the returned column labels.
-    attributes.labels = (labels && labels.length === cols.length) ? labels : cols.map(getColumnLabelOrLetter);
+    // If column labels are provided and have the expected length, use them.
+    attributes.labels = (userLabels && userLabels.length === cols.length) ? userLabels : columnLabels;
 
     // Return the response attributes.
     return attributes;
@@ -404,7 +428,7 @@
     var output = [];
 
     // Add a header row constructed from the column labels, if appropriate.
-    if (!options.user.offset) {
+    if (!options.user.offset && !options.response.rowNumberOffset) {
       output.push({
         num: 0,
         cells: arrayToObject(options.response.labels)
@@ -422,7 +446,7 @@
       if (has(row, 'c') && i < options.response.last) {
 
         // Get the "real" row index (not counting header rows).
-        var counter = stringToNaturalNumber(options.user.offset + i + 1 + options.response.header);
+        var counter = stringToNaturalNumber(options.user.offset + i + 1 - options.response.rowNumberOffset);
 
         // Initialize a row object, which will be added to the output array.
         var rowObject = {
@@ -430,21 +454,9 @@
           cells: {}
         };
 
-        // Loop through each cell in the row.
+        // Loop through each cell and add it to the row object.
         row.c.forEach(function (cell, x) {
-
-          // Extract cell value.
-          var value = (cell && has(cell, 'v') && cell.v) ? cell.v : '';
-
-          // Avoid array cell values.
-          if (value instanceof Array) {
-            value = (has(cell, 'f')) ? cell.f : value.join('');
-          }
-
-          // Add the trimmed cell value to the row object, using the desired
-          // column label as the key.
-          rowObject.cells[options.response.labels[x]] = trim(value);
-
+          rowObject.cells[options.response.labels[x]] = getCellValue(cell);
         });
 
         // Add to the output array.
