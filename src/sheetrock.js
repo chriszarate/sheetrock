@@ -376,7 +376,7 @@
           // Get column labels from the first row of the response.
           attributes.last = attributes.last + 1;
           attributes.rowNumberOffset = 1;
-          return getCellValue(rows[0].c[i]) || col.id;
+          return getCellValue(rows[0].c[i]).replace(/\s/g, '') || col.id;
         }
       });
       requestStatusCache.offset[requestIndex] = requestStatusCache.offset[requestIndex] + attributes.rowNumberOffset;
