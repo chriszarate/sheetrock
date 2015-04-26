@@ -488,7 +488,7 @@
   };
 
   // Generate HTML using a template.
-  var generateHTML = function (options, tableArray) {
+  var generateHTML = function (options, rowArray) {
 
     var template = options.user.rowTemplate || toHTML;
     var hasDOMTarget = document && document.createElement && options.user.target;
@@ -499,7 +499,7 @@
 
     // Pass each row to the row template. Only parse header rows if the target
     // is a table or indicates via className that it wants the header.
-    tableArray.forEach(function (row) {
+    rowArray.forEach(function (row) {
       if (row.num) {
         bodyHTML += template(row);
       } else if (isTable || needsHeader) {
@@ -527,15 +527,15 @@
       // Add useful information about the response to the options hash.
       options.response = getResponseAttributes(options, rawData);
 
-      // Parse the raw response data into a simple array of table rows.
-      var tableArray = parseData(options, rawData);
+      // Parse the raw response data into a simple array of rows.
+      var rowArray = parseData(options, rawData);
 
       // Parse the table array into HTML.
-      var outputHTML = generateHTML(options, tableArray);
+      var outputHTML = generateHTML(options, rowArray);
 
       // Call the user's callback function.
       if (options.user.callback) {
-        options.user.callback(null, options, rawData, tableArray, outputHTML);
+        options.user.callback(null, options, rawData, rowArray, outputHTML);
       }
 
     } else {

@@ -56,9 +56,9 @@ npm install sheetrock
 ```javascript
 var sheetrock = require('sheetrock');
 
-var myCallback = function (error, options, rawData, tableRows, outputHTML) {
+var myCallback = function (error, options, rawData, rowsArray, outputHTML) {
   if (!error) {
-    /* Parse rawData, loop through tableRows, or do something with outputHTML. */
+    /* Parse rawData, loop through rowsArray, or do something with outputHTML. */
   }
 };
 
@@ -188,8 +188,8 @@ function will be passed the following parameters, in this order:
 
 * Raw data (object): This is the raw response data from Google’s API.
 
-* Table rows (array): An array of row objects (which are also passed
-  individually to the `rowTemplate`, if one is provided).
+* Rows (array): An array of row objects (which are also passed individually to
+  the `rowTemplate`, if one is provided).
 
 * Output HTML (string): A string of HTML representing the final presentational
   output of the request (which is also appended to the `target` or jQuery

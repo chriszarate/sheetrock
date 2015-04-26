@@ -123,22 +123,22 @@
         describe('returns a table array', function () {
 
           it('with expected properties', function () {
-            var tableArray = responseArgs[3];
-            expect(tableArray).toBeDefined();
-            expect(tableArray).not.toBe(null);
-            expect(Array.isArray(tableArray)).toBe(true);
+            var rowArray = responseArgs[3];
+            expect(rowArray).toBeDefined();
+            expect(rowArray).not.toBe(null);
+            expect(Array.isArray(rowArray)).toBe(true);
           });
 
           it('with the expected dimensions', function () {
             var options = responseArgs[1];
-            var tableArray = responseArgs[3];
-            expect(tableArray.length).toEqual(testOptions.fetchSize + 1);
+            var rowArray = responseArgs[3];
+            expect(rowArray.length).toEqual(testOptions.fetchSize + 1);
           });
 
           it('containing the expected row 10', function () {
-            var tableArray = responseArgs[3];
-            expect(tableArray[10].num).toEqual(10);
-            expect(tableArray[10].cells).toEqual(testData.row10);
+            var rowArray = responseArgs[3];
+            expect(rowArray[10].num).toEqual(10);
+            expect(rowArray[10].cells).toEqual(testData.row10);
           });
 
         });
@@ -181,9 +181,9 @@
         describe('returns a table array', function () {
 
           it('containing the expected row 15', function () {
-            var tableArray = responseArgs[3];
-            expect(tableArray[4].num).toEqual(15);
-            expect(tableArray[4].cells).toEqual(testData.row15);
+            var rowArray = responseArgs[3];
+            expect(rowArray[4].num).toEqual(15);
+            expect(rowArray[4].cells).toEqual(testData.row15);
           });
 
         });
