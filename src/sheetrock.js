@@ -80,7 +80,7 @@
       var array = this;
       var resultArray = [];
       array.forEach(function (value, i) {
-        resultArray[i] = func(value);
+        resultArray[i] = func(value, i);
       });
       return resultArray;
     };
