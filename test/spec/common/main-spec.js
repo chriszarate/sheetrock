@@ -112,7 +112,6 @@
           });
 
           it('with the expected dimensions', function () {
-            var options = responseArgs[1];
             var rawData = responseArgs[2];
             expect(rawData.table.cols.length).toEqual(testOptions.labels.length);
             expect(rawData.table.rows.length).toEqual(testOptions.fetchSize + 1);
@@ -130,7 +129,6 @@
           });
 
           it('with the expected dimensions', function () {
-            var options = responseArgs[1];
             var rowArray = responseArgs[3];
             expect(rowArray.length).toEqual(testOptions.fetchSize + 1);
           });
