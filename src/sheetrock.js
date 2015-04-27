@@ -289,7 +289,6 @@
 
     var userOptions = checkUserOptions(target, options);
     var requestOptions = getRequestOptions(userOptions.url);
-    var debugMessages = [];
 
     // Set request query and index (key_gid_query).
     requestOptions.query = userOptions.query;
@@ -298,7 +297,7 @@
     // If requested, reset request status.
     if (userOptions.reset && requestOptions.index) {
       resetRequestStatus(requestOptions.index);
-      debugMessages.push('Request status has been reset.');
+      requestOptions.reset = true;
     }
 
     // Retrieve current row offset.
@@ -318,8 +317,7 @@
 
     return {
       user: userOptions,
-      request: requestOptions,
-      debug: debugMessages
+      request: requestOptions
     };
 
   };
