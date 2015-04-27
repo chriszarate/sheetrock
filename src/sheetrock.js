@@ -412,25 +412,6 @@
 
   };
 
-  // Enumerate any messages embedded in the API response.
-  var enumerateMessages = function (options, data, state) {
-
-    // Look for the specified property at the root of the response object.
-    if (has(data, state)) {
-      data[state].forEach(function (status) {
-        if (has(status, 'detailed_message')) {
-          /*jshint camelcase: false */
-          /*jscs: disable requireCamelCaseOrUpperCaseIdentifiers */
-          options.debug.push(status.detailed_message);
-          /*jscs: enable */
-        } else if (has(status, 'message')) {
-          options.debug.push(status.message);
-        }
-      });
-    }
-
-  };
-
   // Parse data, row by row, and generate a simpler output array.
   var parseData = function (options, rawData) {
 
@@ -513,9 +494,6 @@
 
   // Process API response.
   var processResponse = function (options, rawData) {
-
-    enumerateMessages(options, rawData, 'warnings');
-    enumerateMessages(options, rawData, 'errors');
 
     // Make sure the response is populated with actual data.
     if (has(rawData, 'status', 'table') && has(rawData.table, 'cols', 'rows')) {

@@ -22,19 +22,6 @@
   var bootstrappedData = {
     version: '0.6',
     status: 'ok',
-    /*jshint camelcase: false */
-    /*jscs: disable requireCamelCaseOrUpperCaseIdentifiers */
-    warnings: [
-      {
-        detailed_message: 'fake warning message'
-      }
-    ],
-    /*jscs: enable */
-    errors: [
-      {
-        message: 'fake error message'
-      }
-    ],
     sig: '__sig__',
     table: {
       cols: [
@@ -370,12 +357,6 @@
         var error = responseArgs[0];
         expect(error).toBeDefined();
         expect(error).toBe(null);
-      });
-
-      it('pass along warnings and errors', function () {
-        var options = responseArgs[1];
-        expect(options.debug.indexOf('fake warning message')).not.toBe(-1);
-        expect(options.debug.indexOf('fake error message')).not.toBe(-1);
       });
 
       it('returns the bootstrapped data', function () {
