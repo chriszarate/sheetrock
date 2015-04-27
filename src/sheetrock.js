@@ -207,13 +207,18 @@
     return trim(value);
   };
 
-  // Convert an array to a object.
-  var arrayToObject = function (array) {
-    var object = {};
-    array.forEach(function (value) {
-      object[value] = value;
+  // Create a row object from arrays of cells and labels.
+  var createRowObject = function (rowNumber, cells, labels) {
+    var row = {
+      cells: {},
+      cellsArray: cells,
+      labels: labels,
+      num: rowNumber
+    };
+    cells.forEach(function (cell, x) {
+      row.cells[labels[x]] = cell;
     });
-    return object;
+    return row;
   };
 
   // Wrap a string in tag. The style argument, if present, is populated into
@@ -430,13 +435,11 @@
   var parseData = function (options, rawData) {
 
     var output = [];
+    var labels = options.response.labels;
 
     // Add a header row constructed from the column labels, if appropriate.
     if (!options.user.offset && !options.response.rowNumberOffset) {
-      output.push({
-        num: 0,
-        cells: arrayToObject(options.response.labels)
-      });
+      output.push(createRowObject(0, labels, labels));
     }
 
     // Each table cell ('c') can contain two properties: 'p' contains
@@ -452,19 +455,8 @@
         // Get the "real" row index (not counting header rows).
         var counter = stringToNaturalNumber(options.user.offset + i + 1 - options.response.rowNumberOffset);
 
-        // Initialize a row object, which will be added to the output array.
-        var rowObject = {
-          num: counter,
-          cells: {}
-        };
-
-        // Loop through each cell and add it to the row object.
-        row.c.forEach(function (cell, x) {
-          rowObject.cells[options.response.labels[x]] = getCellValue(cell);
-        });
-
-        // Add to the output array.
-        output.push(rowObject);
+        // Create a row object and add it to the output array.
+        output.push(createRowObject(counter, row.c.map(getCellValue), labels));
 
       }
 

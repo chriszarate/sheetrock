@@ -176,14 +176,23 @@ columns in the returned data.
 
 By default, Sheetrock will output your data in simple HTML. Providing your own
 row template is an easy way to customize the formatting. Your function should
-accept a row object. A row object has two properties: `num`, which contains a
-row number (headers = `0`, first data row = `1`, and so on); and `cells`, which
-is itself an object. The properties of `cells` will be named after the column
-labels as Google interprets them (e.g., `A`, `B`)—or you can use the `labels`
-the define them yourself. Your function should return a DOM object or an HTML
-string that is ready to be appended to your target element. A very easy way to
-do this is to provide a compiled [Handlebars][handlebars] or [Underscore][underscore]
-template (which is itself a function).
+accept a row object. A row object has four properties:
+
+* `num`: The row number (header = `0`, first data row = `1`, and so on).
+
+* `cells`: An object with properties named after the column labels from your
+  header row or the `labels` option.
+
+* `cellsArray`: An array of values that matches the column order of your Sheet
+  or your `query` option. Provided as an alternative to the `cells` object.
+
+* `labels`: An array of column labels in the same order as `cellsArray` that
+  match the properties of the `cells` object.
+
+Your function should return a DOM object or an HTML string that is ready to be
+appended to your target element. A very easy way to do this is to provide a
+compiled [Handlebars][handlebars] or [Underscore][underscore] template (which
+is itself a function).
 
 
 ### callback

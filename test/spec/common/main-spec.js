@@ -119,7 +119,7 @@
 
         });
 
-        describe('returns a table array', function () {
+        describe('returns a row array', function () {
 
           it('with expected properties', function () {
             var rowArray = responseArgs[3];
@@ -135,8 +135,10 @@
 
           it('containing the expected row 10', function () {
             var rowArray = responseArgs[3];
-            expect(rowArray[10].num).toEqual(10);
             expect(rowArray[10].cells).toEqual(testData.row10);
+            expect(rowArray[10].cellsArray.length).toEqual(rowArray[10].labels.length);
+            expect(rowArray[10].labels).toEqual(Object.keys(rowArray[10].cells));
+            expect(rowArray[10].num).toEqual(10);
           });
 
         });
@@ -176,7 +178,7 @@
           expect(testOptions.callback.calls.count()).toEqual(1);
         });
 
-        describe('returns a table array', function () {
+        describe('returns a row array', function () {
 
           it('containing the expected row 15', function () {
             var rowArray = responseArgs[3];

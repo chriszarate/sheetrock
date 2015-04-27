@@ -160,6 +160,8 @@
 
           <p>Note that the header row doesn’t show up here; Sheetrock only passes header rows to your template if the target element is a <code class="inline">&lt;table&gt;</code>.</p>
 
+          <p>Also note that the template does not support referencing cells by column letter—instead, use the column label from the header row (e.g., <code class="inline">cells.Team</code>). Sheetrock also provides the template with <code class="inline">cellsArray</code>, an array that matches the column order of your Sheet or <code class="inline">query</code> option—so instead of <code class="inline">cells.Team</code>, we might also have used <code class="inline">cellsArray.[0]</code>.</p>
+
           <div class="example-render-group">
 
             <div class="example-render" data-language="markup" data-example-class="operator-plus">
