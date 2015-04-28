@@ -14,6 +14,10 @@ module.exports = function (config) {
         included: false
       },
       {
+        pattern: 'data/**/*.js',
+        included: false
+      },
+      {
         pattern: 'spec/requirejs/requirejs-spec.js',
         included: false
       },

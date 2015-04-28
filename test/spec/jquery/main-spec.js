@@ -1,12 +1,11 @@
-/*global jQuery */
+/*global jQuery, testData */
 /*jshint jasmine: true*/
 
 'use strict';
 
 describe('Sheetrock', function () {
 
-  var requestURL = 'https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/edit?usp=sharing#gid=0';
-
+  var requestURL = testData.urls[1];
   var responseArgs;
   var testOptions;
 

@@ -53,6 +53,7 @@ module.exports = function (config) {
     browsers: Object.keys(browsers),
     files: [
       '../src/sheetrock.js',
+      'data/**/*.js',
       'spec/common/**/*-spec.js',
       'spec/browser/**/*-spec.js'
     ],

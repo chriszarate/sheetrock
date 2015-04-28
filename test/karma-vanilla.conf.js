@@ -9,6 +9,7 @@ module.exports = function (config) {
   config.set({
     files: [
       '../src/sheetrock.js',
+      'data/**/*.js',
       'spec/common/**/*-spec.js',
       'spec/browser/**/*-spec.js'
     ]

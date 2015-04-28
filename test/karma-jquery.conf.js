@@ -14,6 +14,7 @@ module.exports = function (config) {
       'lib/jquery.min.js',
       'lib/unset-prototypes.js',
       '../src/sheetrock.js',
+      'data/**/*.js',
       'spec/common/**/*-spec.js',
       'spec/browser/**/*-spec.js',
       'spec/coverage/**/*-spec.js',

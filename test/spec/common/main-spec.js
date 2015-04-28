@@ -6,48 +6,22 @@
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(['sheetrock'], function (sheetrock) {
-      tests(sheetrock);
+    define(['sheetrock', 'testData'], function (sheetrock, testData) {
+      tests(sheetrock, testData);
     });
   } else if (typeof module === 'object' && module.exports) {
-    tests(require('../../../src/sheetrock.js'));
+    tests(require('../../../src/sheetrock.js'), require('../../data/testData.js'));
   } else {
-    tests(root.sheetrock);
+    tests(root.sheetrock, root.testData);
   }
 
-}(this, function (sheetrock) {
+}(this, function (sheetrock, testData) {
 
   'use strict';
 
   describe('Sheetrock', function () {
 
-    var requestURLs = [
-      // "Legacy" (pre-2014)
-      'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0',
-      // "New" (2014 and later)
-      'https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/edit?usp=sharing#gid=0'
-    ];
-
-    var testData = {
-      row10: {
-        team: 'STL',
-        position: 'SS',
-        firstName: 'Ozzie',
-        lastName: 'Smith',
-        bats: 'Both',
-        average: '0.28'
-      },
-      row15: {
-        team: 'HOU',
-        position: 'C',
-        firstName: 'Alan',
-        lastName: 'Ashby',
-        bats: 'Both',
-        average: '0.257'
-      }
-    };
-
-    requestURLs.forEach(function (requestURL) {
+    testData.urls.forEach(function (requestURL) {
 
       var responseArgs;
       var testOptions;
@@ -65,7 +39,7 @@
             url: requestURL,
             query: 'select A,B,C,D,E,L where E = \'Both\' order by L desc',
             fetchSize: 10,
-            labels: Object.keys(testData.row10),
+            labels: Object.keys(testData.rows.row10),
             callback: jasmine.createSpy('testCallback').and.callFake(asyncCallback),
             rowTemplate: jasmine.createSpy('testRowTemplate')
           };
@@ -151,7 +125,7 @@
 
           it('containing the expected row 10', function () {
             var response = responseArgs[2];
-            expect(response.rows[10].cells).toEqual(testData.row10);
+            expect(response.rows[10].cells).toEqual(testData.rows.row10);
             expect(response.rows[10].cellsArray.length).toEqual(response.rows[10].labels.length);
             expect(response.rows[10].labels).toEqual(Object.keys(response.rows[10].cells));
             expect(response.rows[10].num).toEqual(10);
@@ -199,7 +173,7 @@
           it('containing the expected row 15', function () {
             var response = responseArgs[2];
             expect(response.rows[4].num).toEqual(15);
-            expect(response.rows[4].cells).toEqual(testData.row15);
+            expect(response.rows[4].cells).toEqual(testData.rows.row15);
           });
 
         });
