@@ -36,7 +36,7 @@ example request (using jQuery):
 
 ```javascript
 $("#my-table").sheetrock({
-  url: "https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0",
+  url: "https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/edit#gid=0",
   query: "select A,B,C,D,E,L where E = 'Both' order by L desc"
 });
 ```
@@ -63,7 +63,7 @@ var myCallback = function (error, options, rawData, rowsArray, outputHTML) {
 };
 
 sheetrock({
-  url: "https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0",
+  url: "https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/edit#gid=0",
   query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
   callback: myCallback
 });
@@ -112,7 +112,7 @@ Your options override Sheetrock’s defaults on a per-request basis. You can als
 globally override defaults like this:
 
 ```javascript
-sheetrock.defaults.url = "https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0";
+sheetrock.defaults.url = "https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/edit#gid=0";
 ```
 
 
