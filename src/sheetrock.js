@@ -1,5 +1,5 @@
 /*!
- * Sheetrock v0.3.0
+ * Sheetrock v1.0.0
  * Quickly connect to, query, and lazy-load data from Google Sheets.
  * http://chriszarate.github.io/sheetrock/
  * License: MIT
@@ -654,7 +654,7 @@
   };
 
   sheetrock.defaults = defaults;
-  sheetrock.version = '0.3.0';
+  sheetrock.version = '1.0.0';
   sheetrock.environment = getEnvironmentMatrix();
 
   // If jQuery is available as a global, register as a plugin.
