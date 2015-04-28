@@ -135,18 +135,6 @@
     return Math.max(0, parseInt(str, 10) || 0);
   };
 
-  // Return true if an object has all of the passed arguments as properties.
-  var has = function (obj) {
-    var i;
-    var length = arguments.length;
-    for (i = 1; i < length; i = i + 1) {
-      if (obj[arguments[i]] === undefined) {
-        return false;
-      }
-    }
-    return true;
-  };
-
   // Return true if the DOM element has the specified class.
   var hasClass = function (el, className) {
     var classes = ' ' + el.className + ' ';
@@ -199,10 +187,10 @@
 
   // Get the trimmed value of a cell object.
   var getCellValue = function (cell) {
-    var value = (cell && has(cell, 'v') && cell.v) ? cell.v : '';
+    var value = (cell && cell.v) ? cell.v : '';
     // Avoid array cell values.
     if (value instanceof Array) {
-      value = (has(cell, 'f')) ? cell.f : value.join('');
+      value = cell.f || value.join('');
     }
     return trim(value);
   };
@@ -429,7 +417,7 @@
 
       // Proceed if the row has cells and the row index is within the targeted
       // range. (This avoids displaying too many rows when paging data.)
-      if (has(row, 'c') && i < attributes.last) {
+      if (row.c && i < attributes.last) {
 
         // Get the "real" row index (not counting header rows).
         var counter = stringToNaturalNumber(userOptions.offset + i + 1 - attributes.rowNumberOffset);
