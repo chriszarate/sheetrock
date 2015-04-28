@@ -34,7 +34,7 @@
   },
   "main": "./src/sheetrock.js",
   "scripts": {
-    "dist": "uglifyjs src/sheetrock.js --comments '/^!/' --source-map dist/sheetrock.min.js.map --prefix relative --output dist/sheetrock.min.js",
+    "dist": "uglifyjs src/sheetrock.js --mangle --comments '/^!/' --source-map dist/sheetrock.min.js.map --prefix relative --output dist/sheetrock.min.js",
     "lint": "jshint src test/*.js test/spec test/loaders && jscs src test/*.js test/spec test/loaders",
     "jasmine-node": "jasmine JASMINE_CONFIG_PATH=test/jasmine.json",
     "karma-all": "npm run karma-browserify && npm run karma-jquery && npm run karma-requirejs && npm run karma-vanilla && npm run karma-saucelabs",
