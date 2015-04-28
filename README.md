@@ -210,16 +210,21 @@ function will be passed the following parameters, in this order:
 * Options (object): An object representing the options of the request. The
   `user` property will contain the options you originally provided (useful for
   identifying which request the callback is for) and a `request` property with
-  information about the request to Google’s API.
+  information about the HTTP request to Google’s API.
 
-* Raw data (object): This is the raw response data from Google’s API.
+* Response (object): An object containing response data properties:
 
-* Rows (array): An array of row objects (which are also passed individually to
-  the `rowTemplate`, if one is provided).
+  * `.attributes` (object): An object containing useful information about the
+    response data, its structure, and its format.
 
-* Output HTML (string): A string of HTML representing the final presentational
-  output of the request (which is also appended to the `target` or jQuery
-  reference, if one was provided).
+  * `.raw` (object): This is the raw response data from Google’s API.
+
+  * `.rows` (array): An array of row objects (which are also passed individually to
+    the `rowTemplate`, if one is provided).
+
+  * `.html` (string): A string of HTML representing the final presentational
+    output of the request (which is also appended to the `target` or jQuery
+    reference, if one was provided).
 
 
 ### reset

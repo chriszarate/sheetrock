@@ -105,7 +105,7 @@
   /* Helpers */
 
   // General error handler.
-  var handleError = function (error, options, rawData) {
+  var handleError = function (error, options, response) {
 
     if (!(error instanceof Error)) {
       error = new Error(error);
@@ -118,7 +118,7 @@
 
     // Call the user's callback function.
     if (options && options.user && options.user.callback) {
-      options.user.callback(error, options, rawData || null, null, null);
+      options.user.callback(error, options, response || null);
     } else {
       throw error;
     }
@@ -411,13 +411,13 @@
   };
 
   // Parse data, row by row, and generate a simpler output array.
-  var parseData = function (options, rawData) {
+  var parseData = function (userOptions, attributes, rawData) {
 
     var output = [];
-    var labels = options.response.labels;
+    var labels = attributes.labels;
 
     // Add a header row constructed from the column labels, if appropriate.
-    if (!options.user.offset && !options.response.rowNumberOffset) {
+    if (!userOptions.offset && !attributes.rowNumberOffset) {
       output.push(createRowObject(0, labels, labels));
     }
 
@@ -429,10 +429,10 @@
 
       // Proceed if the row has cells and the row index is within the targeted
       // range. (This avoids displaying too many rows when paging data.)
-      if (has(row, 'c') && i < options.response.last) {
+      if (has(row, 'c') && i < attributes.last) {
 
         // Get the "real" row index (not counting header rows).
-        var counter = stringToNaturalNumber(options.user.offset + i + 1 - options.response.rowNumberOffset);
+        var counter = stringToNaturalNumber(userOptions.offset + i + 1 - attributes.rowNumberOffset);
 
         // Create a row object and add it to the output array.
         output.push(createRowObject(counter, row.c.map(getCellValue), labels));
@@ -462,19 +462,19 @@
 
   };
 
-  // Generate HTML using a template.
-  var generateHTML = function (options, rowArray) {
+  // Generate HTML from rows using a template.
+  var generateHTML = function (userOptions, rows) {
 
-    var template = options.user.rowTemplate || toHTML;
-    var hasDOMTarget = document && document.createElement && options.user.target;
-    var isTable = hasDOMTarget && options.user.target.tagName === 'TABLE';
-    var needsHeader = hasDOMTarget && hasClass(options.user.target, 'sheetrock-header');
+    var template = userOptions.rowTemplate || toHTML;
+    var hasDOMTarget = document && document.createElement && userOptions.target;
+    var isTable = hasDOMTarget && userOptions.target.tagName === 'TABLE';
+    var needsHeader = hasDOMTarget && hasClass(userOptions.target, 'sheetrock-header');
     var headerHTML = '';
     var bodyHTML = '';
 
     // Pass each row to the row template. Only parse header rows if the target
     // is a table or indicates via className that it wants the header.
-    rowArray.forEach(function (row) {
+    rows.forEach(function (row) {
       if (row.num) {
         bodyHTML += template(row);
       } else if (isTable || needsHeader) {
@@ -483,7 +483,7 @@
     });
 
     if (hasDOMTarget) {
-      appendHTMLToDOM(options.user.target, headerHTML, bodyHTML);
+      appendHTMLToDOM(userOptions.target, headerHTML, bodyHTML);
     }
 
     return (isTable) ? wrapTag(headerHTML, 'thead') + wrapTag(bodyHTML, 'tbody') : headerHTML + bodyHTML;
@@ -493,25 +493,22 @@
   // Process API response.
   var processResponse = function (options, rawData) {
 
-    // Make sure the response is populated with actual data.
-    if (has(rawData, 'status', 'table') && has(rawData.table, 'cols', 'rows')) {
+    var response = {
+      raw: rawData
+    };
 
-      // Add useful information about the response to the options hash.
-      options.response = getResponseAttributes(options, rawData);
+    try {
 
-      // Parse the raw response data into a simple array of rows.
-      var rowArray = parseData(options, rawData);
+      var attributes = response.attributes = getResponseAttributes(options, rawData);
+      var rows = response.rows = parseData(options.user, attributes, rawData);
+      response.html = generateHTML(options.user, rows);
 
-      // Parse the table array into HTML.
-      var outputHTML = generateHTML(options, rowArray);
-
-      // Call the user's callback function.
       if (options.user.callback) {
-        options.user.callback(null, options, rawData, rowArray, outputHTML);
+        options.user.callback(null, options, response);
       }
 
-    } else {
-      throw 'Unexpected API response format.';
+    } catch (error) {
+      handleError('Unexpected API response format.', options, response);
     }
 
   };
@@ -541,7 +538,7 @@
           body = JSON.parse(body.replace(/^\)\]\}\'\n/, ''));
           callback(options, body);
         } catch (error) {
-          handleError(error, options, body);
+          handleError(error, options, {raw: body});
         }
       } else {
         handleError(responseError || 'Request failed.', options);
@@ -572,7 +569,7 @@
       try {
         callback(options, data);
       } catch (error) {
-        handleError(error, options, data);
+        handleError(error, options, {raw: data});
       } finally {
         always();
       }

@@ -360,8 +360,8 @@
       });
 
       it('returns the bootstrapped data', function () {
-        var rawData = responseArgs[2];
-        expect(rawData).toBe(bootstrappedData);
+        var response = responseArgs[2];
+        expect(response.raw).toBe(bootstrappedData);
       });
 
       it('rejects malformed bootstrapped data', function (done) {
