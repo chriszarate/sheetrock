@@ -56,9 +56,12 @@ npm install sheetrock
 ```javascript
 var sheetrock = require('sheetrock');
 
-var myCallback = function (error, options, rawData, rowsArray, outputHTML) {
+var myCallback = function (error, options, response) {
   if (!error) {
-    /* Parse rawData, loop through rowsArray, or do something with outputHTML. */
+    /*
+      Parse response.data, loop through response.rows, or do something with
+      response.html.
+    */
   }
 };
 
@@ -95,17 +98,16 @@ about the format and availability.
   multiple or offset header rows) can cause problems with the request and
   complicates templating.
 
+* **Plain text.** Sheetrock doesn’t handle formatted text. Any formatting
+  you’ve applied to your data—including hyperlinks—probably won’t show up.
+
 
 ## Options
 
 Sheetrock expects a hash map of options as a parameter, e.g.:
 
 ```javascript
-sheetrock({
-  url: "https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0",
-  query: "select A,B,C,D,E,L where E = 'Both' order by L desc",
-  callback: function () {/* callback code */}
-});
+sheetrock({/* options */});
 ```
 
 Your options override Sheetrock’s defaults on a per-request basis. You can also
@@ -247,6 +249,18 @@ responses for reuse via a `callback` function.
 
 ## Tips and troubleshooting
 
+The best first step to troubleshooting problems with Sheetrock is to use a
+`callback` function to inspect any errors and response data. Here’s a simple
+example that logs all returned data to the console:
+
+```javascript
+sheetrock({
+  /* options */
+  callback: function (error, options, response) {
+    console.log(error, options, response);
+  }
+});
+```
 
 
 ## Projects using Sheetrock
