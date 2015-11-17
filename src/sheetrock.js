@@ -187,7 +187,20 @@
 
   // Get the trimmed value of a cell object.
   var getCellValue = function (cell) {
-    var value = (cell && cell.v) ? cell.v : '';
+    var value;
+
+    // Use the formatted value, if available:
+    if (cell && cell.f) {
+      value = cell.f;
+    }
+    // Otherwise, use the raw value:
+    else if (cell && cell.v) {
+      value = cell.v;
+    }
+    else {
+      value = '';
+    }
+
     // Avoid array cell values.
     if (value instanceof Array) {
       value = cell.f || value.join('');
