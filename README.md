@@ -100,7 +100,8 @@ about the format and availability.
 * **One header row.** Sheetrock expects a single header row of column labels in
   the first row of the Sheet. Any other configuration (e.g., no header row,
   multiple or offset header rows) can cause problems with the request and
-  complicates templating.
+  complicates templating. The header row values are used as keys in the cell
+  object unless you override them using the `labels` option.
 
 * **Plain text.** Sheetrock doesn’t handle formatted text. Any formatting
   you’ve applied to your data—including hyperlinks—probably won’t show up.
