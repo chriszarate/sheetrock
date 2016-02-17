@@ -27,6 +27,7 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-requirejs": "^0.2.2",
     "karma-sauce-launcher": "^0.2.10",
+    "requirejs": "^2.1.22",
     "uglify-js": "^2.4.19"
   },
   "browser": {

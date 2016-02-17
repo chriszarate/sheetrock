@@ -26,7 +26,7 @@
       firstName: 'Ozzie',
       lastName: 'Smith',
       bats: 'Both',
-      average: '0.28'
+      average: '0.280'
     },
     row15: {
       team: 'HOU',

@@ -185,19 +185,17 @@
     return (requestOptions.key && requestOptions.gid) ? requestOptions.key + '_' + requestOptions.gid + '_' + requestOptions.query : null;
   };
 
-  // Get the trimmed value of a cell object.
+  // Get the trimmed value of a cell object. Use the formatted value, if
+  // available; otherwise, use the raw value; fallback to empty string.
   var getCellValue = function (cell) {
+
     var value;
 
-    // Use the formatted value, if available:
     if (cell && cell.f) {
       value = cell.f;
-    }
-    // Otherwise, use the raw value:
-    else if (cell && cell.v) {
+    } else if (cell && cell.v) {
       value = cell.v;
-    }
-    else {
+    } else {
       value = '';
     }
 
@@ -205,7 +203,9 @@
     if (value instanceof Array) {
       value = cell.f || value.join('');
     }
+
     return trim(value);
+
   };
 
   // Create a row object from arrays of cells and labels.
