@@ -552,11 +552,14 @@
   // Send a JSONP requent.
   var requestJSONP = function (options, callback) {
 
+    var always;
+    var success;
+    var error;
     var headElement = document.getElementsByTagName('head')[0];
     var scriptElement = document.createElement('script');
     var callbackName = '_sheetrock_callback_' + jsonpCallbackIndex;
 
-    var always = function () {
+    always = function () {
       if (hasListeners) {
         scriptElement.removeEventListener('error', error, false);
         scriptElement.removeEventListener('abort', error, false);
@@ -565,7 +568,7 @@
       delete window[callbackName];
     };
 
-    var success = function (data) {
+    success = function (data) {
       try {
         callback(options, data);
       } catch (error) {
@@ -575,7 +578,7 @@
       }
     };
 
-    var error = function () {
+    error = function () {
       handleError('Request failed.', options);
       always();
     };
