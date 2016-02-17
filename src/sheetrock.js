@@ -499,17 +499,16 @@
     };
 
     try {
-
       var attributes = response.attributes = getResponseAttributes(options, rawData);
       var rows = response.rows = parseData(options.user, attributes, rawData);
       response.html = generateHTML(options.user, rows);
-
-      if (options.user.callback) {
-        options.user.callback(null, options, response);
-      }
-
     } catch (error) {
       handleError('Unexpected API response format.', options, response);
+      return;
+    }
+
+    if (options.user.callback) {
+      options.user.callback(null, options, response);
     }
 
   };
