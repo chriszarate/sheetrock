@@ -17,6 +17,7 @@
     "request": "^2.69.0"
   },
   "devDependencies": {
+    "browserify": "^13.0.0",
     "jasmine": "^2.4.1",
     "jscs": "^2.10.1",
     "jshint": "^2.9.1",
@@ -27,8 +28,12 @@
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-requirejs": "^0.2.5",
     "karma-sauce-launcher": "^0.3.0",
+    "karma-webpack": "^1.7.0",
+    "phantomjs-prebuilt": "^2.1.4",
     "requirejs": "^2.1.22",
-    "uglify-js": "^2.6.1"
+    "uglify-js": "^2.6.1",
+    "watchify": "^3.7.0",
+    "webpack": "^1.12.13"
   },
   "browser": {
     "request": false
@@ -38,12 +43,13 @@
     "dist": "uglifyjs src/sheetrock.js --mangle --comments '/^!/' --source-map dist/sheetrock.min.js.map --prefix relative --output dist/sheetrock.min.js",
     "lint": "jshint src test/*.js test/spec test/loaders && jscs src test/*.js test/spec test/loaders",
     "jasmine-node": "jasmine JASMINE_CONFIG_PATH=test/jasmine.json",
-    "karma-all": "npm run karma-browserify && npm run karma-jquery && npm run karma-requirejs && npm run karma-vanilla && npm run karma-saucelabs",
+    "karma-all": "npm run karma-browserify && npm run karma-jquery && npm run karma-requirejs && npm run karma-vanilla && npm run karma-webpack && npm run karma-saucelabs",
     "karma-browserify": "node_modules/karma/bin/karma start test/karma-browserify.conf.js",
     "karma-jquery": "node_modules/karma/bin/karma start test/karma-jquery.conf.js",
     "karma-requirejs": "node_modules/karma/bin/karma start test/karma-requirejs.conf.js",
     "karma-saucelabs": "node_modules/karma/bin/karma start test/karma-saucelabs.conf.js",
     "karma-vanilla": "node_modules/karma/bin/karma start test/karma-vanilla.conf.js",
+    "karma-webpack": "node_modules/karma/bin/karma start test/karma-webpack.conf.js",
     "test": "npm run lint && npm run jasmine-node && npm run karma-all"
   },
   "repository": {
