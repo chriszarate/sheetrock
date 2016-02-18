@@ -5,25 +5,25 @@
  * License: MIT
  */
 
-/*global define, global */
+/*global define */
 /*jslint indent: 2, node: true, vars: true */
 
-(function (name, root, factory) {
+(function (root, factory) {
 
   'use strict';
 
   /* istanbul ignore next: UMD */
   if (typeof define === 'function' && define.amd) {
     define('sheetrock', function () {
-      return factory(null, root);
+      return factory(null);
     });
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('request'), global || root);
+    module.exports = factory(require('request'));
   } else {
-    root[name] = factory(null, root);
+    root.sheetrock = factory(null);
   }
 
-}('sheetrock', this, function (requestModule, window) {
+}(this, function (requestModule) {
 
   'use strict';
 
@@ -54,9 +54,10 @@
   var jsonpCallbackIndex = 0;
 
   // DOM and transport settings
-  var document = window.document;
+  var root = (typeof window === 'undefined') ? {} : window;
+  var document = root.document;
   var useJSONPTransport = typeof requestModule !== 'function';
-  var hasJquery = window.jQuery && window.jQuery.fn && window.jQuery.fn.jquery;
+  var hasJquery = root.jQuery && root.jQuery.fn && root.jQuery.fn.jquery;
   var hasListeners = false;  // until proven otherwise
 
 
@@ -565,7 +566,7 @@
         scriptElement.removeEventListener('abort', error, false);
       }
       headElement.removeChild(scriptElement);
-      delete window[callbackName];
+      delete root[callbackName];
     };
 
     success = function (data) {
@@ -583,7 +584,7 @@
       always();
     };
 
-    window[callbackName] = success;
+    root[callbackName] = success;
 
     options.request.url = options.request.url.replace('%callback%', callbackName);
 
@@ -674,7 +675,7 @@
 
   // If jQuery is available as a global, register as a plugin.
   if (hasJquery) {
-    window.jQuery.fn.sheetrock = sheetrock;
+    root.jQuery.fn.sheetrock = sheetrock;
   }
 
   return sheetrock;
