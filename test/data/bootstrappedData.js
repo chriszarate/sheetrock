@@ -1,18 +1,18 @@
 /*global define */
 
-(function (root, name, data) {
+(function (root, data) {
 
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(name, data);
+    define('bootstrappedData', data);
   } else if (typeof module === 'object' && module.exports) {
     module.exports = data;
   } else {
-    root[name] = data;
+    root.bootstrappedData = data;
   }
 
-}(this, 'bootstrappedData', {
+}(this, {
   version: '0.6',
   status: 'ok',
   sig: '__sig__',

@@ -1,18 +1,18 @@
 /*global define */
 
-(function (root, name, data) {
+(function (root, data) {
 
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(name, data);
+    define('testData', data);
   } else if (typeof module === 'object' && module.exports) {
     module.exports = data;
   } else {
-    root[name] = data;
+    root.testData = data;
   }
 
-}(this, 'testData', {
+}(this, {
   urls: [
     // "Legacy" (pre-2014)
     'https://docs.google.com/spreadsheet/ccc?key=0AlRp2ieP7izLdGFNOERTZW0xLVpROFc3X3FJQ2tSb2c#gid=0',
