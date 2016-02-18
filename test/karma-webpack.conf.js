@@ -1,6 +1,5 @@
 'use strict';
 
-var path = require('path');
 var sharedConfig = require('./karma-shared.conf.js');
 
 module.exports = function (config) {

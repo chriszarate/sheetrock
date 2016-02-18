@@ -5,7 +5,7 @@
  * License: MIT
  */
 
-/*global define */
+/*global window,define */
 /*jslint indent: 2, node: true, vars: true */
 
 (function (root, factory) {
