@@ -8,12 +8,12 @@ module.exports = function (config) {
 
   config.set({
     files: [
-      'spec/browserify/**/*-spec.js',
+      'spec/requirejs/**/*-spec.js',
       'spec/common/**/*-spec.js',
       'spec/browser/**/*-spec.js'
     ],
     preprocessors: {
-      'spec/browserify/**/*-spec.js': ['webpack'],
+      'spec/requirejs/**/*-spec.js': ['webpack'],
       'spec/common/**/*-spec.js': ['webpack'],
       'spec/browser/**/*-spec.js': ['webpack']
     },

@@ -40,10 +40,6 @@
 
         sheetrock(testOptions);
 
-        if (!sheetrock.environment.callbackOn404) {
-          testOptions.callback(new Error('Request failed.'));
-        }
-
       });
 
       it('calls the callback', function () {

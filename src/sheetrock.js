@@ -12,18 +12,23 @@
 
   'use strict';
 
+  var widget = factory();
+
   /* istanbul ignore next: UMD */
   if (typeof define === 'function' && define.amd) {
     define('sheetrock', function () {
-      return factory(null);
+      widget.environment.amd = true;
+      return widget;
     });
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('request'));
+    widget.environment.commonjs = true;
+    widget.environment.request = require('request');
+    module.exports = widget;
   } else {
-    root.sheetrock = factory(null);
+    root.sheetrock = widget;
   }
 
-}(this, function (requestModule) {
+}(this, function () {
 
   'use strict';
 
@@ -53,12 +58,17 @@
   // JSONP callback function index
   var jsonpCallbackIndex = 0;
 
-  // DOM and transport settings
+
+  /* Environment */
+
+  // DOM, transport, and module settings
   var root = (typeof window === 'undefined') ? {} : window;
-  var document = root.document;
-  var useJSONPTransport = typeof requestModule !== 'function';
-  var hasJquery = root.jQuery && root.jQuery.fn && root.jQuery.fn.jquery;
-  var hasListeners = false;  // until proven otherwise
+  var env = {
+    document: root.document || {},
+    dom: !!(root.document && root.document.createElement),
+    jquery: !!(root.jQuery && root.jQuery.fn && root.jQuery.fn.jquery),
+    request: false
+  };
 
 
   /* Polyfills */
@@ -151,19 +161,9 @@
     return (blob.nodeType && blob.nodeType === 1) ? blob : false;
   };
 
-  // Get environment matrix.
-  var getEnvironmentMatrix = function () {
-    // Detect event listener support
-    if (document && useJSONPTransport) {
-      var scriptElement = document.createElement('script');
-      hasListeners = scriptElement.addEventListener && scriptElement.removeEventListener;
-    }
-    return {
-      dom: !!document,
-      jquery: (hasJquery) ? hasJquery : false,
-      callbackOn404: useJSONPTransport === 'request' || hasListeners,
-      transport: (useJSONPTransport) ? 'jsonp' : 'request'
-    };
+  // Update environment.
+  var updateEnvironment = function () {
+    env.dom = !!(env.document && env.document.createElement);
   };
 
   // Get API endpoint, key, and gid from a Google Sheet URL.
@@ -452,8 +452,8 @@
 
     // Use row group tags (<thead>, <tbody>) if the target is a table.
     if (target.tagName === 'TABLE') {
-      var headerElement = document.createElement('thead');
-      var bodyElement = document.createElement('tbody');
+      var headerElement = env.document.createElement('thead');
+      var bodyElement = env.document.createElement('tbody');
       headerElement.innerHTML = headerHTML;
       bodyElement.innerHTML = bodyHTML;
       target.appendChild(headerElement);
@@ -468,7 +468,7 @@
   var generateHTML = function (userOptions, rows) {
 
     var template = userOptions.rowTemplate || toHTML;
-    var hasDOMTarget = document && document.createElement && userOptions.target;
+    var hasDOMTarget = env.dom && userOptions.target;
     var isTable = hasDOMTarget && userOptions.target.tagName === 'TABLE';
     var needsHeader = hasDOMTarget && hasClass(userOptions.target, 'sheetrock-header');
     var headerHTML = '';
@@ -517,6 +517,10 @@
   // Send a JSON requent.
   var requestJSON = function (options, callback) {
 
+    if (typeof env.request !== 'function') {
+      throw 'No HTTP transport available.';
+    }
+
     // There is an issue with new Sheets causing the string ")]}'" to be
     // prepended to the JSON output when the X-DataSource-Auth is added.
 
@@ -546,7 +550,7 @@
       }
     };
 
-    requestModule(requestOptions, responseCallback);
+    env.request(requestOptions, responseCallback);
 
   };
 
@@ -556,12 +560,12 @@
     var always;
     var success;
     var error;
-    var headElement = document.getElementsByTagName('head')[0];
-    var scriptElement = document.createElement('script');
+    var headElement = env.document.getElementsByTagName('head')[0];
+    var scriptElement = env.document.createElement('script');
     var callbackName = '_sheetrock_callback_' + jsonpCallbackIndex;
 
     always = function () {
-      if (hasListeners) {
+      if (scriptElement.removeEventListener) {
         scriptElement.removeEventListener('error', error, false);
         scriptElement.removeEventListener('abort', error, false);
       }
@@ -588,7 +592,7 @@
 
     options.request.url = options.request.url.replace('%callback%', callbackName);
 
-    if (hasListeners) {
+    if (scriptElement.addEventListener) {
       scriptElement.addEventListener('error', error, false);
       scriptElement.addEventListener('abort', error, false);
     }
@@ -609,7 +613,7 @@
       'tq=' + encodeURIComponent(options.request.query)
     ];
 
-    if (useJSONPTransport) {
+    if (env.dom) {
       query.push('tqx=responseHandler:%callback%');
     }
 
@@ -622,7 +626,7 @@
 
     options.request.url = buildRequestURL(options);
 
-    if (useJSONPTransport) {
+    if (env.dom) {
       requestJSONP(options, callback);
     } else {
       requestJSON(options, callback);
@@ -655,6 +659,8 @@
       options = processUserOptions(this, options);
       options = validateOptions(options);
 
+      updateEnvironment();
+
       if (bootstrappedData) {
         processResponse(options, bootstrappedData);
       } else {
@@ -671,10 +677,10 @@
 
   sheetrock.defaults = defaults;
   sheetrock.version = '1.0.0';
-  sheetrock.environment = getEnvironmentMatrix();
+  sheetrock.environment = env;
 
   // If jQuery is available as a global, register as a plugin.
-  if (hasJquery) {
+  if (env.jquery) {
     root.jQuery.fn.sheetrock = sheetrock;
   }
 
