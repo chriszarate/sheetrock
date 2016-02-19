@@ -1,5 +1,12 @@
 ## Change Log
 
+### v1.0.1
+
+* Webpack support.
+* Use formatted numbers (percentages, x decimal places) when available. (@niceandserious)
+* Smaller minified dist version.
+
+
 ### v1.0.0
 
 * No longer depends on jQuery
