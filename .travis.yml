@@ -10,6 +10,7 @@ cache:
     - node_modules
 
 after_script:
+  - npm -g install codeclimate-test-reporter
   - codeclimate-test-reporter < test/coverage/**/lcov.info
 
 addons:
