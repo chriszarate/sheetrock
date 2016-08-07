@@ -1,313 +1,300 @@
-/*global define */
-
-(function (root, data) {
-
-  'use strict';
-
-  if (typeof define === 'function' && define.amd) {
-    define('bootstrappedData', data);
-  } else if (typeof module === 'object' && module.exports) {
-    module.exports = data;
-  } else {
-    root.bootstrappedData = data;
-  }
-
-}(this, {
-  version: '0.6',
-  status: 'ok',
-  sig: '__sig__',
-  table: {
-    cols: [
+{
+  "version": "0.6",
+  "status": "ok",
+  "sig": "__sig__",
+  "table": {
+    "cols": [
       {
-        id: 'A',
-        label: 'Team',
-        type: 'string',
-        pattern: ''
+        "id": "A",
+        "label": "Team",
+        "type": "string",
+        "pattern": ""
       },
       {
-        id: 'B', label: 'Pos',
-        type: 'string',
-        pattern: ''
+        "id": "B",
+        "label": "Pos",
+        "type": "string",
+        "pattern": ""
       },
       {
-        id: 'C',
-        label: 'First',
-        type: 'string',
-        pattern: ''
+        "id": "C",
+        "label": "First",
+        "type": "string",
+        "pattern": ""
       },
       {
-        id: 'D',
-        label: 'Last',
-        type: 'string',
-        pattern: ''
+        "id": "D",
+        "label": "Last",
+        "type": "string",
+        "pattern": ""
       },
       {
-        id: 'E',
-        label: 'Bats',
-        type: 'string',
-        pattern: ''
+        "id": "E",
+        "label": "Bats",
+        "type": "string",
+        "pattern": ""
       },
       {
-        id: 'L',
-        label: 'BA',
-        type: 'number',
-        pattern: 'General'
+        "id": "L",
+        "label": "BA",
+        "type": "number",
+        "pattern": "General"
       }
     ],
-    'rows': [
+    "rows": [
       {
-        c: [
+        "c": [
           {
-            v: 'MON'
+            "v": "MON"
           },
           {
-            v: 'LF'
+            "v": "LF"
           },
           {
-            v: 'Tim'
+            "v": "Tim"
           },
           {
-            v: 'Raines'
+            "v": "Raines"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.334,
-            f: '0.334'
+            "v": 0.334,
+            "f": "0.334"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'NYM'
+            "v": "NYM"
           },
           {
-            v: '2B'
+            "v": "2B"
           },
           {
-            v: 'Wally'
+            "v": "Wally"
           },
           {
-            v: 'Backman'
+            "v": "Backman"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.32,
-            f: '0.32'
+            "v": 0.32,
+            "f": "0.320"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'HOU'
+            "v": "HOU"
           },
           {
-            v: 'RF'
+            "v": "RF"
           },
           {
-            v: 'Kevin'
+            "v": "Kevin"
           },
           {
-            v: 'Bass'
+            "v": "Bass"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.311,
-            f: '0.311'
+            "v": 0.311,
+            "f": "0.311"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'CHC'
+            "v": "CHC"
           },
           {
-            v: 'OF'
+            "v": "OF"
           },
           {
-            v: 'Jerry'
+            "v": "Jerry"
           },
           {
-            v: 'Mumphrey'
+            "v": "Mumphrey"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.304,
-            f: '0.304'
+            "v": 0.304,
+            "f": "0.304"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'PIT'
+            "v": "PIT"
           },
           {
-            v: '2B'
+            "v": "2B"
           },
           {
-            v: 'Johnny'
+            "v": "Johnny"
           },
           {
-            v: 'Ray'
+            "v": "Ray"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.301,
-            f: '0.301'
+            "v": 0.301,
+            "f": "0.301"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'STL'
+            "v": "STL"
           },
           {
-            v: 'MI'
+            "v": "MI"
           },
           {
-            v: 'Jose'
+            "v": "Jose"
           },
           {
-            v: 'Oquendo'
+            "v": "Oquendo"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.297,
-            f: '0.297'
+            "v": 0.297,
+            "f": "0.297"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'MON'
+            "v": "MON"
           },
           {
-            v: 'CF'
+            "v": "CF"
           },
           {
-            v: 'Mitch'
+            "v": "Mitch"
           },
           {
-            v: 'Webster'
+            "v": "Webster"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.29,
-            f: '0.29'
+            "v": 0.29,
+            "f": "0.290"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'NYM'
+            "v": "NYM"
           },
           {
-            v: 'OF'
+            "v": "OF"
           },
           {
-            v: 'Mookie'
+            "v": "Mookie"
           },
           {
-            v: 'Wilson'
+            "v": "Wilson"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.289,
-            f: '0.289'
+            "v": 0.289,
+            "f": "0.289"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'MON'
+            "v": "MON"
           },
           {
-            v: '1B'
+            "v": "1B"
           },
           {
-            v: 'Wallace'
+            "v": "Wallace"
           },
           {
-            v: 'Johnson'
+            "v": "Johnson"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.283,
-            f: '0.283'
+            "v": 0.283,
+            "f": "0.283"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'STL'
+            "v": "STL"
           },
           {
-            v: 'SS'
+            "v": "SS"
           },
           {
-            v: 'Ozzie'
+            "v": "Ozzie"
           },
           {
-            v: 'Smith'
+            "v": "Smith"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.28,
-            f: '0.28'
+            "v": 0.28,
+            "f": "0.280"
           }
         ]
       },
       {
-        c: [
+        "c": [
           {
-            v: 'SFG'
+            "v": "SFG"
           },
           {
-            v: 'RF'
+            "v": "RF"
           },
           {
-            v: 'Chili'
+            "v": "Chili"
           },
           {
-            v: 'Davis'
+            "v": "Davis"
           },
           {
-            v: 'Both'
+            "v": "Both"
           },
           {
-            v: 0.278,
-            f: '0.278'
+            "v": 0.278,
+            "f": "0.278"
           }
         ]
       }
     ]
   }
-}));
+}

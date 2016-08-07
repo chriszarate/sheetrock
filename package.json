@@ -1,6 +1,6 @@
 {
   "name": "sheetrock",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Quickly connect to, query, and lazy-load data from Google Spreadsheets.",
   "keywords": [
     "ecosystem:jquery",
@@ -12,53 +12,101 @@
     "ajax",
     "nodb"
   ],
-  "homepage": "http://chriszarate.github.io/sheetrock/",
-  "dependencies": {
-    "request": "^2.69.0"
-  },
-  "devDependencies": {
-    "browserify": "^13.0.0",
-    "jasmine": "^2.4.1",
-    "jscs": "^2.10.1",
-    "jshint": "^2.9.1",
-    "karma": "^0.13.21",
-    "karma-browserify": "^5.0.1",
-    "karma-coverage": "^0.5.3",
-    "karma-jasmine": "^0.3.7",
-    "karma-phantomjs-launcher": "^1.0.0",
-    "karma-requirejs": "^0.2.5",
-    "karma-sauce-launcher": "^0.3.0",
-    "karma-webpack": "^1.7.0",
-    "phantomjs-prebuilt": "^2.1.4",
-    "requirejs": "^2.1.22",
-    "uglify-js": "^2.6.1",
-    "watchify": "^3.7.0",
-    "webpack": "^1.12.13"
-  },
-  "browser": {
-    "request": false
-  },
-  "main": "./src/sheetrock.js",
-  "scripts": {
-    "dist": "uglifyjs src/sheetrock.js --mangle --comments '/^!/' --source-map dist/sheetrock.min.js.map --prefix relative --output dist/sheetrock.min.js",
-    "lint": "jshint src test/*.js test/spec test/loaders && jscs src test/*.js test/spec test/loaders",
-    "jasmine-node": "jasmine JASMINE_CONFIG_PATH=test/jasmine.json",
-    "karma-all": "npm run karma-browserify && npm run karma-jquery && npm run karma-requirejs && npm run karma-vanilla && npm run karma-webpack && npm run karma-saucelabs",
-    "karma-browserify": "node_modules/karma/bin/karma start test/karma-browserify.conf.js",
-    "karma-jquery": "node_modules/karma/bin/karma start test/karma-jquery.conf.js",
-    "karma-requirejs": "node_modules/karma/bin/karma start test/karma-requirejs.conf.js",
-    "karma-saucelabs": "node_modules/karma/bin/karma start test/karma-saucelabs.conf.js",
-    "karma-vanilla": "node_modules/karma/bin/karma start test/karma-vanilla.conf.js",
-    "karma-webpack": "node_modules/karma/bin/karma start test/karma-webpack.conf.js",
-    "test": "npm run lint && npm run jasmine-node && npm run karma-all"
-  },
+  "homepage": "https://chriszarate.github.io/sheetrock/",
   "repository": {
     "type": "git",
     "url": "https://github.com/chriszarate/sheetrock"
+  },
+  "bugs": {
+    "url": "https://github.com/chriszarate/sheetrock/issues"
   },
   "author": {
     "name": "Chris Zarate",
     "url": "http://chris.zarate.org"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "main": "dist/src/index.js",
+  "jsnext:main": "src/index.js",
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "istanbul"
+        ]
+      }
+    },
+    "plugins": [
+      "add-module-exports",
+      "transform-object-assign"
+    ],
+    "presets": [
+      "es2015"
+    ]
+  },
+  "ava": {
+    "require": [
+      "babel-core/register"
+    ]
+  },
+  "nyc": {
+    "include": [
+      "src"
+    ],
+    "instrument": false,
+    "require": [
+      "babel-core/register"
+    ],
+    "sourceMap": false
+  },
+  "browser": "./dist/sheetrock.min.js",
+  "scripts": {
+    "compile": "babel src --out-dir dist/src",
+    "coverage": "nyc report --reporter=html",
+    "coverage-coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "coverage-codeclimate": "nyc report --reporter=text-lcov | codeclimate-test-reporter",
+    "karma": "karma start test/karma/karma-browserify.conf.js && karma start test/karma/karma-jquery.conf.js && karma start test/karma/karma-requirejs.conf.js && karma start test/karma/karma-vanilla.conf.js && karma start test/karma/karma-webpack.conf.js",
+    "lint": "eslint src test",
+    "prepublish": "npm run compile",
+    "saucelabs": "karma start test/karma/karma-saucelabs.conf.js",
+    "test": "BABEL_ENV=test nyc ava test/ava && npm run karma",
+    "transform": "webpack --colors --devtool source-map"
+  },
+  "dependencies": {
+    "ava": "^0.16.0",
+    "request": "^2.74.0",
+    "sinon": "^1.17.5",
+    "webpack": "^1.13.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.13.2",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-istanbul": "^1.0.3",
+    "babel-plugin-transform-object-assign": "^6.8.0",
+    "babel-preset-es2015": "^6.13.2",
+    "browserify": "^13.1.0",
+    "codeclimate-test-reporter": "^0.3.3",
+    "coveralls": "^2.11.12",
+    "eslint": "^3.2.2",
+    "eslint-config-airbnb": "^10.0.0",
+    "eslint-loader": "^1.5.0",
+    "eslint-plugin-import": "^1.12.0",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "eslint-plugin-react": "^6.0.0",
+    "jasmine": "^2.4.1",
+    "karma": "^1.1.2",
+    "karma-browserify": "^5.1.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-json-fixtures-preprocessor": "0.0.6",
+    "karma-phantomjs-launcher": "^1.0.1",
+    "karma-requirejs": "^1.0.0",
+    "karma-sauce-launcher": "^1.0.0",
+    "karma-webpack": "^1.7.0",
+    "nyc": "^7.1.0",
+    "phantomjs-prebuilt": "^2.1.10",
+    "requirejs": "^2.2.0",
+    "watchify": "^3.7.0"
+  }
 }

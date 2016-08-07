@@ -1,26 +1,27 @@
-/*global define */
-/*jshint jasmine: true*/
+/* eslint-disable */
 
 (function (root, tests) {
 
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(['sheetrock', 'bootstrappedData'], function (sheetrock, bootstrappedData) {
-      tests(sheetrock, bootstrappedData);
+    define(['sheetrock'], function (sheetrock) {
+      tests(sheetrock);
     });
   } else if (typeof module === 'object' && module.exports) {
-    tests(require('../../../src/sheetrock.js'), require('../../data/bootstrappedData.js'));
+    tests(require('../../../../dist/src'));
   } else {
-    tests(root.sheetrock, root.bootstrappedData);
+    tests(root.sheetrock);
   }
 
-}(this, function (sheetrock, bootstrappedData) {
+}(this, function (sheetrock) {
 
   'use strict';
 
   var responseArgs;
   var testOptions;
+
+  var bootstrappedData = window.__fixtures__['bootstrapped'];
 
   describe('Sheetrock', function () {
 
@@ -85,5 +86,4 @@
     });
 
   });
-
 }));

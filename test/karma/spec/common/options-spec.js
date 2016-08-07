@@ -1,5 +1,4 @@
-/*global define */
-/*jshint jasmine: true*/
+/* eslint-disable */
 
 (function (root, tests) {
 
@@ -10,7 +9,7 @@
       tests(sheetrock);
     });
   } else if (typeof module === 'object' && module.exports) {
-    tests(require('../../../src/sheetrock.js'));
+    tests(require('../../../../dist/src'));
   } else {
     tests(root.sheetrock);
   }
@@ -28,7 +27,7 @@
         var asyncCallback = function (error, options) {
           expect(options.user.url).toEqual('RUNTIME_VALUE');
           expect(options.user.query).toEqual('RUNTIME_VALUE');
-          expect(options.user.fakeOption).not.toBeDefined();
+          expect(options.user.ignoredOption).toEqual('RUNTIME_VALUE');
           expect(options.user.reset).toEqual(false);
           done();
         };
@@ -38,9 +37,9 @@
         sheetrock({
           url: 'RUNTIME_VALUE',
           query: 'RUNTIME_VALUE',
-          fakeOption: 'RUNTIME_VALUE',
+          ignoredOption: 'RUNTIME_VALUE',
           callback: this.testCallback
-        });
+        }, {});
 
       });
 

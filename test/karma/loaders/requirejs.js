@@ -1,6 +1,4 @@
-'use strict';
-
-/*global requirejs, window */
+/* eslint-disable */
 
 var tests = [];
 for (var file in window.__karma__.files) {

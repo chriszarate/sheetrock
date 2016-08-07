@@ -1,11 +1,12 @@
-/*global jQuery, testData */
-/*jshint jasmine: true*/
+/* eslint-disable */
 
 'use strict';
 
 describe('Sheetrock', function () {
 
-  var requestURL = testData.urls[1];
+  var expected = window.__fixtures__['expected'];
+  var requestURL = expected.formats[1].url;
+
   var responseArgs;
   var testOptions;
 

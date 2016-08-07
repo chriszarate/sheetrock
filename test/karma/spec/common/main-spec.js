@@ -1,28 +1,27 @@
-/*global define */
-/*jshint jasmine: true*/
+/* eslint-disable */
 
 (function (root, tests) {
 
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(['sheetrock', 'testData'], function (sheetrock, testData) {
-      tests(sheetrock, testData);
+    define(['sheetrock'], function (sheetrock) {
+      tests(sheetrock);
     });
   } else if (typeof module === 'object' && module.exports) {
-    tests(require('../../../src/sheetrock.js'), require('../../data/testData.js'));
+    tests(require('../../../../dist/src'));
   } else {
-    tests(root.sheetrock, root.testData);
+    tests(root.sheetrock);
   }
 
-}(this, function (sheetrock, testData) {
+}(this, function (sheetrock) {
 
   'use strict';
 
+  var expected = window.__fixtures__['expected'];
+
   describe('Sheetrock', function () {
-
-    testData.urls.forEach(function (requestURL) {
-
+    expected.formats.forEach(function (format) {
       var responseArgs;
       var testOptions;
 
@@ -36,10 +35,10 @@
           };
 
           testOptions = {
-            url: requestURL,
+            url: format.url,
             query: 'select A,B,C,D,E,L where E = \'Both\' order by L desc',
             fetchSize: 10,
-            labels: Object.keys(testData.rows.row10),
+            labels: Object.keys(expected.output.rows.row10),
             callback: jasmine.createSpy('testCallback').and.callFake(asyncCallback),
             rowTemplate: jasmine.createSpy('testRowTemplate')
           };
@@ -125,7 +124,7 @@
 
           it('containing the expected row 10', function () {
             var response = responseArgs[2];
-            expect(response.rows[10].cells).toEqual(testData.rows.row10);
+            expect(response.rows[10].cells).toEqual(expected.output.rows.row10);
             expect(response.rows[10].cellsArray.length).toEqual(response.rows[10].labels.length);
             expect(response.rows[10].labels).toEqual(Object.keys(response.rows[10].cells));
             expect(response.rows[10].num).toEqual(10);
@@ -173,7 +172,7 @@
           it('containing the expected row 15', function () {
             var response = responseArgs[2];
             expect(response.rows[4].num).toEqual(15);
-            expect(response.rows[4].cells).toEqual(testData.rows.row15);
+            expect(response.rows[4].cells).toEqual(expected.output.rows.row15);
           });
 
         });
@@ -210,23 +209,6 @@
       });
 
       describe('fourth request', function () {
-
-        it('remembers that the previous request failed', function (done) {
-
-          var asyncCallback = function (error) {
-            expect(error).not.toBe(null);
-            expect(error.message).toEqual('A previous request for this resource failed.');
-            done();
-          };
-
-          testOptions.callback = jasmine.createSpy('testCallback').and.callFake(asyncCallback);
-          sheetrock(testOptions);
-
-        });
-
-      });
-
-      describe('fifth request', function () {
 
         it('retrieves data after resetting the request', function (done) {
 

@@ -1,9 +1,7 @@
-'use strict';
+/* eslint-disable */
 
 var sharedConfig = require('./karma-shared.conf.js');
 
-/*jshint camelcase: false*/
-/*jscs: disable requireCamelCaseOrUpperCaseIdentifiers */
 var browsers = {
   sl_android_latest: {
     base: 'SauceLabs',
@@ -41,7 +39,6 @@ var browsers = {
 };
 
 module.exports = function (config) {
-
   sharedConfig(config);
 
   config.set({
@@ -52,8 +49,8 @@ module.exports = function (config) {
     customLaunchers: browsers,
     browsers: Object.keys(browsers),
     files: [
-      '../src/sheetrock.js',
-      'data/**/*.js',
+      '../../dist/sheetrock.min.js',
+      '../fixtures/**/*.json',
       'spec/common/**/*-spec.js',
       'spec/browser/**/*-spec.js'
     ],

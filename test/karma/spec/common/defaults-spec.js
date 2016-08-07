@@ -1,5 +1,4 @@
-/*global define */
-/*jshint jasmine: true*/
+/* eslint-disable */
 
 (function (root, tests) {
 
@@ -10,7 +9,7 @@
       tests(sheetrock);
     });
   } else if (typeof module === 'object' && module.exports) {
-    tests(require('../../../src/sheetrock.js'));
+    tests(require('../../../../dist/src'));
   } else {
     tests(root.sheetrock);
   }
@@ -36,7 +35,7 @@
       sheetrock.defaults.query = 'OVERRIDE';
       sheetrock({
         callback: this.callback
-      });
+      }, {});
 
     });
 

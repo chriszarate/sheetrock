@@ -1,7 +1,6 @@
-'use strict';
+/* eslint-disable */
 
-/*global jQuery*/
-/*jshint jasmine: true*/
+'use strict';
 
 describe('Sheetrock API with jQuery', function () {
 
@@ -11,11 +10,6 @@ describe('Sheetrock API with jQuery', function () {
 
   it('registers as a jQuery plugin when possible', function () {
     expect(jQuery.fn.sheetrock).toBeDefined();
-  });
-
-  it('turns on the jQuery environment flag', function () {
-    expect(jQuery.fn.sheetrock.environment.jquery).toBeDefined();
-    expect(jQuery.fn.sheetrock.environment.jquery).not.toBe(false);
   });
 
 });

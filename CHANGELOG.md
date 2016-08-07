@@ -1,5 +1,13 @@
 ## Change Log
 
+### v1.1.0
+
+* Rewritten in ES2015.
+* Changes to API:
+  - removed non-authoritative `.environment`
+* Standard UMD provided by Webpack.
+
+
 ### v1.0.1
 
 * Webpack support.

@@ -1,0 +1,72 @@
+{
+  "version": "0.6",
+  "status": "ok",
+  "sig": "__sig__",
+  "table": {
+    "cols": [
+      {
+        "id": "A",
+        "type": "string",
+        "pattern": ""
+      },
+      {
+        "id": "B",
+        "type": "string",
+        "pattern": ""
+      },
+      {
+        "id": "C",
+        "type": "string",
+        "pattern": ""
+      },
+      {
+        "id": "D",
+        "type": "string",
+        "pattern": ""
+      },
+      {
+        "id": "E",
+        "type": "string",
+        "pattern": ""
+      },
+      {
+        "id": "L",
+        "type": "number",
+        "pattern": "General"
+      }
+    ],
+    "rows": [
+      {
+        "c": [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {}
+        ]
+      },
+      {
+        "c": [
+          {
+            "v": ["1", "2", "3"]
+          },
+          {},
+          {
+            "v": "Tim"
+          },
+          {
+            "v": "Raines"
+          },
+          {
+            "v": "Both"
+          },
+          {
+            "v": 0.334,
+            "f": "0.334"
+          }
+        ]
+      }
+    ]
+  }
+}

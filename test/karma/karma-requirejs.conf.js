@@ -1,20 +1,19 @@
-'use strict';
+/* eslint-disable */
 
 var sharedConfig = require('./karma-shared.conf.js');
 
 module.exports = function (config) {
-
   sharedConfig(config);
 
   config.set({
     frameworks: ['jasmine', 'requirejs'],
     files: [
       {
-        pattern: '../src/sheetrock.js',
+        pattern: '../../dist/sheetrock.min.js',
         included: false
       },
       {
-        pattern: 'data/**/*.js',
+        pattern: '../fixtures/**/*.json',
         included: false
       },
       {
@@ -32,5 +31,4 @@ module.exports = function (config) {
       'loaders/requirejs.js'
     ]
   });
-
 };

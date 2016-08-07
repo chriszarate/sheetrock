@@ -1,7 +1,6 @@
 language: node_js
 node_js:
-  - "4.0"
-  - "0.12"
+  - 4
 
 sudo: false
 
@@ -9,9 +8,14 @@ cache:
   directories:
     - node_modules
 
-after_script:
-  - npm -g install codeclimate-test-reporter
-  - codeclimate-test-reporter < test/coverage/**/lcov.info
+before_script:
+  - npm run compile
+  - npm run transform
+
+after_success:
+  - npm run coverage-coveralls
+  - npm run coverage-codeclimate
+  - npm run saucelabs
 
 addons:
   sauce_connect: true
