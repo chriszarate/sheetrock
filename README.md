@@ -1,7 +1,8 @@
 # Sheetrock
 
 [![Build status][build-status]][travis-ci]
-[![Test coverage][test-coverage]][code-climate]
+[![Test coverage][test-coverage]][code-climate-coverage]
+[![Code climate][code-climate-gpa]][code-climate-code]
 [![NPM version][npm-version]][fury-io]
 
 [![SauceLabs status][saucelabs-status]][saucelabs]
@@ -288,7 +289,9 @@ came up with the name. Sheetrock is released under the [MIT license][license].
 [build-status]: https://travis-ci.org/chriszarate/sheetrock.svg?branch=master
 [travis-ci]: https://travis-ci.org/chriszarate/sheetrock
 [test-coverage]: https://codeclimate.com/github/chriszarate/sheetrock/badges/coverage.svg
-[code-climate]: https://codeclimate.com/github/chriszarate/sheetrock
+[code-climate-coverage]: https://codeclimate.com/github/chriszarate/sheetrock/coverage
+[code-climate-gpa]: https://codeclimate.com/github/chriszarate/sheetrock/badges/gpa.svg
+[code-climate-code]: https://codeclimate.com/github/chriszarate/sheetrock/code
 [npm-version]: https://badge.fury.io/js/sheetrock.svg
 [fury-io]: https://badge.fury.io/js/sheetrock
 [saucelabs-status]: https://saucelabs.com/browser-matrix/sheetrock.svg
