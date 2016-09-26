@@ -1,14 +1,6 @@
 import request from 'request';
 import SheetrockError from './error';
 
-function getErrorMessage(error, resp) {
-  if (resp && resp.statusCode) {
-    return resp.statusCode;
-  }
-
-  return error.code;
-}
-
 // There is an issue with new Sheets causing the string ")]}'" to be
 // prepended to the JSON output when the X-DataSource-Auth is added.
 // Until this is fixed, load as text and manually strip with regex. :(
@@ -24,12 +16,17 @@ function get(response, callback) {
 
   request(transportOptions, (error, resp, body) => {
     if (!error && resp.statusCode === 200) {
-      const data = JSON.parse(body.replace(/^\)\]\}'\n/, ''));
-      response.loadData(data, callback);
-      return;
+      try {
+        const data = JSON.parse(body.replace(/^\)\]\}'\n/, ''));
+        response.loadData(data, callback);
+        return;
+      } catch (ignore) { /* empty */ }
     }
 
-    callback(new SheetrockError('Request failed.', getErrorMessage(error, resp)));
+    const errorCode = resp && resp.statusCode ? resp.statusCode : null;
+    const errorMessage = error && error.message ? error.message : 'Request failed.';
+
+    callback(new SheetrockError(errorMessage, errorCode));
   });
 }
 
