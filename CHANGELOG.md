@@ -1,5 +1,11 @@
 ## Change Log
 
+### v1.1.1
+
+* Fix error when parsing null cell values (fixes #101).
+* Better error handling of invalid URLs.
+
+
 ### v1.1.0
 
 * Rewritten in ES2015.
