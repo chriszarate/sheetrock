@@ -1,6 +1,6 @@
 // Extract the string contained in a cell object.
 function getCellValue(cell) {
-  let value = cell.f || cell.v || cell;
+  let value = cell ? cell.f || cell.v || cell : '';
 
   // Extract cell value while avoiding array values.
   if (value instanceof Array) {
