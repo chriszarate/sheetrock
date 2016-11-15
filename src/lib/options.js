@@ -44,7 +44,7 @@ function setRequestOptions(options, data) {
 
   // Get API endpoint, key, and gid from a Google Sheet URL.
   let sheetType = null;
-  Object.keys(config.sheetTypes).forEach(key => {
+  Object.keys(config.sheetTypes).forEach((key) => {
     const value = config.sheetTypes[key];
     if (value.keyFormat.test(options.url) && value.gidFormat.test(options.url)) {
       sheetType = value;
