@@ -30,8 +30,14 @@ class Request {
 
   get state() {
     const reset = this.options.user.reset || this.options.request.data;
-    if (!{}.hasOwnProperty.call(stateCache.store, this.index) || reset) {
+    // When no state is saved for this.index apply the defaults and add them to store
+    if (!{}.hasOwnProperty.call(stateCache.store, this.index)) {
       stateCache.store[this.index] = Object.assign({}, stateCache.defaults);
+    } else if (reset) {
+      // Reset the stateCache for this.index but keep the labels
+      const cachedLabels = stateCache.store[this.index].labels;
+      stateCache.store[this.index] = Object.assign({}, stateCache.defaults);
+      stateCache.store[this.index].labels = cachedLabels;
     }
     return stateCache.store[this.index];
   }
