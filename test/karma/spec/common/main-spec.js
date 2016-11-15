@@ -228,6 +228,27 @@
 
       });
 
+      describe('fifth request', function () {
+
+        it('retrieves data after a previous call has reset the request', function (done) {
+
+          var asyncCallback = function (error, options, response) {
+            expect(error).toBe(null);
+            expect(response.raw).not.toBe(null);
+            expect(response.rows).not.toBe(null);
+            done();
+          };
+
+          testOptions.fetchSize = 10;
+          testOptions.reset = false;
+          testOptions.callback = jasmine.createSpy('testCallback').and.callFake(asyncCallback);
+          sheetrock(testOptions);
+
+
+        });
+
+      });
+
     });
 
   });
