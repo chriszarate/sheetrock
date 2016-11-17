@@ -29,16 +29,17 @@ class Request {
   }
 
   get state() {
+    const hasPreviousState = {}.hasOwnProperty.call(stateCache.store, this.index);
     const reset = this.options.user.reset || this.options.request.data;
-    // When no state is saved for this.index apply the defaults and add them to store
-    if (!{}.hasOwnProperty.call(stateCache.store, this.index)) {
-      stateCache.store[this.index] = Object.assign({}, stateCache.defaults);
-    } else if (reset) {
-      // Reset the stateCache for this.index but keep the labels
-      const cachedLabels = stateCache.store[this.index].labels;
-      stateCache.store[this.index] = Object.assign({}, stateCache.defaults);
-      stateCache.store[this.index].labels = cachedLabels;
+
+    if (!hasPreviousState || reset) {
+      const savedState = {
+        labels: hasPreviousState ? stateCache.store[this.index].labels : null,
+      };
+
+      stateCache.store[this.index] = Object.assign({}, stateCache.defaults, savedState);
     }
+
     return stateCache.store[this.index];
   }
 

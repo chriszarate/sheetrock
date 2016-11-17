@@ -235,7 +235,7 @@
           var asyncCallback = function (error, options, response) {
             expect(error).toBe(null);
             expect(response.raw).not.toBe(null);
-            expect(response.rows).not.toBe(null);
+            expect(response.raw.table.rows.length).toEqual(testOptions.fetchSize + 1);
             done();
           };
 
@@ -243,7 +243,6 @@
           testOptions.reset = false;
           testOptions.callback = jasmine.createSpy('testCallback').and.callFake(asyncCallback);
           sheetrock(testOptions);
-
 
         });
 
