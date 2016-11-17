@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.1.2
+
+* Fix by @papoms for requests that fail after use of reset option (#104).
+
+
 ### v1.1.1
 
 * Fix error when parsing null cell values (fixes #101).
