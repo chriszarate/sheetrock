@@ -124,18 +124,19 @@ class Response {
 
   // Load API response.
   loadData(rawData, callback) {
-    let thrown = null;
+    this.raw = rawData;
 
     try {
-      this.raw = rawData;
       this.setAttributes();
       this.setOutput();
-      this.setHTML();
     } catch (error) {
-      thrown = new SheetrockError('Unexpected API response format.');
+      callback(new SheetrockError('Unexpected API response format.'));
+      return;
     }
 
-    callback(thrown);
+    // Don't catch errors thrown in setHTML; let the user handle them.
+    this.setHTML();
+    callback(null);
   }
 }
 
