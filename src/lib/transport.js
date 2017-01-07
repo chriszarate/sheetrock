@@ -17,7 +17,7 @@ function get(response, callback) {
   request(transportOptions, (error, resp, body) => {
     if (!error && resp.statusCode === 200) {
       try {
-        const data = JSON.parse(body.replace(/^\)\]\}'\n/, ''));
+        const data = JSON.parse(body.replace(/^\)]\}'\n/, ''));
         response.loadData(data, callback);
         return;
       } catch (ignore) { /* empty */ }
