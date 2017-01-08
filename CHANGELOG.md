@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.1.3
+
+* Don't catch errors thrown in user template (#111).
+
+
 ### v1.1.2
 
 * Fix by @papoms for requests that fail after use of reset option (#104).
