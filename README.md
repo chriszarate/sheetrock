@@ -34,7 +34,7 @@ Grab the [latest version of Sheetrock][latest] for your project. Here’s an
 example request (using jQuery):
 
 ```html
-<table id="#my-table"></table>
+<table id="my-table"></table>
 <script src="jquery.min.js"></script>
 <script src="sheetrock.min.js"></script>
 ```
