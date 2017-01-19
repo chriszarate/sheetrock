@@ -28,7 +28,7 @@ function setUserOptions(options) {
   validatedOptions.fetchSize = Math.max(0, parseInt(options.fetchSize, 10) || 0);
 
   // Require DOM element or a callback function. Otherwise, the data has nowhere to go.
-  if (!validatedOptions.target && !options.callback) {
+  if (!validatedOptions.target && !options.callback && !config.defaults.callback) {
     throw new SheetrockError('No element targeted or callback provided.');
   }
 
