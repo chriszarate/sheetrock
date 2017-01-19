@@ -14,7 +14,7 @@ import Response from './lib/response';
 import { defaults } from './lib/config';
 import transport from './lib/transport'; // Shimmed with 'transport-browser' in browser.
 
-const version = '1.1.3';
+const version = '1.1.4';
 
 function sheetrock(userOptions = {}, data = null) {
   let options = null;

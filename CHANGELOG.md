@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.1.4
+
+* Allow default callback to be overridden. (#113).
+
+
 ### v1.1.3
 
 * Don't catch errors thrown in user template (#111).
