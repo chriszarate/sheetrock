@@ -37,5 +37,5 @@ test('request state can be updated', (t) => {
 });
 
 test('request state persists to subsequent requests', (t) => {
-  t.throws(() => new Request(options), 'No more rows to load!');
+  t.throws(() => new Request(options), { message: 'No more rows to load!' });
 });

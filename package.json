@@ -22,38 +22,17 @@
   },
   "author": {
     "name": "Chris Zarate",
-    "url": "http://chris.zarate.org"
+    "url": "https://chris.zarate.org"
   },
   "license": "MIT",
-  "main": "dist/src/index.js",
+  "main": "dist/sheetrock.min.js",
   "jsnext:main": "src/index.js",
-  "babel": {
-    "env": {
-      "test": {
-        "plugins": [
-          "istanbul"
-        ]
-      }
-    },
-    "plugins": [
-      "add-module-exports",
-      "transform-object-assign"
-    ],
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "browsers": "last 2 versions",
-            "node": 0.12
-          }
-        }
-      ]
-    ]
-  },
   "ava": {
+    "files": [
+      "test/ava/**/*.js"
+    ],
     "require": [
-      "babel-core/register"
+      "@babel/register"
     ]
   },
   "nyc": {
@@ -61,60 +40,43 @@
       "src"
     ],
     "instrument": false,
-    "require": [
-      "babel-core/register"
-    ],
     "sourceMap": false
   },
-  "browser": "./dist/sheetrock.min.js",
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": 14
+          }
+        }
+      ]
+    ]
+  },
+  "browser": "dist/sheetrock.min.js",
   "scripts": {
-    "compile": "babel src --out-dir dist/src",
+    "build": "rollup src/index.js --file dist/sheetrock.min.js --plugin rollup-plugin-terser --sourcemap --format umd --name sheetrock",
     "coverage": "nyc report --reporter=html",
     "coverage-coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "coverage-codeclimate": "nyc report --reporter=text-lcov | codeclimate-test-reporter",
-    "karma": "karma start test/karma/karma-browserify.conf.js && karma start test/karma/karma-jquery.conf.js && karma start test/karma/karma-requirejs.conf.js && karma start test/karma/karma-vanilla.conf.js && karma start test/karma/karma-webpack.conf.js",
-    "lint": "eslint src test",
-    "prepublish": "npm run compile",
-    "saucelabs": "karma start test/karma/karma-saucelabs.conf.js",
-    "test": "BABEL_ENV=test nyc ava test/ava && npm run karma",
-    "transform": "webpack --colors --devtool source-map"
+    "lint": "eslint src",
+    "prepublish": "npm run build",
+    "test": "ava"
   },
   "dependencies": {
-    "ava": "^0.17.0",
-    "request": "^2.79.0",
-    "sinon": "^1.17.7",
-    "webpack": "^1.14.0"
+    "request": "^2.79.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.21.0",
-    "babel-eslint": "^7.1.1",
-    "babel-loader": "^6.2.10",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-istanbul": "^3.1.2",
-    "babel-plugin-transform-object-assign": "^6.8.0",
-    "babel-preset-env": "^1.1.8",
-    "browserify": "^13.3.0",
-    "codeclimate-test-reporter": "^0.4.0",
-    "coveralls": "^2.11.15",
-    "eslint": "^3.13.0",
-    "eslint-config-airbnb": "^14.0.0",
-    "eslint-loader": "^1.6.1",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^3.0.2",
-    "eslint-plugin-react": "^6.9.0",
-    "jasmine": "^2.5.3",
-    "karma": "^1.4.0",
-    "karma-browserify": "^5.1.0",
-    "karma-jasmine": "^1.1.0",
-    "karma-json-fixtures-preprocessor": "0.0.6",
-    "karma-phantomjs-launcher": "^1.0.2",
-    "karma-requirejs": "^1.1.0",
-    "karma-sauce-launcher": "^1.1.0",
-    "karma-webpack": "^2.0.1",
-    "nyc": "^10.1.2",
-    "phantomjs-prebuilt": "^2.1.14",
-    "requirejs": "^2.3.2",
-    "watchify": "^3.8.0"
+    "@babel/register": "^7.15.3",
+    "ava": "^3.15.0",
+    "babel-preset-env": "^1.7.0",
+    "coveralls": "^3.1.1",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "nyc": "^15.1.0",
+    "rollup": "^2.56.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "sinon": "^11.1.2"
   }
 }
