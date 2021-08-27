@@ -4,7 +4,7 @@ import SheetrockError from './error';
 import * as util from './util';
 
 // Get useful information about the response.
-class Response {
+export default class Response {
   constructor(request) {
     this.request = request;
     this.options = request.options;
@@ -139,5 +139,3 @@ class Response {
     callback(null);
   }
 }
-
-export default Response;

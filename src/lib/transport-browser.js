@@ -4,7 +4,7 @@ import SheetrockError from './error';
 
 let callbackIndex = 0;
 
-function get(response, callback) {
+export default function get(response, callback) {
   const headElement = window.document.getElementsByTagName('head')[0];
   const scriptElement = window.document.createElement('script');
   const callbackName = `_sheetrock_callback_${callbackIndex}`;
@@ -36,5 +36,3 @@ function get(response, callback) {
   scriptElement.src = `${response.request.url}&tqx=responseHandler:${callbackName}`;
   headElement.appendChild(scriptElement);
 }
-
-export default get;

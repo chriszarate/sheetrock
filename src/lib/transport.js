@@ -5,7 +5,7 @@ import SheetrockError from './error';
 // prepended to the JSON output when the X-DataSource-Auth is added.
 // Until this is fixed, load as text and manually strip with regex. :(
 // https://github.com/google/google-visualization-issues/issues/1928
-function get(response, callback) {
+export default function get(response, callback) {
   const transportOptions = {
     headers: {
       'X-DataSource-Auth': 'true',
@@ -34,5 +34,3 @@ function get(response, callback) {
       return callback(new SheetrockError(errorMessage, 500));
     });
 }
-
-export default get;

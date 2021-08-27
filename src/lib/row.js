@@ -1,6 +1,6 @@
 import { getCellValue } from './util';
 
-class Row {
+export default class Row {
   constructor(number, cellsArray, labels) {
     this.num = number;
     this.cellsArray = cellsArray.map(getCellValue);
@@ -16,5 +16,3 @@ class Row {
     return cellsObj;
   }
 }
-
-export default Row;
