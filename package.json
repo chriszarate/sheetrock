@@ -36,10 +36,6 @@
     ]
   },
   "nyc": {
-    "include": [
-      "src"
-    ],
-    "instrument": false,
     "sourceMap": false
   },
   "babel": {
@@ -57,11 +53,12 @@
   "browser": "dist/sheetrock.min.js",
   "scripts": {
     "build": "rollup src/index.js --file dist/sheetrock.min.js --plugin rollup-plugin-terser --sourcemap --format umd --name sheetrock",
-    "coverage": "nyc report --reporter=html",
-    "coverage-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint src",
     "prepublish": "npm run build",
-    "test": "ava"
+    "report:coverage": "nyc report --reporter=lcov",
+    "report:coverage:coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "test": "ava",
+    "test:coverage": "nyc ava"
   },
   "dependencies": {
     "request": "^2.79.0"
