@@ -19,7 +19,7 @@ function extractElement(blob) {
   let el = blob;
 
   if (typeof el === 'object' && el.jquery && el.length) {
-    el = el[0];
+    [el] = el;
   }
 
   return (el && el.nodeType && el.nodeType === 1) ? el : null;

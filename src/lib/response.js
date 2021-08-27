@@ -11,9 +11,9 @@ class Response {
   }
 
   setAttributes() {
-    const fetchSize = this.options.user.fetchSize;
-    const rows = this.raw.table.rows;
-    const cols = this.raw.table.cols;
+    const { fetchSize } = this.options.user;
+    const { rows } = this.raw.table;
+    const { cols } = this.raw.table;
 
     // Initialize a hash for the response attributes.
     const attributes = {
@@ -95,7 +95,7 @@ class Response {
 
   // Generate HTML from rows using a template.
   setHTML() {
-    const target = this.options.user.target;
+    const { target } = this.options.user;
     const template = this.options.user.rowTemplate || util.toHTML;
     const isTable = util.isTable(target);
     const needsHeader = target && util.hasClass(target, 'sheetrock-header');

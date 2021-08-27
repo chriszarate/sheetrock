@@ -37,7 +37,7 @@ class Request {
         labels: hasPreviousState ? stateCache.store[this.index].labels : null,
       };
 
-      stateCache.store[this.index] = Object.assign({}, stateCache.defaults, savedState);
+      stateCache.store[this.index] = { ...stateCache.defaults, ...savedState };
     }
 
     return stateCache.store[this.index];

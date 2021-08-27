@@ -40,7 +40,7 @@ function sheetrock(userOptions = {}, data = null) {
   }
 
   try {
-    options = new Options(Object.assign({ target: this }, userOptions), !!data);
+    options = new Options(({ target: this, ...userOptions }), !!data);
     request = new Request(options);
     response = new Response(request);
   } catch (error) {

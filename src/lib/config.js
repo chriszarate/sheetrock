@@ -1,13 +1,13 @@
 // Defaults for Sheetrock user options.
 const defaults = {
-  url: '',           // String  -- Google Sheet URL
-  query: '',         // String  -- Google Visualization API query
-  target: null,      // DOM Element -- An element to append output to
-  fetchSize: 0,      // Integer -- Number of rows to fetch (0 = all)
-  labels: [],        // Array   -- Override *returned* column labels
+  url: '', // String  -- Google Sheet URL
+  query: '', // String  -- Google Visualization API query
+  target: null, // DOM Element -- An element to append output to
+  fetchSize: 0, // Integer -- Number of rows to fetch (0 = all)
+  labels: [], // Array   -- Override *returned* column labels
   rowTemplate: null, // Function / Template
-  callback: null,    // Function
-  reset: false,      // Boolean -- Reset request status
+  callback: null, // Function
+  reset: false, // Boolean -- Reset request status
 };
 
 // Map of legacy (pre-v1.0.0) option names to current user option names.

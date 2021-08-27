@@ -33,7 +33,7 @@ function setUserOptions(options) {
   }
 
   // Extend default options.
-  return Object.assign({}, config.defaults, options, validatedOptions);
+  return { ...config.defaults, ...options, ...validatedOptions };
 }
 
 function setRequestOptions(options, data) {
