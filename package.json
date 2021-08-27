@@ -61,7 +61,7 @@
     "test:coverage": "nyc ava"
   },
   "dependencies": {
-    "request": "^2.79.0"
+    "cross-fetch": "^3.1.4"
   },
   "devDependencies": {
     "@babel/register": "^7.15.3",
