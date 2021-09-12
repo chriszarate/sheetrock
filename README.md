@@ -304,7 +304,6 @@ came up with the name. Sheetrock is released under the [MIT license][license].
 [handlebars]: http://handlebarsjs.com
 [gh-pages]: http://chriszarate.github.io/sheetrock/
 [latest]: http://chriszarate.github.io/sheetrock/dist/sheetrock.min.js
-[cdnjs]: https://cdnjs.com
 [0.3.x]: https://github.com/chriszarate/sheetrock/tree/0.3.0
 [wiki]: https://github.com/chriszarate/sheetrock/wiki/Projects-using-Sheetrock
 [changelog]: https://github.com/chriszarate/sheetrock/blob/master/CHANGELOG.md
