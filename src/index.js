@@ -15,7 +15,7 @@ import { defaults } from './lib/config';
 import transport from './lib/transport';
 import browserTransport from './lib/transport-browser';
 
-const version = '1.1.4';
+const version = '1.2.0';
 
 function sheetrock(userOptions = {}, data = null) {
   let options = null;

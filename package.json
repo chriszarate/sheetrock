@@ -1,6 +1,6 @@
 {
   "name": "sheetrock",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "Quickly connect to, query, and lazy-load data from Google Spreadsheets.",
   "keywords": [
     "ecosystem:jquery",
