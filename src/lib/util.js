@@ -1,3 +1,5 @@
+/* global Event */
+
 // Extract the string contained in a cell object.
 export function getCellValue(cell) {
   let value = cell ? cell.f || cell.v || cell : '';
@@ -57,4 +59,12 @@ export function toHTML(row) {
     html += wrapTag(row.cells[key], tag);
   });
   return wrapTag(html, 'tr');
+}
+
+// Trigger a custom event on the targeted element.
+export function triggerEvent(el, eventName) {
+  if (typeof Event === 'function') {
+    const event = new Event(eventName);
+    el.dispatchEvent(event);
+  }
 }

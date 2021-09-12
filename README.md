@@ -148,6 +148,18 @@ example, you can use `document.getElementById` to reference a single element.
 If you are using Sheetrock with jQuery, you can use the jQuery plugin syntax
 (e.g., `$('#my-table').sheetrock({/* options */})`) and ignore this option.
 
+When data has been loaded and markup appended to the target element, a custom
+`sheetrock:loaded` event will be triggered on the element. You can listen for
+this event if you'd like to perform an action after the DOM is updated:
+
+```js
+$('#my-table')
+  .sheetrock({/* options */})
+  .on('sheetrock:loaded', function () {
+    /* do something */
+  });
+```
+
 
 ### fetchSize
 

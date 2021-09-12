@@ -1,5 +1,11 @@
 ## Change Log
 
+### v1.2.0
+
+* Trigger event on element when data is loaded (#145).
+* Update dependencies and switch to Rollup (#144).
+
+
 ### v1.1.4
 
 * Allow default callback to be overridden. (#113).
