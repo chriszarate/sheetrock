@@ -238,6 +238,41 @@
           </p>
 
 
+          <h2 id="datatables">DataTables</h2>
+
+          <p>It's also easy to use Sheetrock with other libraries like <a href="https://datatables.net/" target="_blank">DataTables</a>.</p>
+
+          <div class="example-render" data-language="markup">
+            <!-- Load DataTables script and stylesheet from CDNJS -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css">
+          </div>
+
+          <p>In this example, we load the entire sheet and then use DataTables to create a sortable, paginated table. We can't call DataTables right away because the data is fetched asynchronously. Instead, we wait for Sheetrock to emit a <code class="inline">sheetrock:loaded</code> event before calling <code class=:inline">.DataTables()</code>.
+
+          <div class="example-render-group">
+
+            <div class="example-render output" data-language="markup" data-example-class="operator-plus">
+              <table id="raw-table" class="table table-condensed table-striped"></table>
+            </div>
+
+            <script class="example-render" data-language="javascript" data-example-class="operator-equals">
+              // Load all hitters and format with DataTables.
+              $('#raw-table').sheetrock({
+                url: mySpreadsheet,
+                query: "select A,B,C,D,E,L order by L desc",
+              }).on('sheetrock:loaded', function () {
+                $(this).DataTable();
+              });
+            </script>
+
+          </div>
+
+          <p class="fiddle">
+            <a href="https://jsfiddle.net/chriszarate/hr2j4wxp/">Show a jsFiddle for this example.</a>
+          </p>
+
+
           <h2>More?</h2>
 
           <p>Detailed documentation is available at the <a href="https://github.com/chriszarate/sheetrock">GitHub repository</a>. Please feel free to <a href="https://github.com/chriszarate/sheetrock/issues">raise an issue</a> if you are having a problem with Sheetrock.</p>
