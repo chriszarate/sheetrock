@@ -118,6 +118,7 @@ export default class Response {
     }
 
     util.append(target, headerHTML + bodyHTML);
+    util.triggerEvent(target, 'sheetrock:loaded');
 
     this.html = headerHTML + bodyHTML;
   }
