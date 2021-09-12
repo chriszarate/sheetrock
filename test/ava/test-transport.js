@@ -21,7 +21,7 @@ function macro(t, url, errorMessage, errorCode) {
 
 const testArgs = [
   ['http://google.com/404', 'Request failed.', 404],
-  ['not even trying', 'Invalid URI "not%20even%20trying"', null],
+  ['not even trying', 'Only absolute URLs are supported', 500],
 ];
 
 test.cb('transport fails to load 404 URL', macro, ...testArgs[0]);

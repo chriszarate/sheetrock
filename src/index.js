@@ -12,7 +12,8 @@ import Request from './lib/request';
 import Response from './lib/response';
 
 import { defaults } from './lib/config';
-import transport from './lib/transport'; // Shimmed with 'transport-browser' in browser.
+import transport from './lib/transport';
+import browserTransport from './lib/transport-browser';
 
 const version = '1.1.4';
 
@@ -40,7 +41,7 @@ function sheetrock(userOptions = {}, data = null) {
   }
 
   try {
-    options = new Options(Object.assign({ target: this }, userOptions), !!data);
+    options = new Options(({ target: this, ...userOptions }), !!data);
     request = new Request(options);
     response = new Response(request);
   } catch (error) {
@@ -50,7 +51,11 @@ function sheetrock(userOptions = {}, data = null) {
   if (data) {
     response.loadData(data, handleError);
   } else if (options && request && response) {
-    transport(response, handleError);
+    if (typeof window === 'object' && 'document' in window) {
+      browserTransport(response, handleError);
+    } else {
+      transport(response, handleError);
+    }
   }
 
   return this;

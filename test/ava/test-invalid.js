@@ -13,7 +13,7 @@ function generateCallback(t, message) {
 }
 
 test('sheetrock throws an error if there is no callback', (t) => {
-  t.throws(() => sheetrock(), 'No element targeted or callback provided.');
+  t.throws(() => sheetrock(), { message: 'No element targeted or callback provided.' });
 });
 
 test.serial.cb('sheetrock cannot fetch an invalid URL', (t) => {

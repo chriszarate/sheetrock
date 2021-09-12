@@ -2,10 +2,10 @@ import SheetrockError from './error';
 
 /* global window */
 
-const headElement = window.document.getElementsByTagName('head')[0];
 let callbackIndex = 0;
 
-function get(response, callback) {
+export default function get(response, callback) {
+  const headElement = window.document.getElementsByTagName('head')[0];
   const scriptElement = window.document.createElement('script');
   const callbackName = `_sheetrock_callback_${callbackIndex}`;
   callbackIndex += 1;
@@ -36,5 +36,3 @@ function get(response, callback) {
   scriptElement.src = `${response.request.url}&tqx=responseHandler:${callbackName}`;
   headElement.appendChild(scriptElement);
 }
-
-export default get;

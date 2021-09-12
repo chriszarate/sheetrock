@@ -12,7 +12,7 @@ const stateCache = {
   store: {},
 };
 
-class Request {
+export default class Request {
   constructor(options) {
     this.options = options;
     this.index = options.requestIndex;
@@ -37,7 +37,7 @@ class Request {
         labels: hasPreviousState ? stateCache.store[this.index].labels : null,
       };
 
-      stateCache.store[this.index] = Object.assign({}, stateCache.defaults, savedState);
+      stateCache.store[this.index] = { ...stateCache.defaults, ...savedState };
     }
 
     return stateCache.store[this.index];
@@ -61,5 +61,3 @@ class Request {
     stateCache.store[this.index] = Object.assign(this.state, attributes);
   }
 }
-
-export default Request;

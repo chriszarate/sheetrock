@@ -1,4 +1,4 @@
-class SheetrockError extends Error {
+export default class SheetrockError extends Error {
   constructor(message = '', code = null) {
     super();
     this.name = 'SheetrockError';
@@ -6,5 +6,3 @@ class SheetrockError extends Error {
     this.message = message;
   }
 }
-
-export default SheetrockError;

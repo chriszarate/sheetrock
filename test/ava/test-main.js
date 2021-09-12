@@ -53,10 +53,10 @@ function main(t, url, firstRequest = true) {
   sheetrock(testOptions);
 }
 
-expected.formats.forEach((format) => {
+expected.formats.forEach(format => {
   test.serial.cb(`sheetrock ${format.description}`, main, format.url);
 });
 
 // Make another request for additional data.
 const format = expected.formats[1];
-test.serial.cb(`sheetrock ${format.description}`, main, format.url, false);
+test.serial.cb(`sheetrock ${format.description} for additional data`, main, format.url, false);

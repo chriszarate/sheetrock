@@ -33,7 +33,7 @@ function setUserOptions(options) {
   }
 
   // Extend default options.
-  return Object.assign({}, config.defaults, options, validatedOptions);
+  return { ...config.defaults, ...options, ...validatedOptions };
 }
 
 function setRequestOptions(options, data) {
@@ -64,7 +64,7 @@ function setRequestOptions(options, data) {
   throw new SheetrockError('No key/gid in the provided URL.');
 }
 
-class Options {
+export default class Options {
   constructor(options = {}, data = false) {
     this.user = setUserOptions(translateLegacyOptions(options));
     this.request = setRequestOptions(this.user, data);
@@ -73,5 +73,3 @@ class Options {
     this.requestIndex = `${this.request.key}_${this.request.gid}_${this.user.query}`;
   }
 }
-
-export default Options;
