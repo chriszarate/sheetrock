@@ -52,7 +52,7 @@
   },
   "browser": "dist/sheetrock.min.js",
   "scripts": {
-    "build": "rollup --config rollup.config.ts --sourcemap",
+    "build": "tsc",
     "lint": "eslint --ignore-path .gitignore .",
     "lint:fix": "npm run lint -- --fix",
     "prepublish": "npm run build",
@@ -65,12 +65,9 @@
     "cross-fetch": "^3.1.4"
   },
   "devDependencies": {
-    "@babel/register": "^7.15.3",
-    "@rollup/plugin-typescript": "^8.2.5",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "ava": "^3.15.0",
-    "babel-preset-env": "^1.7.0",
     "coveralls": "^3.1.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -80,8 +77,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "nyc": "^15.1.0",
     "prettier": "^2.4.0",
-    "rollup": "^2.56.3",
-    "rollup-plugin-terser": "^7.0.2",
     "sinon": "^11.1.2",
     "typescript": "^4.4.3"
   }
