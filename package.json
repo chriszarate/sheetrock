@@ -54,6 +54,7 @@
   "scripts": {
     "build": "rollup --config rollup.config.ts --sourcemap",
     "lint": "eslint --ignore-path .gitignore .",
+    "lint:fix": "npm run lint -- --fix",
     "prepublish": "npm run build",
     "report:coverage": "nyc report --reporter=lcov",
     "report:coverage:coveralls": "nyc report --reporter=text-lcov | coveralls",

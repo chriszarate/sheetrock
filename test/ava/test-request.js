@@ -10,7 +10,10 @@ const options = new Options(userOptions);
 const request = new Request(options);
 
 test('request generates request URL', (t) => {
-  t.is('https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/gviz/tq?gid=0&tq=', request.url);
+  t.is(
+    'https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/gviz/tq?gid=0&tq=',
+    request.url
+  );
 });
 
 test('request provides initial default state', (t) => {

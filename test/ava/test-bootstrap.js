@@ -5,7 +5,14 @@ import bootstrapped from '../fixtures/bootstrapped.json';
 import expected from '../fixtures/expected.json';
 
 test('sheetrock loads bootstrapped data synchronously', (t) => {
-  const labels = ['team', 'position', 'firstName', 'lastName', 'bats', 'average'];
+  const labels = [
+    'team',
+    'position',
+    'firstName',
+    'lastName',
+    'bats',
+    'average',
+  ];
 
   function callback(error, options, response) {
     t.is(error, null);

@@ -10,8 +10,5 @@ export default {
       name: 'sheetrock',
     },
   ],
-  plugins: [
-    terser(),
-    typescript(),
-  ],
+  plugins: [terser(), typescript()],
 };

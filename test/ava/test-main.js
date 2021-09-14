@@ -18,7 +18,9 @@ function main(t, url, firstRequest = true) {
     rowTemplate: sinon.spy(),
     url,
   };
-  const expectedLength = (firstRequest) ? testOptions.fetchSize + 1 : testOptions.fetchSize;
+  const expectedLength = firstRequest
+    ? testOptions.fetchSize + 1
+    : testOptions.fetchSize;
 
   testOptions.callback = (error, options, response) => {
     t.is(error, null);
@@ -41,9 +43,15 @@ function main(t, url, firstRequest = true) {
     t.is(testOptions.rowTemplate.callCount, testOptions.fetchSize);
 
     if (firstRequest) {
-      t.deepEqual(response.rows[10].labels, Object.keys(response.rows[10].cells));
+      t.deepEqual(
+        response.rows[10].labels,
+        Object.keys(response.rows[10].cells)
+      );
       t.deepEqual(response.rows[10].cells, expected.output.rows.row10);
-      t.is(response.rows[10].cellsArray.length, response.rows[10].labels.length);
+      t.is(
+        response.rows[10].cellsArray.length,
+        response.rows[10].labels.length
+      );
       t.is(response.rows[10].num, 10);
     }
 
@@ -53,10 +61,15 @@ function main(t, url, firstRequest = true) {
   sheetrock(testOptions);
 }
 
-expected.formats.forEach(format => {
+expected.formats.forEach((format) => {
   test.serial.cb(`sheetrock ${format.description}`, main, format.url);
 });
 
 // Make another request for additional data.
 const format = expected.formats[1];
-test.serial.cb(`sheetrock ${format.description} for additional data`, main, format.url, false);
+test.serial.cb(
+  `sheetrock ${format.description} for additional data`,
+  main,
+  format.url,
+  false
+);

@@ -20,7 +20,11 @@ test('sheetrock interacts with dom', (t) => {
 
     // Check HTML output for header and body.
     t.true(response.html.indexOf('<thead><tr><th>Team</th>') !== -1);
-    t.true(response.html.indexOf('<td>MON</td><td>LF</td><td>Tim</td><td>Raines</td>') !== -1);
+    t.true(
+      response.html.indexOf(
+        '<td>MON</td><td>LF</td><td>Tim</td><td>Raines</td>'
+      ) !== -1
+    );
   }
 
   sheetrock({ callback, target }, bootstrapped);

@@ -26,11 +26,15 @@ test('options rejects an invalid URL', (t) => {
     callback: () => {},
     url: 'https://docs.google.com/spreadsheets/d/12345',
   };
-  t.throws(() => new Options(userOptions), { message: 'No key/gid in the provided URL.' });
+  t.throws(() => new Options(userOptions), {
+    message: 'No key/gid in the provided URL.',
+  });
 });
 
 test('options requires a callback or DOM target', (t) => {
-  t.throws(() => new Options(), { message: 'No element targeted or callback provided.' });
+  t.throws(() => new Options(), {
+    message: 'No element targeted or callback provided.',
+  });
 });
 
 test('defaults can be overridden globally', (t) => {
