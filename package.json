@@ -52,7 +52,7 @@
   },
   "browser": "dist/sheetrock.min.js",
   "scripts": {
-    "build": "rollup src/index.js --file dist/sheetrock.min.js --plugin rollup-plugin-terser --sourcemap --format umd --name sheetrock",
+    "build": "rollup --config rollup.config.ts --sourcemap",
     "lint": "eslint src",
     "prepublish": "npm run build",
     "format": "prettier --write --ignore-unknown src",
@@ -66,6 +66,7 @@
   },
   "devDependencies": {
     "@babel/register": "^7.15.3",
+    "@rollup/plugin-typescript": "^8.2.5",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "ava": "^3.15.0",
