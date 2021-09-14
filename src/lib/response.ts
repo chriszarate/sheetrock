@@ -49,14 +49,15 @@ export default class Response {
     // and stop when we see less rows than we requested.
 
     // Remember whether this request has been fully loaded.
-    if (!fetchSize || (rows.length - attributes.rowNumberOffset) < fetchSize) {
+    if (!fetchSize || rows.length - attributes.rowNumberOffset < fetchSize) {
       attributes.last += 1;
       this.request.update({ loaded: true });
     }
 
     // If column labels are provided and have the expected length, use them.
     const userLabels = this.options.user.labels;
-    const userLabelsValid = userLabels && userLabels.length === columnLabels.length;
+    const userLabelsValid =
+      userLabels && userLabels.length === columnLabels.length;
     attributes.labels = userLabelsValid ? userLabels : columnLabels;
 
     // Return the response attributes.
@@ -69,7 +70,9 @@ export default class Response {
 
     // Add a header row constructed from the column labels, if appropriate.
     if (!this.request.state.offset && !this.attributes.rowNumberOffset) {
-      this.rows.push(new Row(0, this.attributes.labels, this.attributes.labels));
+      this.rows.push(
+        new Row(0, this.attributes.labels, this.attributes.labels)
+      );
     }
 
     // Each table cell ('c') can contain two properties: 'p' contains
@@ -82,7 +85,8 @@ export default class Response {
       if (row.c && i < this.attributes.last) {
         // Get the "real" row index (not counting header rows). Create a row
         // object and add it to the output array.
-        const counter = (this.request.state.offset + i + 1) - this.attributes.rowNumberOffset;
+        const counter =
+          this.request.state.offset + i + 1 - this.attributes.rowNumberOffset;
         this.rows.push(new Row(counter, row.c, this.attributes.labels));
       }
     });

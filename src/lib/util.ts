@@ -24,7 +24,7 @@ export function extractElement(blob) {
     [el] = el;
   }
 
-  return (el && el.nodeType && el.nodeType === 1) ? el : null;
+  return el && el.nodeType && el.nodeType === 1 ? el : null;
 }
 
 // Append HTML output to DOM.

@@ -29,7 +29,10 @@ export default class Request {
   }
 
   get state() {
-    const hasPreviousState = {}.hasOwnProperty.call(stateCache.store, this.index);
+    const hasPreviousState = {}.hasOwnProperty.call(
+      stateCache.store,
+      this.index
+    );
     const reset = this.options.user.reset || this.options.request.data;
 
     if (!hasPreviousState || reset) {
@@ -47,7 +50,9 @@ export default class Request {
   get url() {
     // If requested, make a request for paged data.
     const size = this.options.user.fetchSize;
-    const pageQuery = (size) ? ` limit ${size + 1} offset ${this.state.offset}` : '';
+    const pageQuery = size
+      ? ` limit ${size + 1} offset ${this.state.offset}`
+      : '';
 
     const queryVars = [
       `gid=${encodeURIComponent(this.options.request.gid)}`,

@@ -29,7 +29,8 @@ export default function get(response, callback) {
         return callback(error);
       }
 
-      const errorMessage = error && error.message ? error.message : 'Request failed.';
+      const errorMessage =
+        error && error.message ? error.message : 'Request failed.';
 
       return callback(new SheetrockError(errorMessage, 500));
     });

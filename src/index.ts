@@ -41,7 +41,7 @@ function sheetrock(userOptions = {}, data = null) {
   }
 
   try {
-    options = new Options(({ target: this, ...userOptions }), !!data);
+    options = new Options({ target: this, ...userOptions }, !!data);
     request = new Request(options);
     response = new Response(request);
   } catch (error) {
@@ -66,6 +66,8 @@ Object.assign(sheetrock, { defaults, version });
 // If jQuery is available as a global, register as a plugin.
 try {
   window.jQuery.fn.sheetrock = sheetrock;
-} catch (ignore) { /* empty */ }
+} catch (ignore) {
+  /* empty */
+}
 
 export default sheetrock;

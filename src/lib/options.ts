@@ -25,10 +25,17 @@ function setUserOptions(options) {
   validatedOptions.target = extractElement(options.target);
 
   // Correct bad integer values.
-  validatedOptions.fetchSize = Math.max(0, parseInt(options.fetchSize, 10) || 0);
+  validatedOptions.fetchSize = Math.max(
+    0,
+    parseInt(options.fetchSize, 10) || 0
+  );
 
   // Require DOM element or a callback function. Otherwise, the data has nowhere to go.
-  if (!validatedOptions.target && !options.callback && !config.defaults.callback) {
+  if (
+    !validatedOptions.target &&
+    !options.callback &&
+    !config.defaults.callback
+  ) {
     throw new SheetrockError('No element targeted or callback provided.');
   }
 
@@ -46,7 +53,10 @@ function setRequestOptions(options, data) {
   let sheetType = null;
   Object.keys(config.sheetTypes).forEach((key) => {
     const value = config.sheetTypes[key];
-    if (value.keyFormat.test(options.url) && value.gidFormat.test(options.url)) {
+    if (
+      value.keyFormat.test(options.url) &&
+      value.gidFormat.test(options.url)
+    ) {
       sheetType = value;
     }
   });
