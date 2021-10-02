@@ -1,68 +1,61 @@
-import SheetrockError from './error';
-
-// Provide a simple state store shared across requests.
-const stateCache = {
-  defaults: {
-    failed: false,
-    header: 0,
-    labels: null,
-    loaded: false,
-    offset: 0,
-  },
-  store: {},
-};
+import Debug from './debug';
+import { throwRequestDone } from './error';
+import Transport from './transport';
 
 export default class Request {
-  constructor(options) {
-    this.options = options;
-    this.index = options.requestIndex;
+  debug: Debug;
 
-    // Abandon requests that have previously generated an error.
-    if (this.state.failed) {
-      throw new SheetrockError('A previous request for this resource failed.');
-    }
+  done: boolean = false;
 
-    // Abandon requests that have already been loaded.
-    if (this.state.loaded) {
-      throw new SheetrockError('No more rows to load!');
-    }
+  offset: number = 0;
+
+  query: string;
+
+  transport: Transport;
+
+  constructor(url: string, query: string = '', debug: Debug) {
+    this.debug = debug;
+    this.query = query;
+    this.transport = new Transport(url, debug);
   }
 
-  get state() {
-    const hasPreviousState = {}.hasOwnProperty.call(
-      stateCache.store,
-      this.index
-    );
-    const reset = this.options.user.reset || this.options.request.data;
-
-    if (!hasPreviousState || reset) {
-      const savedState = {
-        labels: hasPreviousState ? stateCache.store[this.index].labels : null,
-      };
-
-      stateCache.store[this.index] = { ...stateCache.defaults, ...savedState };
+  async get(pageSize: number = 0): Promise<GoogleDataTableResponse> {
+    if (this.done) {
+      return throwRequestDone();
     }
 
-    return stateCache.store[this.index];
+    let tq = this.query.trim();
+
+    // If requested via pageSize, paginate the request.
+    //
+    // The Google API generates an unrecoverable error when the 'offset' is
+    // larger than the number of available rows, which is problematic for
+    // paged requests. As a workaround, we request one more row than we need
+    // and stop when we see less rows than we requested.
+    if (pageSize) {
+      tq = `${tq} limit ${pageSize + 1} offset ${this.offset}`.trim();
+    }
+
+    const data = await this.transport.fetch(tq);
+
+    // If the returned data has pageSize + 1 rows, then there are more rows to
+    // fetch. Remove the extra row. Update the offset so that the user can pick
+    // up where they left off.
+    //
+    // If the returned data has less than pageSize + 1 rows, we've reached the
+    // end of the sheet.
+    if (data.table.rows.length === pageSize + 1) {
+      data.table.rows.splice(-1);
+      this.offset += pageSize;
+    } else {
+      this.done = true;
+    }
+
+    return data;
   }
 
-  // Assemble a full URI for the query.
-  get url() {
-    // If requested, make a request for paged data.
-    const size = this.options.user.fetchSize;
-    const pageQuery = size
-      ? ` limit ${size + 1} offset ${this.state.offset}`
-      : '';
-
-    const queryVars = [
-      `gid=${encodeURIComponent(this.options.request.gid)}`,
-      `tq=${encodeURIComponent(this.options.user.query + pageQuery)}`,
-    ];
-    return this.options.request.apiEndpoint + queryVars.join('&');
-  }
-
-  // Extend exsiting attributes with passed attributes.
-  update(attributes = {}) {
-    stateCache.store[this.index] = Object.assign(this.state, attributes);
+  reset() {
+    this.done = false;
+    this.offset = 0;
   }
 }

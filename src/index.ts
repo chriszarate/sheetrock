@@ -5,69 +5,33 @@
  * License: MIT
  */
 
-/* global window */
-
-import Options from './lib/options';
+import Debug from './lib/debug';
 import Request from './lib/request';
 import Response from './lib/response';
 
-import { defaults } from './lib/config';
-import transport from './lib/transport';
-import browserTransport from './lib/transport-browser';
+export default class Sheetrock {
+  debug: Debug;
 
-const version = '1.2.0';
+  request: Request;
 
-function sheetrock(userOptions = {}, data = null) {
-  let options = null;
-  let request = null;
-  let response = null;
+  constructor(options: SheetrockOptions) {
+    const { debug = true, query = '', url = '' } = options || {};
 
-  // Call the user's callback function or rethrow error.
-  function handleError(error) {
-    if (error && error.name === 'SheetrockError') {
-      if (request && request.update) {
-        request.update({ failed: true });
-      }
-    }
-
-    if (userOptions.callback) {
-      userOptions.callback(error, options, response);
-      return;
-    }
-
-    if (error) {
-      throw error;
-    }
+    this.debug = new Debug(!!debug);
+    this.request = new Request(url, query, this.debug);
   }
 
-  try {
-    options = new Options({ target: this, ...userOptions }, !!data);
-    request = new Request(options);
-    response = new Response(request);
-  } catch (error) {
-    handleError(error);
+  async getRaw(pageSize: number = 0): Promise<GoogleDataTableResponse> {
+    return this.request.get(pageSize);
   }
 
-  if (data) {
-    response.loadData(data, handleError);
-  } else if (options && request && response) {
-    if (typeof window === 'object' && 'document' in window) {
-      browserTransport(response, handleError);
-    } else {
-      transport(response, handleError);
-    }
+  get(pageSize: number = 0): Promise<SheetrockResponse> {
+    const response = new Response(this.request, pageSize);
+
+    return response.fulfill();
   }
 
-  return this;
+  reset() {
+    this.request.reset();
+  }
 }
-
-Object.assign(sheetrock, { defaults, version });
-
-// If jQuery is available as a global, register as a plugin.
-try {
-  window.jQuery.fn.sheetrock = sheetrock;
-} catch (ignore) {
-  /* empty */
-}
-
-export default sheetrock;

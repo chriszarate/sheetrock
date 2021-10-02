@@ -1,5 +1,10 @@
 ## Change Log
 
+- statistics on timing
+- request handles url
+- preserve id
+- playground
+
 ### v1.2.0
 
 * Trigger event on element when data is loaded (#145).
