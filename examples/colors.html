@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Find colors</title>
+		<link href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<main class="container">
+			<section>
+				<header>
+					<h1>Loading data into an HTML table</h1>
+				</header>
+
+				<article>
+					<header>
+						<form>
+							<textarea id="input"></textarea>
+							<button onclick="findColors()" type="button">Find colors</button>
+						</form>
+					</header>
+
+					<div id="output" style="display: flex; flex-wrap: wrap"/>
+				</article>
+			</section>
+		</main>
+
+		<script>
+			const input = document.querySelector('#input');
+			const output = document.querySelector('#output');
+
+			function findColors() {
+				output.innerHTML = '';
+				const text = input.value;
+				const colors = text.match(/#[0-9a-f]{3,6}/gi);
+				const fragment = document.createDocumentFragment();
+
+				if (colors) {
+					colors.forEach((color) => {
+						const el = document.createElement('div');
+						el.style.backgroundColor = color;
+						el.style.borderRadius = '50%';
+						el.style.margin = '0 2em 2em 0';
+						el.style.height = '3em';
+						el.style.width = '3em';
+						el.textContent = color;
+						fragment.appendChild(el);
+					});
+				}
+				console.log(colors);
+				output.appendChild(fragment);
+			}
+		</script>
+	</body>
+</html>

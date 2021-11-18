@@ -40,7 +40,7 @@ type GoogleDataTableResponse = {
   version: string;
 };
 
-type GoogleApiQuery = {
+type GoogleApiQueryParams = {
   select?: string;
   where?: string;
   groupBy?: string;
@@ -55,6 +55,7 @@ type GoogleApiQuery = {
 
 type SheetrockOptions = {
   debug?: boolean;
+  table?: HTMLTableElement;
   url: string;
 };
 
@@ -75,12 +76,14 @@ type SheetrockRow = {
   [key: string]: SheetrockCell;
 };
 
+type SheetrockMeta = {
+  done: boolean;
+  offset: number;
+  version: string;
+};
+
 type SheetrockResponse = {
   headers: SheetrockHeader[];
-  meta: {
-    done: boolean;
-    offset: number;
-    version: string;
-  };
+  meta: SheetrockMeta;
   rows: SheetrockRow[];
 };

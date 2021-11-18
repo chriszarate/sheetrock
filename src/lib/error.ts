@@ -2,6 +2,10 @@ export function throwCannotChangeQuery(): never {
   throw new Error('Cannot change query after fetching rows');
 }
 
+export function throwInvalidTableElement(): never {
+  throw new Error('Supplied table is not a HTML table element.');
+}
+
 export function throwInvalidUrl(): never {
   throw new Error('No key/gid in the provided URL.');
 }

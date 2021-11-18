@@ -1,7 +1,44 @@
 import fetch from 'cross-fetch';
 import Debug from './debug';
-import { throwRequestFailed, throwRequestTimedOut } from './error';
-import { getEndpoint } from './util';
+import {
+  throwInvalidUrl,
+  throwRequestFailed,
+  throwRequestTimedOut,
+} from './error';
+
+function getMatch(input: string, pattern: string): string | null {
+  const regExp = new RegExp(pattern, 'i');
+  const match = input.match(regExp);
+  if (match) {
+    return match[1];
+  }
+
+  return null;
+}
+
+function getEndpoint(url: string): string {
+  const key2010 = getMatch(url, 'key=([^&#]+)');
+  const gid = getMatch(url, 'gid=([^/&#]+)') || 0;
+
+  if (key2010) {
+    return [
+      'https://spreadsheets.google.com/tq',
+      `?key=${encodeURIComponent(key2010)}`,
+      `&gid=${encodeURIComponent(gid)}`,
+    ].join('');
+  }
+
+  const key2014 = getMatch(url, 'spreadsheets/d/([^/#]+)');
+
+  if (key2014) {
+    return [
+      `https://docs.google.com/spreadsheets/d/${key2014}/gviz/tq`,
+      `?gid=${encodeURIComponent(gid)}`,
+    ].join('');
+  }
+
+  return throwInvalidUrl();
+}
 
 export default class Transport {
   debug: Debug;

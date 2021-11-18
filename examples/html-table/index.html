@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>HTML table</title>
+		<link href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" rel="stylesheet">
+    <link href="../prism-theme.css" rel="stylesheet">
+
+		<script src="../../dist/sheetrock.min.js" defer></script>
+    <script src="https://unpkg.com/prismjs@0.0.1/prism.js" defer></script>
+	</head>
+	<body>
+		<main class="container">
+			<section>
+				<header>
+					<h1>Loading data into an HTML table</h1>
+				</header>
+				<p>This example uses the <code>table</code> option, which directs Sheetrock to load the data into an HTML table on the page. Because we do not use <code>.select()</code>, <code>.limit()</code>, or any other query methods, the entire table is loaded.</p>
+				<p>The <code>debug</code> option is also enabled, which logs helpful information to the console. Since this example manipulates the DOM, it can only be run in a browser.</p>
+
+				<article>
+					<header>
+						<pre class="language-markup"><code>&lt;table id="table" role="grid"&gt;&lt;/table&gt;</code></pre>
+						<pre class="language-javascript" id="load-table"><code>const debug = true;
+const table = document.querySelector('#table');
+const url = 'https://docs.google.com/spreadsheets/d/1qT1LyvoAcb0HTsi2rHBltBVpUBumAUzT__rhMvrz5Rk/edit#gid=0';
+
+const query = new Sheetrock({ debug, table, url });
+
+query.get();</code></pre>
+						<button aria-busy="true" data-run-script="load-table" data-clear-output="output" />
+					</header>
+
+					<figure id="output" />
+				</article>
+			</section>
+		</main>
+
+		<script src="../instrument-examples.js"></script>
+	</body>
+</html>

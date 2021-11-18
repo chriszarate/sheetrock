@@ -77,4 +77,29 @@ export default class Debug {
       ].join(' ')
     );
   }
+
+  logTable(table: HTMLTableElement | null) {
+    if (!table) {
+      this.log('No table provided');
+      return;
+    }
+
+    this.log(`Received table: ${table.outerHTML}`);
+  }
+
+  logTableBodyCreation() {
+    this.log('Creating table body');
+  }
+
+  logTableBodyUpdate(count: number) {
+    this.log(`Updating table body with ${count} rows`);
+  }
+
+  logTableHeaderCreation() {
+    this.log('Creating table header');
+  }
+
+  logTableHeaderUpdate(count: number) {
+    this.log(`Updating table header with ${count} columns`);
+  }
 }
